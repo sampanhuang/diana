@@ -1,0 +1,89 @@
+<?php $this->headScript()->captureStart();?>
+$(function(){
+$("#checkall").click(
+function(){
+if($("#checkall").is(":checked")){
+$("input[name='conf_id[]']").each(function(){this.checked=true;});
+$("#button_checkall").text('全部取消');
+}else{
+$("input[name='conf_id[]']").each(function(){this.checked=false;});
+$("#button_checkall").text('全部选择');
+}
+}
+);
+$("#button_checkall").click(
+function(){
+if($("#checkall").is(":checked")){
+$("input[name='conf_id[]']").each(function(){this.checked=false;});
+$("#button_checkall").text('全部选择');
+$("#checkall").each(function(){this.checked=false;});
+}else{
+$("input[name='conf_id[]']").each(function(){this.checked=true;});
+$("#button_checkall").text('全部取消');
+$("#checkall").each(function(){this.checked=true;});
+
+}
+}
+);
+});
+<?php $this->headScript()->captureEnd();?>
+<?php
+$showSonLink = true;
+if(!empty($this->fatherId)){
+    $showSonLink = false;
+    echo '<h3>';
+    if(!empty($this->fatherRow['conf_label'])){
+        echo $this->fatherRow['conf_label'];
+    }
+    echo '</h3><br/>';
+}
+?>
+<div class="row" style="margin-bottom: 5px;">
+    <div class="span8">
+        <div class="btn-group">
+            <button id="button_checkall" name="button_checkall" class="btn  btn-small">全部选择</button>
+            <button class="btn  btn-small btn-danger">删除</button>
+        </div>
+    </div>
+    <div class="span2">
+        <?php
+        if(!empty($this->fatherId)){
+            echo '<a class="btn btn-small pull-right" href="'.$this->url(array("father_id" => $this->fatherRow['conf_fatherId'])).'">返回上级菜单</a>';
+        }
+        ?>
+    </div>
+</div>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="table table-striped table-hover">
+    <tr>
+        <th  width="20"><input type="checkbox" name="checkall" id="checkall"></th>
+        <th  width="30">ID</th>
+        <th  width="120">KEY</th>
+        <th  width="120">名称</th>
+        <?php if(empty($showSonLink)){echo '<th  width="300">值</th>';} ?>
+        <th >选项</th>
+    </tr>
+    <?php
+    foreach($this->rows as $row){
+        ?>
+        <tr>
+            <td><input type="checkbox" name="conf_id[]" id="conf_<?php echo $row['conf_id'];?>"></td>
+            <td><?php echo $row['conf_id'];?></td>
+            <td><?php echo $row['conf_key'];?></td>
+            <td><?php echo $row['conf_label'];?></td>
+            <?php if(empty($showSonLink)){echo '<td>'.$row['conf_value'].'</td>';} ?>
+            <td>
+                <?php
+                if($showSonLink){
+                    echo '<a href="'.$this->url(array('father_id'=>$row['conf_id'])).'">下级</a>';
+                    echo '<span class="divider">&nbsp;/&nbsp;</span>';
+                }
+                ?>
+                <a href="<?php echo $this->url(array('action'=>'update','conf_id'=>$row['conf_id']));?>">编辑</a>
+                <span class="divider">&nbsp;/&nbsp;</span>
+                <a href="<?php echo $this->url(array('action'=>'form','conf_id'=>$row['conf_id']));?>">表单</a>
+                <span class="divider">&nbsp;/&nbsp;</span>
+                <a href="<?php echo $this->url(array('action'=>'delete','conf_id'=>$row['conf_id']));?>">删除</a>
+            </td>
+        </tr>
+        <?php }?>
+</table>

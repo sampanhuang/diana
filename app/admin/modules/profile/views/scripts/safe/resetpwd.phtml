@@ -1,0 +1,131 @@
+<?php
+$this->headScript()->appendFile("/static/custom/script/md5.js");
+$this->headScript()->captureStart();
+?>
+$(function(){
+    var urlcaptcha = "/default/guest/captcha/key/admin-manager-resetpwd";
+    var imgcaptcha = "#img_captcha";
+    refreshCaptcha(imgcaptcha,urlcaptcha);
+    //点击图片更换验证码
+    $(imgcaptcha).bind('click',function(){refreshCaptcha(imgcaptcha,urlcaptcha);});
+    $("form").submit(function(e){
+        var password_old = $("#input_password_old").val();
+        var password_new = $("#input_password_new").val();
+        var password_confirmation = $("#input_password_confirmation").val();
+        var captcha = $("#input_captcha").val();
+
+        if(password_old == ""){
+            $("#input_password_old").focus();
+            $("#help_password_old").css({ color: "#B94A48"});
+            $("#help_password_old").html("请输入登录密码");
+            return false;
+        }else{
+            $("#help_password_old").css({ color: "#468847"});
+            $("#help_password_old").html("登录密码输入正常");
+        }
+        if(password_new == ""){
+            $("#input_password_new").focus();
+            $("#help_password_new").css({ color: "#B94A48"});
+            $("#help_password_new").html("请输入登录密码");
+            return false;
+        }else if(password_new == password_old){
+            $("#input_password_new").focus();
+            $("#help_password_new").css({ color: "#B94A48"});
+            $("#help_password_new").html("新密码不能与旧密码相同");
+            return false;
+        }else if(password_new.length > 32 || password_new.length < 6){
+            $("#input_password_new").focus();
+            $("#help_password_new").css({ color: "#B94A48"});
+            $("#help_password_new").html("新密码长度必须在6~32个字符之间");
+            return false;
+        }else{
+            $("#help_password_new").css({ color: "#468847"});
+            $("#help_password_new").html("登录密码输入正常");
+        }
+        if(password_confirmation == ""){
+            $("#input_password_confirmation").focus();
+            $("#help_password_confirmation").css({ color: "#B94A48"});
+            $("#help_password_confirmation").html("请输入登录密码");
+            return false;
+        }else if(password_confirmation !== password_new){
+            $("#input_password_confirmation").focus();
+            $("#help_password_confirmation").css({ color: "#B94A48"});
+            $("#help_password_confirmation").html("新密码必须与确认密码相同");
+            return false;
+        }else{
+            $("#help_password_confirmation").css({ color: "#468847"});
+            $("#help_password_confirmation").html("登录密码输入正常");
+        }
+
+
+        if(captcha == ""){
+            $("#input_captcha").focus();
+            $("#help_captcha").css({ color: "#B94A48"});
+            $("#help_captcha").html("请输入验证码");
+            return false;
+        }else if(!isCaptcha(captcha)){
+            $("#input_captcha").focus();
+            $("#help_captcha").css({ color: "#B94A48"});
+            $("#help_captcha").html("验证码只能是四位字每");
+            return false;
+        }else{
+            $("#help_captcha").css({ color: "#468847"});
+            $("#help_captcha").html("验证码输入正常");
+        }
+        $("#input_password_old").val(hex_md5(password_old));
+        $("#input_password_new").val(hex_md5(password_new));
+        $("#input_password_confirmation").val(hex_md5(password_confirmation));
+        return true;
+    });
+    //验证码
+    function isCaptcha(str)
+    {
+        //var reg =/^[A-Za-z0-9]{4}$/;
+        var reg =/^[A-Za-z]{4}$/;
+        return reg.test(str);
+    }
+    //刷新验证码
+    function refreshCaptcha(img,url){
+        url = url + "?rand=" + Math.random()
+        $(img).attr("src",url);
+    }
+});
+<?php $this->headScript()->captureEnd();?>
+<form class="form-horizontal" id="form-resetpwd" name="form-resetpwd" method="post">
+    <div class="control-group">
+        <label class="control-label" for="input_password_old">旧密码</label>
+        <div class="controls">
+            <input type="password" id="input_password_old" name="password_old" tabindex="1" class="span4" placeholder="旧密码" value="">
+            <span class="help-inline muted" id="help_password_old">必填选，旧密码不能为空</span>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="input_password_new">新密码</label>
+        <div class="controls">
+            <input type="password" id="input_password_new" name="password_new" tabindex="2" class="span4" placeholder="新密码" value="">
+            <span class="help-inline" id="help_password_new">必填选，新密码不能为空</span>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="input_password_confirmation">确认密码</label>
+        <div class="controls">
+            <input type="password" id="input_password_confirmation" name="password_confirmation" tabindex="3" class="span4" placeholder="确认密码" value="">
+            <span class="help-inline" id="help_password_confirmation">必填选，密码不能为空</span>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="input_captcha">验证字符</label>
+        <div class="controls">
+            <input type="text" id="input_captcha" name="captcha" tabindex="4" class="span4" placeholder="验证字符" value="">
+            <span class="help-inline" id="help_captcha">请输入下面图片内的字符</span><br>
+            <img id="img_captcha" name="img_captcha" width="100" height="40" alt="点击更换验证码" title="点击更换验证码" style="cursor:pointer;">
+        </div>
+    </div>
+    <hr>
+    <div class="control-group">
+        <div class="controls">
+            <button id="btn_login" type="submit" tabindex="5" class="btn btn-primary">确定</button>&nbsp;&nbsp;&nbsp;&nbsp;
+            <button id="btn_reset" type="reset" tabindex="6" class="btn">取消</button>
+        </div>
+    </div>
+</form>

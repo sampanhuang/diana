@@ -1,0 +1,60 @@
+<?php
+if(!empty($this->detailWebsite)) {
+    ?>
+<ul class="breadcrumb" xmlns="http://www.w3.org/1999/html">
+    <li><a href="/">首页</a> <span class="divider">/</span></li>
+    <li><a href="/default/website/list/continent/<?php echo $this->detailWebsite['website_continent'];?>"><?php echo $this->translate("continent_code_".$this->detailWebsite['website_continent']); ;?></a> <span class="divider">/</span></li>
+    <li><a href="/default/website/list/continent/<?php echo $this->detailWebsite['website_continent'];?>/country/<?php echo $this->detailWebsite['website_country'];?>"><?php echo $this->translate("country_code_".$this->detailWebsite['website_country']);?></a> <span class="divider">/</span></li>
+    <li class="active"><?php echo $this->detailWebsite['website_name'].'&nbsp;&nbsp;（'.$this->translate("category_id_".$this->detailWebsite['website_categoryId'])."）";?></li>
+</ul>
+<section  class="row">
+    <div class="span9">
+        <h3><?php echo $this->detailWebsite['website_name'];?><small style="margin-left:20px;"><a href="<?php echo $this->url(array("action" => "jumper"));?>" title="<?php echo $this->detailWebsite['website_name'];?>" target="_blank"><?php echo $this->detailWebsite['website_domain'];?></a></small></h3>
+        <hr/>
+        <p>
+            <span class="label label-info"><?php echo  $this->translate("continent_code_".$this->detailWebsite['website_continent']).'<span class="divider">&nbsp/&nbsp</span>'.$this->translate("country_code_".$this->detailWebsite['website_country']);?></span>
+            <span class="label label-info"><?php echo  $this->translate("category_id_".$this->detailWebsite['website_categoryId']);?></span>
+        </p>
+        <p><?php echo nl2br($this->detailWebsite['website_intro']);?></p>
+        <p><?php
+            $tmpHtml = array();
+            $tmpWebsiteTag = explode(',',$this->detailWebsite['website_tag']);
+            $tmpWebsiteTag = array_filter($tmpWebsiteTag);
+            $tmpWebsiteTag = array_unique($tmpWebsiteTag);
+            foreach($tmpWebsiteTag as $valTmpWebsiteTag){
+                $tmpHtml[] = '<a href="'.$this->url(array("action"=>"search","keyword" => $valTmpWebsiteTag)).'" title="'.$valTmpWebsiteTag.'"  class="muted"><span class="label" style="margin-right:10px;">'.$valTmpWebsiteTag.'</span></a>';
+            }
+            echo implode("&nbsp;",$tmpHtml);
+            ?></p>
+    </div>
+    <div class="span3">
+    </div>
+</section >
+<?php
+if(!empty($this->rowsWebsiteLike)){
+?>
+    <br/>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="table">
+        <tr>
+            <?php
+            for($i = 0 ; $i<10;$i++){
+                if($i%5 == 0 && $i>0){
+                    echo '</tr><tr>';
+                }
+                echo '<td width="20%">';
+                if(!empty($this->rowsWebsiteLike[$i])){
+                    echo '<h5>'.$this->utf8Substr($this->rowsWebsiteLike[$i]['website_name'],10).'</h5>';
+                    echo '<span class="muted">'.$this->translate("country_code_".$this->rowsWebsiteLike[$i]['website_country']).'&nbsp;&nbsp;'.$this->translate('category_id_'.$this->rowsWebsiteLike[$i]['website_categoryId']).'</span><br>';
+                    echo '<a href="'.$this->url(array("action" => "detail","website_id" => $this->rowsWebsiteLike[$i]['website_id'])).'"  title="'.$continentContent['website']['new'][$i]['website_name'].'" target="_blank">'.$this->utf8Substr($this->rowsWebsiteLike[$i]['website_domain'],32).'</a>';
+                }
+                echo '</td>';
+
+            }
+            ?>
+        </tr>
+    </table>
+
+    <?php
+    }
+}
+?>

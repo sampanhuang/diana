@@ -1,0 +1,36 @@
+<?php
+if (!empty($this->nominees[$this->currentArea])) {
+	$counter = 0;
+	$newline = 4;
+	foreach ($this->nominees[$this->currentArea] as $rowNominated){
+		$counter ++;
+		$cssOver = "";
+		if (($counter % $newline == 0)&&($counter > 1)) {
+			$cssOver = "ui-content-website-over";
+		}
+?>
+<div class="ui-content-website left <?php echo $cssOver;?>">
+   <table width="145px" border="0" cellspacing="0" cellpadding="5">
+     <tr>
+       <td align="center"><img src="<?php echo $rowNominated["img"];?>" /></td>
+     </tr>
+     <tr>
+       <td>       	
+      <span class="left" style="color:#515151;font-weight:bold;font-size:12px;"><a href="<?php echo $rowNominated["link_sum"];?>" title="<?php echo $rowNominated["title"];?>"><?php echo $this->utf8substr($rowNominated["label"],5);?></a></span>      
+      <span class="right"  style="margin-left:5px;"><a href="<?php echo $rowNominated["link_sta"];?>" title="<?php echo $this->translate("www_index_nominated_state");?>"><img src="www/img/statistics.gif" border="0"></a></span>      
+      <span class="right"  style="margin-left:5px;"><a href="<?php echo $rowNominated["link_tag"];?>" title="<?php echo $this->translate("www_index_nominated_tag");?>"><img src="www/img/tag.gif" border="0"></a></span>
+      <span class="right" style="margin-left:5px;"><a href="<?php echo $rowNominated["link_com"];?>" title="<?php echo $this->translate("www_index_nominated_comment");?>"><img src="www/img/pencil.gif" border="0"></a></span>
+      </td>
+     </tr>
+     <tr>
+       <td>
+       		<span class="left" style="color:#717171;font-family: 'Open Sans',arial,sans-serif;"><?php echo $this->translate("category_code_".$rowNominated["category"]);?></span>
+       		<span class="right" style="color:#717171;font-family: 'Open Sans',arial,sans-serif;"><?php echo $rowNominated["hit"].$this->translate("www_index_nominated_hit");?></span>
+       </td>
+     </tr>
+   </table>
+</div>
+<?php
+	}
+}
+?>

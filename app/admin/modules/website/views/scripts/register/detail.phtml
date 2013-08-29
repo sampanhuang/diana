@@ -1,0 +1,14 @@
+<div class="row" style="margin-bottom: 5px;">
+    <div class="span5">
+        <button id="button_checkall" name="button_checkall" class="btn  btn-small" onclick="history.go(-1)">返回上一页</button>
+    </div>
+    <div class="span5"></div>
+</div>
+<div class="row" style="margin-top:10px;margin-bottom:10px;">
+    <div class="span10"><h4>基本概况</h4></div>
+</div>
+<?php echo $this->render('detail_website.phtml'); ?>
+<div class="row" style="margin-top:10px;margin-bottom:10px;">
+    <div class="span10"><h4>归属会员</h4></div>
+</div>
+<?php echo $this->render('detail_member.phtml'); ?>

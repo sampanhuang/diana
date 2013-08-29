@@ -1,0 +1,107 @@
+<div class="row" style="margin-bottom: 5px;">
+    <div class="span5">
+        <button id="button_checkall" name="button_checkall" class="btn  btn-small" onclick="history.go(-1)">返回上一页</button>
+    </div>
+    <div class="span5"></div>
+</div>
+<div class="row" style="margin-top:10px;margin-bottom:10px;">
+    <div class="span10"><h4>基本概况</h4></div>
+</div>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="table table-striped">
+    <tr>
+        <th valign="top" scope="row" style="width: 10%;">ID</th>
+        <td valign="top" style="width: 40%;"><?php echo $this->detailWebsiteApply['apply_id'];?></td>
+        <th valign="top" scope="row" style="width: 10%;">状态</th>
+        <td valign="top" style="width: 40%;"><?php echo $this->translate("tbl_columns_website_apply_pass_".$this->detailWebsiteApply['apply_pass']);?></td>
+    </tr>
+    <tr>
+        <th valign="top" scope="row" style="width: 10%;">名称</th>
+        <td valign="top" style="width: 40%;"><?php echo $this->detailWebsiteApply['website_name'];?></td>
+        <th valign="top" scope="row" style="width: 10%;">域名</th>
+        <td valign="top" style="width: 40%;"><?php echo $this->detailWebsiteApply['website_domain'];?></td>
+    </tr>
+    <tr>
+        <th valign="top" scope="row" style="width: 10%;">大陆</th>
+        <td valign="top" style="width: 40%;"><?php echo  $this->translate("continent_code_".$this->detailWebsiteApply['website_continent']);?></td>
+        <th valign="top" scope="row" style="width: 10%;">国家</th>
+        <td valign="top" style="width: 40%;"><?php echo  $this->translate("country_code_".$this->detailWebsiteApply['website_country']);?></td>
+    </tr>
+    <tr>
+        <th valign="top" scope="row">提交时间</th>
+        <td valign="top"><?php echo $this->formatDate('Y-m-d H:i:s',$this->detailWebsiteApply['apply_insert_time']);?></td>
+        <th valign="top" scope="row">提交IP</th>
+        <td valign="top"><?php echo $this->detailWebsiteApply['apply_insert_ip'];?></td>
+    </tr>
+    <tr>
+        <th valign="top" scope="row">更新时间</th>
+        <td valign="top"><?php echo $this->formatDate('Y-m-d H:i:s',$this->detailWebsiteApply['apply_update_time']);?></td>
+        <th valign="top" scope="row">更新IP</th>
+        <td valign="top"><?php echo $this->detailWebsiteApply['apply_update_ip'];?></td>
+    </tr>
+    <tr>
+        <th valign="top" scope="row">标签</th>
+        <td valign="top" colspan="3"><?php echo $this->detailWebsiteApply['website_tag'];?></td>
+    </tr>
+    <tr>
+        <th valign="top" scope="row">简介</th>
+        <td valign="top" colspan="3"><?php echo nl2br($this->detailWebsiteApply['website_intro']);?></td>
+    </tr>
+</table>
+<div class="row" style="margin-top:10px;margin-bottom:10px;">
+    <div class="span10"><h4>归属会员</h4></div>
+</div>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="table table-striped">
+    <tr>
+        <th valign="top" scope="row">ID</th>
+        <td valign="top" colspan="3"><?php echo $this->detailWebsiteApply['member_id'];?></td>
+    </tr>
+    <tr>
+        <th valign="top" scope="row" style="width: 10%;">名称</th>
+        <td valign="top" style="width: 40%;"><?php echo $this->detailWebsiteApply['member_name'];?></td>
+        <th valign="top" scope="row" style="width: 10%;">邮箱</th>
+        <td valign="top" style="width: 40%;"><?php echo $this->detailWebsiteApply['member_email'];?></td>
+    </tr>
+    <?php
+        if($this->detailWebsiteApply['member_passwd_change_count'] > 0){
+    ?>
+    <tr>
+        <th valign="top" scope="row">密码修改次数</th>
+        <td valign="top" colspan="3"><?php echo $this->detailWebsiteApply['member_passwd_change_count'];?></td>
+    </tr>
+    <tr>
+        <th valign="top" scope="row" style="width: 10%;">密码修改时间</th>
+        <td valign="top" style="width: 40%;"><?php echo $this->formatDate('Y-m-d H:i:s',$this->detailWebsiteApply['member_passwd_change_time']);?></td>
+        <th valign="top" scope="row" style="width: 10%;">密码修改IP</th>
+        <td valign="top" style="width: 40%;"><?php echo $this->detailWebsiteApply['member_passwd_change_ip'];?></td>
+    </tr>
+        <?php
+        }
+        ?>
+    <tr>
+        <th valign="top" scope="row">登录次数</th>
+        <td valign="top" colspan="3"><?php echo $this->detailWebsiteApply['member_login_count'];?></td>
+    </tr>
+    <tr>
+        <th valign="top" scope="row" style="width: 10%;">最后登录时间</th>
+        <td valign="top" style="width: 40%;"><?php echo $this->formatDate('Y-m-d H:i:s',$this->detailWebsiteApply['member_login_last_time']);?></td>
+        <th valign="top" scope="row" style="width: 10%;">最后登录IP</th>
+        <td valign="top" style="width: 40%;"><?php echo $this->detailWebsiteApply['member_login_last_ip'];?></td>
+    </tr>
+    <?php
+        if(!empty($this->detailWebsiteApply['member_lock_time'])){
+    ?>
+    <tr>
+        <th valign="top" scope="row">锁定时间</th>
+        <td valign="top" colspan="3"><?php echo $this->formatDate('Y-m-d H:i:s',$this->detailWebsiteApply['member_lock_time']);?></td>
+    </tr>
+    <?php
+        }
+    ?>
+
+    <tr>
+        <th valign="top" scope="row" style="width: 10%;">注册时间</th>
+        <td valign="top" style="width: 40%;"><?php echo $this->formatDate('Y-m-d H:i:s',$this->detailWebsiteApply['member_register_time']);?></td>
+        <th valign="top" scope="row" style="width: 10%;">注册IP</th>
+        <td valign="top" style="width: 40%;"><?php echo $this->detailWebsiteApply['member_register_ip'];?></td>
+    </tr>
+</table>

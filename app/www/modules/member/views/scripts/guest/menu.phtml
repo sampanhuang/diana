@@ -1,0 +1,23 @@
+<?php
+if(empty($this->detailMember)){
+    ?>
+document.write("<p style=\"line-height: 80px;\">");
+document.write("    <a href=\"/member/guest/register\" title=\"注册\" target=\"_blank\">注册</a>");
+document.write("    <a href=\"/member/guest/login\" title=\"登录\" target=\"_blank\">登录</a>");
+document.write("    <a href=\"/member/guest/forgetpwd\" title=\"取回密码\" target=\"_blank\">取回密码</a>");
+document.write("    <a href=\"/default/website/apply\" title=\"提交网站\" target=\"_blank\">提交网站</a>");
+document.write("    <a href=\"/member/website\" title=\"我的网站\" target=\"_blank\">我的网站</a>");
+document.write("</p>");
+<?php
+}else{
+    ?>
+document.write("<p style=\"line-height: 80px;\">");
+document.write("    欢迎光临，<a href=\"/member/profile/index\" title=\"<?php echo $this->detailMember['member_name'];?>\" target=\"_blank\"><?php echo $this->detailMember['member_name'];?></a>");
+document.write("    <a href=\"/default/website/apply\" title=\"提交网站\" target=\"_blank\">提交网站</a>");
+document.write("    <a href=\"/member/website/index\" title=\"我的网站\" target=\"_blank\">我的网站</a>");
+document.write("    <a href=\"/member/safe/resetpwd\" title=\"修改密码\" target=\"_blank\">修改密码</a>");
+document.write("    <a href=\"/member/guest/logout\" title=\"注销登录\" >注销登录</a>");
+document.write("</p>");
+<?php
+}
+?>

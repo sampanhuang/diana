@@ -1,0 +1,145 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <?php echo $this->headMeta().chr(13).chr(10);?>
+    <?php echo $this->headTitle().chr(13).chr(10);?>
+    <link rel="stylesheet" type="text/css" href="/static/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/bootstrap/css/bootstrap-responsive.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/custom/css/id.css">
+    <link rel="stylesheet" type="text/css" href="/static/custom/css/tag.css">
+    <link rel="stylesheet" type="text/css" href="/static/custom/css/class.css">
+    <script type="text/javascript" src="/static/jquery-1.10.2.min.js"></script>
+    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+    <?php echo $this->headLink().chr(13).chr(10);?>
+    <?php echo $this->headStyle().chr(13).chr(10);?>
+    <?php echo $this->headScript().chr(13).chr(10);?>
+</head>
+<body>
+<!---开始开部信息--->
+<header class="container">
+    <h3 class="muted"><?php echo DIANA_WEBSITE_NAME;?></h3>
+</header>
+<!---开始导航菜单--->
+<nav class="container">
+    <div class="masthead">
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="container">
+                    <?php
+                    if(!empty($this->currentManagerRoleMenu)){
+                        echo '<ul class="nav">';
+                        foreach($this->currentManagerRoleMenu as $moduleKey => $rowModule){
+                            $classActive = '';
+                            if($this->currentModuleName == $moduleKey){
+                                $classActive = 'active';
+                            }
+                            if(empty($rowModule['menu_link'])){
+                                echo '<li class="dropdown '.$classActive.'">';
+                                echo '<a href="#" class="dropdown-toggle" data-toggle="dropdown">'.$rowModule['menu_label'].'<b class="caret"></b></a>';
+                                echo '<ul class="dropdown-menu">';
+                                foreach($rowModule['son'] as $controllerKey => $rowController){
+                                    if(empty($rowController['menu_link'])){
+                                        echo '<li class="dropdown-submenu">';
+                                        echo '<a href="#" class="dropdown-toggle" data-toggle="dropdown">'.$rowController['menu_label'].'</b></a>';
+                                        echo '<ul class="dropdown-menu">';
+                                        foreach($rowController['son'] as $actionKey => $rowAction){
+                                            echo '<li><a href="'.$rowAction['menu_link'].'">'.$rowAction['menu_label'].'</a></li>';
+                                        }
+                                        echo '</ul>';
+                                        echo '</li>';
+                                    }else{
+                                        echo '<li><a href="'.$rowController['menu_link'].'">'.$rowController['menu_label'].'</a></li>';
+                                    }
+                                }
+                                echo '</ul>';
+                                echo '</li>';
+                            }else{
+                                if(!empty($classActive)){
+                                    $classActive = 'class = "'.$classActive.'"';
+                                }
+                                echo '<li '.$classActive.'><a href="'.$rowModule['menu_link'].'">'.$rowModule['menu_label'].'</a></li>';
+                            }
+                        }
+                        echo '</ul>';
+                    }
+                    ?>
+                    <ul class="nav pull-right">
+                        <li id="fat-menu" class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $this->currentManagerName;?><b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="/default/guest/logout">注销登录</a></li>
+                                <li><a href="/profile/safe/resetpwd">修改密码</a></li>
+                                <li class="divider"></li>
+                                <li><a href="/profile/message/inbox">消息查询</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div><!-- /.navbar -->
+    </div>
+</nav>
+<section class="container">
+
+    <!--开始面包屑-->
+    <div class="row-fluid" data-find="_1">
+        <div class="span12">
+            <ul class="breadcrumb">
+                <li><?php echo $this->currentModuleLabel;?> <span class="divider">/</span></li>
+                <li><?php echo $this->currentControllerLabel;?> <span class="divider">/</span></li>
+                <li><?php echo $this->currentActionLabel;?></li>
+            </ul>
+        </div>
+    </div>
+    <!---开始标签页--->
+    <div class="row">
+        <div class="span2">
+            <ul class="nav nav-tabs nav-stacked">
+                <?php
+                foreach($this->currentManagerRoleMenu[$this->currentModuleName]['son'] as $controllerKey => $rowController){
+                    $cssActive = '';
+                    if($controllerKey == $this->currentControllerName){
+                        $cssActive = 'active';
+                    }
+                    echo '<li class="'.$cssActive.'"><a href="/'.$rowController['menu_link_frist'].'">'.$rowController['menu_label'].'</a></li>';
+                }
+                ?>
+            </ul>
+        </div>
+        <div class="span10">
+            <ul id="tab" class="nav nav-tabs">
+                <?php
+                    foreach($this->currentManagerRoleMenu[$this->currentModuleName]['son'][$this->currentControllerName]['son'] as $actionKey => $rowAction){
+                        $actionLabel = $rowAction['menu_label'];
+                        $cssActive = '';
+                        if($actionKey == $this->currentActionName){
+                            $cssActive = 'active';
+                        }
+                        echo '<li class="'.$cssActive.'"><a href="/'.implode('/',array($this->currentModuleName,$this->currentControllerName,$actionKey)).'" >'.$actionLabel.'</a></li>';
+                    }
+                ?>
+            </ul>
+            <?php
+            if(!empty($this->msgs)){
+                echo '<div class="alert">'.implode(';',$this->msgs).'</div>';
+            }
+            ?>
+            <?php  echo $this->layout()->content;  ?>
+        </div>
+    </div>
+</section>
+<footer>
+    <div class="container">
+        <p class="footer">
+        <ul class="inline">
+            <li>Langer:<?php echo DIANA_TRANSLATE_DEFAULT;?></li>
+            <li>Version:<?php echo DIANA_WEBSITE_VERSION;?></li>
+            <li>Time:<?php echo number_format($this->pageCostMicrotime,2);?>Sec</li>
+            <li>Memory:<?php echo $this->formatSize(memory_get_usage());?></li>
+        </ul>
+        </p>
+    </div>
+</footer>
+</body>
+</html>

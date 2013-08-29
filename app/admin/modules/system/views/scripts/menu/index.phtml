@@ -1,0 +1,94 @@
+<?php $this->headScript()->captureStart();?>
+$(function(){
+    $("#checkall").click(
+        function(){
+            if($("#checkall").is(":checked")){
+                $("input[name='menu_id[]']").each(function(){this.checked=true;});
+                $("#button_checkall").text('全部取消');
+            }else{
+                $("input[name='menu_id[]']").each(function(){this.checked=false;});
+                $("#button_checkall").text('全部选择');
+            }
+        }
+    );
+    $("#button_checkall").click(
+        function(){
+            if($("#checkall").is(":checked")){
+$("input[name='menu_id[]']").each(function(){this.checked=false;});
+$("#button_checkall").text('全部选择');
+$("#checkall").each(function(){this.checked=false;});
+            }else{
+$("input[name='menu_id[]']").each(function(){this.checked=true;});
+$("#button_checkall").text('全部取消');
+$("#checkall").each(function(){this.checked=true;});
+
+            }
+        }
+    );
+});
+<?php $this->headScript()->captureEnd();?>
+<?php
+$showSonLink = true;
+if(!empty($this->fatherId)){
+    echo '<h3>';
+    if(!empty($this->fatherRow['menu_father']['menu_label'])){
+        $showSonLink = false;
+        echo $this->fatherRow['menu_father']['menu_label'].' / ';
+    }
+    if(!empty($this->fatherRow['menu_label'])){
+        echo $this->fatherRow['menu_label'];
+    }
+    echo '</h3><br/>';
+}
+?>
+<div class="row" style="margin-bottom: 5px;">
+    <div class="span8">
+        <div class="btn-group">
+            <button id="button_checkall" name="button_checkall" class="btn  btn-small">全部选择</button>
+            <button class="btn  btn-small btn-danger">删除</button>
+        </div>
+    </div>
+    <div class="span2">
+        <?php
+        if(!empty($this->fatherId)){
+            echo '<a class="btn btn-small pull-right" href="'.$this->url(array("father_id" => $this->fatherRow['menu_fatherId'])).'">返回上级菜单</a>';
+        }
+        ?>
+    </div>
+</div>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="table table-striped table-hover">
+    <tr>
+        <th  width="20"><input type="checkbox" name="checkall" id="checkall"></th>
+        <th  width="30">ID</th>
+        <th  width="120">KEY</th>
+        <th  width="120">名称</th>
+        <th  width="50">打印</th>
+        <th  width="50">排序</th>
+        <th  width="270">时间</th>
+        <th >选项</th>
+    </tr>
+    <?php
+        foreach($this->rows as $row){
+    ?>
+    <tr>
+        <td><input type="checkbox" name="menu_id[]" id="menu_<?php echo $row['menu_id'];?>"></td>
+        <td><?php echo $row['menu_id'];?></td>
+        <td><?php echo $row['menu_key'];?></td>
+        <td><?php echo $row['menu_label'];?></td>
+        <td><?php echo $this->formatDate($row['menu_show'],'<span class="label label-success">Yes</span>','<span class="label label-important">No</span>');?></td>
+        <td><span class="badge"><?php echo $row['menu_order'];?></span></td>
+        <td><?php echo $this->formatDate("Y-m-d H:i",$row['menu_insert_time']).$this->formatDate($row['menu_update_time'],'<span class="divider">&nbsp;&nbsp;/&nbsp;&nbsp;</span>').$this->formatDate("Y-m-d H:i",$row['menu_update_time']);?></td>
+        <td>
+            <?php
+            if($showSonLink){
+                echo '<a href="'.$this->url(array('father_id'=>$row['menu_id'])).'">下级</a>';
+                echo '<span class="divider">&nbsp;/&nbsp;</span>';
+            }
+            ?>
+            <a href="<?php echo $this->url(array('action'=>'update','menu_id'=>$row['menu_id']));?>">编辑</a>
+            <span class="divider">&nbsp;/&nbsp;</span>
+            <a href="<?php echo $this->url(array('action'=>'delete','menu_id'=>$row['menu_id']));?>">删除</a>
+        </td>
+    </tr>
+    <?php }?>
+</table>

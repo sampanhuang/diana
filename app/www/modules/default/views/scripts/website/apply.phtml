@@ -1,0 +1,142 @@
+<?php $this->headScript()->captureStart();?>
+$(function(){
+    var urlcaptcha = "/default/index/captcha/key/www-website-apply";
+    var imgcaptcha = "#img_captcha";
+    refreshCaptcha(imgcaptcha,urlcaptcha);
+    //点击图片更换验证码
+    $(imgcaptcha).bind('click',function(){refreshCaptcha(imgcaptcha,urlcaptcha);});
+});
+//刷新验证码
+function refreshCaptcha(img,url){
+    url = url + "?rand=" + Math.random()
+    $(img).attr("src",url);
+}
+function onchangeShow(oneId){
+    var arrOptionsCountry = <?php echo json_encode($this->optionsCountry)?>;
+    //alert(arrOptionsCountry[oneId]);
+    onchangecallback(arrOptionsCountry[oneId]);
+}
+function onchangecallback(data){
+    $("#input_website_country").html("");  //清空原有的option
+    var str="<option value=''>请选择</option>";
+    for(var key in data){
+        str+="<option value='"+key+"'>"+data[key]+"</option>"
+    }
+    $("#input_website_country").html(str);
+}
+<?php $this->headScript()->captureEnd();?>
+<ul class="breadcrumb">
+    <li><a href="#">首页</a> <span class="divider">/</span></li>
+    <li class="active">提交网站</li>
+</ul>
+<div class="row">
+    <div class="span12" >
+        <form class="form-horizontal"  id="form_apply" name="form_apply" method="post" >
+            <div class="control-group">
+                <label class="control-label" for="input_website_name">名称</label>
+                <div class="controls">
+                    <input type="text" id="input_website_name" name="website_name" class="span5" placeholder="网站名称" value="<?php echo $this->post['website_name'];?>">
+                    <span class="help-inline" id="help_website_name">必填选</span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="input_website_domain">域名</label>
+                <div class="controls">
+                    <input type="text" id="input_website_domain" name="website_domain" class="span6" placeholder="网站域名" value="<?php echo $this->post['website_domain'];?>">
+                    <span class="help-inline" id="help_website_domain">必填选，域名前如无http://或https://，将默认加上http://</span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="input_website_categoryId">类别</label>
+                <div class="controls">
+                    <select id="input_website_categoryId" name="website_categoryId" class="span3">
+                        <option>请选择</option>
+                        <?php
+                            foreach($this->websiteCategoryIds as $websiteCategoryId){
+                                $optionsSelected = '';
+                                if($websiteCategoryId == $this->post['website_categoryId']){
+                                    $optionsSelected = ' selected ';
+                                }
+                                echo '<option value="'.$websiteCategoryId.'" '.$optionsSelected.'>'. $this->translate("category_id_".$websiteCategoryId).'</option>';
+                            }
+                        ?>
+                    </select>
+                    <span class="help-inline" id="help_website_categoryId">必选项</span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="input_website_continent">大陆/国家</label>
+                <div class="controls">
+                    <select id="input_website_continent" name="website_continent" class="span2" onchange="onchangeShow(this.value)">
+                        <option value="">请选择</option>
+                        <?php
+                        foreach($this->websiteContinents as $websiteContinent){
+                            $optionsSelected = '';
+                            if($websiteContinent == $this->post['website_continent']){
+                                $optionsSelected = ' selected ';
+                            }
+                            echo '<option value="'.$websiteContinent.'"  '.$optionsSelected.'>'. $this->translate("continent_code_".$websiteContinent).'</option>';
+                        }
+                        ?>
+                    </select>
+                    <select id="input_website_country" name="website_country" class="span3">
+                        <option value="">请选择</option>
+                        <?php
+                        if(!empty($this->countriesByContinent)){
+                            foreach($this->countriesByContinent as $country){
+                                $optionsSelected = '';
+                                if($country == $this->post['website_country']){
+                                    $optionsSelected = ' selected ';
+                                }
+                                echo '<option value="'.$country.'"  '.$optionsSelected.'>'. $this->translate("country_code_".$country).'</option>';
+                            }
+                        }
+                        ?>
+                    </select>
+                    <span class="help-inline" id="help_website_country">必选项</span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="input_website_tag">标签</label>
+                <div class="controls">
+                    <input type="text" id="input_website_tag" name="website_tag" class="span6" placeholder="网站标签" value="<?php echo $this->post['website_tag'];?>">
+                    <span class="help-inline">多个标签务请用分隔符隔开，分隔符可以是逗号顿号及空格</span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="input_website_intro">简介</label>
+                <div class="controls">
+                    <textarea rows="4" id="input_website_intro" name="website_intro" class="span8" placeholder="简介"><?php echo $this->post['website_intro'];?></textarea>
+                    <span class="help-inline">限256个字以内</span>
+                </div>
+            </div>
+            <?php
+            if(empty($this->detailMember)){
+            ?>
+            <div class="control-group" id="div_control-group_website_memberEmail">
+                <label class="control-label" for="input_website_memberEmail">联系邮箱</label>
+                <div class="controls">
+                    <input type="text" id="input_website_memberEmail" name="website_memberEmail" class="span6" placeholder="联系邮箱" value="<?php echo $this->post['website_memberEmail'];?>">
+                    <span class="help-inline" id="help_website_memberEmail">务必真实，登录后不需填写，默认为你的密保邮箱</span>
+                </div>
+            </div>
+            <div class="control-group" id="div_control-group_captcha">
+                <label class="control-label" for="input_website_captcha">验证码</label>
+                <div class="controls">
+                    <input type="text" id="input_website_captcha" name="captcha" class="span6" placeholder="验证码" value="<?php echo $this->post['website_memberEmail'];?>">
+                    <span class="help-inline" id="help_captcha">登录后不需要输入验证码</span><br/>
+                    <img id="img_captcha" name="img_captcha" width="100" height="40" alt="点击更换验证码" title="点击更换验证码" style="cursor:pointer;">
+                </div>
+            </div>
+            <?php
+            }
+            ?>
+            <hr>
+            <div class="control-group">
+                <div class="controls">
+                    <button type="submit" class="btn">提交网站资料</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
