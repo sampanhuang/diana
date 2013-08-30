@@ -32,11 +32,6 @@ class Website_RegisterController extends Admin_Controller_Action
         }
     }
 
-    function insertAction()
-    {
-
-    }
-
     function updateAction()
     {
 
