@@ -1,0 +1,8 @@
+.gitignore
+.idea
+.idea/*
+temp/*
+data/configs/*
+data/sqls/*
+app/Define.php
+app/www/public/index.htm
