@@ -14,6 +14,42 @@ class Diana_Service_WebsiteCountry extends Diana_Service_Abstract
     }
 
     /**
+     * 网站变更国家
+     * @param $oldCountry 旧的国家
+     * @param $newCountry 新的国家
+     * @param int $countWebsite 网站数量
+     * @param int $clickIn 网站流入点击
+     * @param int $clickOut 网站流出点击
+     * @return bool 成功或失败
+     */
+    function websiteChangeCountry($oldCountry,$newCountry,$countWebsite = 0,$clickIn = 0,$clickOut = 0)
+    {
+        if(empty($oldCountry)||empty($newCountry)){
+            $this->setMsgs("参数不能为空 - oldCountry - newCountry");
+            return false ;
+        }
+        if(empty($countWebsite)&&empty($clickIn)&&empty($clickOut)){
+            $this->setMsgs("参数不能为空 - countWebsite - clickIn - clickOut");
+            return false ;
+        }
+        //如果这个网站没有改变类型，就什么也不用动
+        if($oldCountry == $newCountry){
+            return true;
+        }
+        $modelWebsiteCountry = new Diana_Model_WebsiteCountry();
+        if(!$modelWebsiteCountry->updateCountWebsiteClickInClickOut($oldCountry,$countWebsite,$clickIn,$clickOut,true)){
+            $this->setMsgs("更新失败 - 1");
+            return false ;
+        }
+        if(!$modelWebsiteCountry->updateCountWebsiteClickInClickOut($newCountry,$countWebsite,$clickIn,$clickOut)){
+            $modelWebsiteCountry->updateCountWebsiteClickInClickOut($oldCountry,$countWebsite,$clickIn,$clickOut);
+            $this->setMsgs("更新失败 - 1");
+            return false ;
+        }
+        return false;
+    }
+
+    /**
      * 通过洲获取国家信息
      */
     function getCountriesByContinent($continent)

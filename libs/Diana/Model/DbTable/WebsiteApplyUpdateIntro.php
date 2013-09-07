@@ -6,10 +6,10 @@
  * Time: 上午1:07
  * To change this template use File | Settings | File Templates.
  */
-class Diana_Model_DbTable_WebsiteApplyIntro extends Diana_Model_DbTable_Abstract
+class Diana_Model_DbTable_WebsiteApplyUpdateIntro extends Diana_Model_DbTable_Abstract
 {
-    var $_name = "website_apply_intro";
-    var $_primary  = array("apply_id");
+    var $_name = "website_Apply_update_intro";
+    var $_primary  = array("update_id");
 
     function __construct()
     {
@@ -24,7 +24,7 @@ class Diana_Model_DbTable_WebsiteApplyIntro extends Diana_Model_DbTable_Abstract
     function setOrders()
     {
         $this->_orders = array(
-            "new" => array("apply_id desc"),
+            "new" => array("update_id desc"),
         );
     }
 
@@ -37,9 +37,9 @@ class Diana_Model_DbTable_WebsiteApplyIntro extends Diana_Model_DbTable_Abstract
     function getWheresByCondition($condition)
     {
         $wheres = array();
-        if (!empty($condition["apply_id"])) {//流水号
+        if (!empty($condition["update_id"])) {//流水号
             $tmpWheres = array();
-            $tmpWheres = $this->getWhereByCondition("apply_id",$condition["apply_id"],1);
+            $tmpWheres = $this->getWhereByCondition("update_id",$condition["update_id"],1);
             $wheres = array_merge($wheres,$tmpWheres);
         }
         return $wheres;

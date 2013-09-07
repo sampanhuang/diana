@@ -1,16 +1,16 @@
 <?php
 /**
- * 网站申请
+ * 网站注册申请
  * Created by JetBrains PhpStorm.
  * User: sampan
  * Date: 13-7-30
  * Time: 下午4:08
  * To change this template use File | Settings | File Templates.
  */
-class Diana_Model_DbTable_WebsiteApply extends Diana_Model_DbTable_Abstract
+class Diana_Model_DbTable_WebsiteApplyRegister extends Diana_Model_DbTable_Abstract
 {
-    var $_name = "website_apply";
-    var $_primary  = array("apply_id");
+    var $_name = "website_apply_register";
+    var $_primary  = array("register_id");
 
     function __construct()
     {
@@ -25,7 +25,7 @@ class Diana_Model_DbTable_WebsiteApply extends Diana_Model_DbTable_Abstract
     function setOrders()
     {
         $this->_orders = array(
-            "new" => array("apply_id desc"),
+            "new" => array("register_id desc"),
         );
     }
 
@@ -38,9 +38,9 @@ class Diana_Model_DbTable_WebsiteApply extends Diana_Model_DbTable_Abstract
     function getWheresByCondition($condition)
     {
         $wheres = array();
-        if (!empty($condition["apply_id"])) {//流水号
+        if (!empty($condition["register_id"])) {//流水号
             $tmpWheres = array();
-            $tmpWheres = $this->getWhereByCondition("apply_id",$condition["apply_id"],1);
+            $tmpWheres = $this->getWhereByCondition("register_id",$condition["register_id"],1);
             $wheres = array_merge($wheres,$tmpWheres);
         }
         if (!empty($condition["website_memberId"])) {//会员流水号
@@ -58,9 +58,9 @@ class Diana_Model_DbTable_WebsiteApply extends Diana_Model_DbTable_Abstract
             $tmpWheres = $this->getWhereByCondition("website_domain",$condition["website_domain"],2);
             $wheres = array_merge($wheres,$tmpWheres);
         }
-        if (isset($condition["apply_pass"])) {//流水号
+        if (isset($condition["register_pass"])) {//流水号
             $tmpWheres = array();
-            $tmpWheres = $this->getWhereByCondition("apply_pass",$condition["apply_pass"],1);
+            $tmpWheres = $this->getWhereByCondition("register_pass",$condition["register_pass"],1);
             $wheres = array_merge($wheres,$tmpWheres);
         }
         return $wheres;

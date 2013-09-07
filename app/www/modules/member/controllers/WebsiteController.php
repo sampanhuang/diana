@@ -53,22 +53,55 @@ class Member_WebsiteController extends Www_Controller_ActionMember
     function detailAction()
     {
         $this->view->websiteId = $websiteId = $this->getRequest()->getUserParam('website_id',0);
-        $this->view->applyId = $applyId =  $this->getRequest()->getUserParam('apply_id',0);
-        if(!empty($websiteId)){
-            $serviceWebsite = new Diana_Service_Website();
-            if($detailWebsite = $serviceWebsite->detailById($websiteId)){
-                if($detailWebsite['website_memberId'] == $this->currentMemberId){
-                    $this->view->detailWebsite = $detailWebsite;
-                }
-            }
-        }elseif(!empty($applyId)){
-            $serviceWebsiteApply = new Diana_Service_WebsiteApply();
-            if($detailWebsiteApply = $serviceWebsiteApply->detailById($applyId)){
-                if($detailWebsiteApply['website_memberId'] == $this->currentMemberId){
-                    $this->view->detailWebsite = $detailWebsiteApply;
-                }
+        if(empty($websiteId)){
+            $this->setMsgs("参数website_id不能为空");
+            return false;
+        }
+        $serviceWebsite = new Diana_Service_Website();
+        if($detailWebsite = $serviceWebsite->detailById($websiteId)){
+            if($detailWebsite['website_memberId'] == $this->currentMemberId){
+                $this->view->detailWebsite = $detailWebsite;
             }
         }
+    }
+
+    /**
+     * 网站编辑
+     */
+    function updateAction()
+    {
+        $this->view->websiteId = $websiteId = $this->getRequest()->getUserParam('website_id',0);
+        if(empty($websiteId)){
+            $this->setMsgs("参数website_id不能为空");
+            return false;
+        }
+        //获取网站详细资料
+        $serviceWebsite = new Diana_Service_Website();
+        if($detailWebsite = $serviceWebsite->detailById($websiteId)){
+            if($detailWebsite['website_memberId'] == $this->currentMemberId){
+                $this->view->detailWebsite = $detailWebsite;
+            }else{
+                $this->setMsgs("你并无权限修改当前网站资料!");
+                return false;
+            }
+        }
+        //获取网站分类代码
+        $serviceWebsiteCategory = new Diana_Service_WebsiteCategory();
+        $this->view->websiteCategoryIds = $serviceWebsiteCategory->getIds();
+        //获取洲与国家代码
+        $serviceCountry = new Diana_Service_Country();
+        $this->view->websiteContinents = $continents =  $serviceCountry->getContinentsKey();
+        if($countries = $serviceCountry->getCountriesKey()){
+            $optionsCountry = array();
+            $translate = Zend_Registry::get('Zend_Translate');
+            foreach($countries as $continentKey => $countries){
+                foreach($countries as $countryKey => $countryValue){
+                    $optionsCountry[$continentKey][$countryKey] = $countryKey;
+                }
+            }
+            $this->view->optionsCountry = $optionsCountry;
+        }
+
     }
 
     /**
@@ -118,6 +151,10 @@ class Member_WebsiteController extends Www_Controller_ActionMember
     }
 
 
+    /**
+     * 流出点击
+     * @return bool
+     */
     function clickOutAction()
     {
         $this->view->eventId = $eventId = $this->getRequest()->getUserParam('event',0);
@@ -141,6 +178,10 @@ class Member_WebsiteController extends Www_Controller_ActionMember
         }
     }
 
+    /**
+     * 流入点击
+     * @return bool
+     */
     function clickInAction()
     {
         $this->view->eventId = $eventId = $this->getRequest()->getUserParam('event',0);

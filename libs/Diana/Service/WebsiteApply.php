@@ -247,7 +247,7 @@ class Diana_Service_WebsiteApply extends Diana_Service_Abstract
             foreach($insertData as $keyApplyId => $valWebsite){
                 if($tmpRowsWebsite = $modelWebsite->saveData(1,$valWebsite)){
                     $modelWebsiteIntro->saveIntro($tmpRowsWebsite[0]['website_id'],$optionsWebsiteApplyInstro[$tmpRowsWebsite[0]['website_applyId']]);
-                    if(!$serviceWebsiteTag->updateWebsiteTag($tmpRowsWebsite[0]['website_id'],$tmpRowsWebsite[0]['website_tag'].",".$tmpRowsWebsite[0]['website_name'])){
+                    if(!$serviceWebsiteTag->updateWebsiteTag($tmpRowsWebsite[0]['website_id'],$tmpRowsWebsite[0]['website_tag'].",".$tmpRowsWebsite[0]['website_name'].",".$tmpRowsWebsite[0]['website_domain'])){
                         $this->setMsgs($serviceWebsiteTag->getMsgs());
                     }
                     $rowsWebsite = array_merge($rowsWebsite,$tmpRowsWebsite);
@@ -263,12 +263,12 @@ class Diana_Service_WebsiteApply extends Diana_Service_Abstract
         if(!empty($existApplyId)){
             $modelWebsiteApply->updatePass($existApplyId,2);
         }
-        //更新动态
+        //更新网站注册动态
         $modelWebsiteTrendRegister = new Diana_Model_WebsiteTrendRegister();
         if(!empty($okApplyId)){
             $modelWebsiteTrendRegister->update(count($okApplyId));
         }
-        //更新动态
+        //更新网站类型与网站国家动态
         $modelWebsiteCategory = new Diana_Model_WebsiteCategory();
         $modelWebsiteCountry = new Diana_Model_WebsiteCountry();
         foreach($rowsWebsiteApply as $rowWebsiteApply){

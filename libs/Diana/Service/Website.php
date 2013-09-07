@@ -43,6 +43,7 @@ class Diana_Service_Website extends Diana_Service_Abstract
     }
 
     /**
+     * 分页
      * @param $key 关键字
      * @param $page 当前页
      * @param $pagesize 每页的纪录数
@@ -90,6 +91,12 @@ class Diana_Service_Website extends Diana_Service_Abstract
         return array('total' => $countWebsite,'rows' => $rowsWebsite);
     }
 
+    /**
+     * 通过ID获取网站详细信息
+     * @param $websiteId 网站ID
+     * @param bool $trend 是否添加统计
+     * @return array|bool 网站详细信息
+     */
     function detailById($websiteId,$trend = false)
     {
         if(empty($websiteId)){
@@ -141,6 +148,8 @@ class Diana_Service_Website extends Diana_Service_Abstract
         return $rowWebsite;
     }
 
+
+
     /**
      * 删除网站
      * @param $websiteId 网站ID
@@ -183,5 +192,78 @@ class Diana_Service_Website extends Diana_Service_Abstract
         return true;
     }
 
+
+    /**
+     * 更新网站资料
+     * @param $websiteId 网站ID
+     * @param $data 网站资料
+     * @return bool|array 是否成功，成功返回更新后的东西，失败就返回false
+     */
+    function updateById($websiteId,$data)
+    {
+        //参数不能为空
+        if(empty($websiteId)||empty($data)){
+            $this->setMsgs("参数不能为空");
+            return false;
+        }
+        if((!is_numeric($websiteId))||(!is_array($data))){
+            $this->setMsgs("参数类型错误");
+            return false;
+        }
+        //参数过滤
+        $serviceWebsiteApply = new Diana_Service_WebsiteApply();
+        if(!$data = $serviceWebsiteApply->checkApplyParams($data)){
+            $this->setMsgs($serviceWebsiteApply->getMsgs());
+            return false;
+        }
+        //网站名称和域名不能重复
+        $modelWebsite = new Diana_Model_Website();
+        if($modelWebsite->checkName(true,$data['website_name'],$websiteId)){
+            $this->setMsgs("当前网站名称【".$data['website_name']."】已经被使用");
+            return false;
+        }
+        if($modelWebsite->checkDoamin(true,$data['website_domain'],$websiteId)){
+            $this->setMsgs("当前网站域名【".$data['website_domain']."】已经被使用");
+            return false;
+        }
+        //确认ID是否正确
+        if(!$oldRowsWebsite = $modelWebsite->getRowsById(null,$websiteId)){
+            $this->setMsgs("无效的网站ID");
+            return false;
+        }
+        $oldRowWebsite = $oldRowsWebsite[0];
+        //保存编辑的信息
+        if(!$rowsWebsite = $modelWebsite->updateMainById($websiteId,$data)){
+            $this->setMsgs("网站数据保存失败");
+            return false;
+        }
+        $rowWebsite = $rowsWebsite[0];
+        //更新网站简介
+        $modelWebsiteIntro = new Diana_Model_WebsiteIntro();
+        if($rowsWebsiteIntro = $modelWebsiteIntro->saveIntro($websiteId,$data['website_intro'])){
+            $this->setMsgs("网站简介保存失败");
+            return false;
+        }
+        $rowWebsite['website_intro'] = $rowsWebsiteIntro[0]['website_intro'];
+        //更新网站标签
+        $serviceWebsiteTag = new Diana_Model_WebsiteTag();
+        if(!$serviceWebsiteTag->updateWebsiteTag($rowWebsite['website_id'],$rowWebsite['website_tag'].",".$rowWebsite['website_name'].",".$rowWebsite['website_domain'])){
+            $this->setMsgs($serviceWebsiteTag->getMsgs());
+            return false;
+        }
+        //如果已经网站类别变更了
+        $serviceWebsiteCategory = new Diana_Service_WebsiteCategory();
+        if(!$serviceWebsiteCategory->websiteChangeCategory($oldRowWebsite['website_categoryId'],$rowWebsite['website_categoryId'],1,$rowWebsite['website_click_in'],$rowWebsite['website_click_out'])){
+            $this->setMsgs($serviceWebsiteCategory->getMsgs());
+            return false;
+        }
+        //如果网站国家已经变更了
+        $serviceWebsiteCountry = new Diana_Service_WebsiteCountry();
+        if(!$serviceWebsiteCountry->websiteChangeCountry($oldRowWebsite['website_country'],$rowWebsite['website_country'],1,$rowWebsite['website_click_in'],$rowsWebsite['website_click_out'])){
+            $this->setMsgs($serviceWebsiteCategory->getMsgs());
+            return false;
+        }
+        return $rowWebsite;
+    }
 
 }

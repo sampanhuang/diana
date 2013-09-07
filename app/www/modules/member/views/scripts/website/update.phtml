@@ -1,0 +1,113 @@
+<?php $this->headScript()->captureStart();?>
+$(function(){
+var urlcaptcha = "/default/index/captcha/key/www-website-apply";
+var imgcaptcha = "#img_captcha";
+refreshCaptcha(imgcaptcha,urlcaptcha);
+//点击图片更换验证码
+$(imgcaptcha).bind('click',function(){refreshCaptcha(imgcaptcha,urlcaptcha);});
+});
+//刷新验证码
+function refreshCaptcha(img,url){
+url = url + "?rand=" + Math.random()
+$(img).attr("src",url);
+}
+function onchangeShow(oneId){
+var arrOptionsCountry = <?php echo json_encode($this->optionsCountry)?>;
+//alert(arrOptionsCountry[oneId]);
+onchangecallback(arrOptionsCountry[oneId]);
+}
+function onchangecallback(data){
+$("#input_website_country").html("");  //清空原有的option
+var str="<option value=''>请选择</option>";
+for(var key in data){
+str+="<option value='"+key+"'>"+data[key]+"</option>"
+}
+$("#input_website_country").html(str);
+}
+<?php $this->headScript()->captureEnd();?>
+<form class="form-horizontal"  id="form_website_update" name="form_website_update" method="post" >
+    <div class="control-group">
+        <label class="control-label " for="input_website_name">名称</label>
+        <div class="controls">
+            <input type="text" id="input_website_name" name="website_name" class="span4" placeholder="网站名称" value="<?php echo $this->detailWebsite['website_name'];?>">
+            <span class="help-inline" id="help_website_name">必填选，不能重复</span>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="input_website_domain">域名</label>
+        <div class="controls">
+            <input type="text" id="input_website_domain" name="website_domain" class="span4" placeholder="网站域名" value="<?php echo $this->detailWebsite['website_domain'];?>">
+            <span class="help-inline" id="help_website_domain">必填选，不能重复，域名前如无http://或https://，将默认加上http://</span>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="input_website_categoryId">类别</label>
+        <div class="controls">
+            <select id="input_website_categoryId" name="website_categoryId" class="span3">
+                <option>请选择</option>
+                <?php
+                foreach($this->websiteCategoryIds as $websiteCategoryId){
+                    $optionsSelected = '';
+                    if($websiteCategoryId == $this->detailWebsite['website_categoryId']){
+                        $optionsSelected = ' selected ';
+                    }
+                    echo '<option value="'.$websiteCategoryId.'" '.$optionsSelected.'>'. $this->translate("category_id_".$websiteCategoryId).'</option>';
+                }
+                ?>
+            </select>
+            <span class="help-inline" id="help_website_categoryId">必选项</span>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="input_website_continent">大陆/国家</label>
+        <div class="controls">
+            <select id="input_website_continent" name="website_continent" class="span2" onchange="onchangeShow(this.value)">
+                <option value="">请选择</option>
+                <?php
+                foreach($this->websiteContinents as $websiteContinent){
+                    $optionsSelected = '';
+                    if($websiteContinent == $this->detailWebsite['website_continent']){
+                        $optionsSelected = ' selected ';
+                    }
+                    echo '<option value="'.$websiteContinent.'"  '.$optionsSelected.'>'. $this->translate("continent_code_".$websiteContinent).'</option>';
+                }
+                ?>
+            </select>
+            <select id="input_website_country" name="website_country" class="span3">
+                <option value="">请选择</option>
+                <?php
+                if(!empty($this->optionsCountry)){
+                    foreach($this->optionsCountry[$this->detailWebsite['website_continent']] as $country){
+                        $optionsSelected = '';
+                        if($country == $this->detailWebsite['website_country']){
+                            $optionsSelected = ' selected ';
+                        }
+                        echo '<option value="'.$country.'"  '.$optionsSelected.'>'. $this->translate("country_code_".$country).'</option>';
+                    }
+                }
+                ?>
+            </select>
+            <span class="help-inline" id="help_website_country">必选项</span>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="input_website_tag">标签</label>
+        <div class="controls">
+            <input type="text" id="input_website_tag" name="website_tag" class="span7" placeholder="网站标签" value="<?php echo $this->detailWebsite['website_tag'];?>">
+            <span class="help-inline">多个标签务请用分隔符隔开，分隔符可以是逗号顿号及空格</span>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="input_website_intro">简介</label>
+        <div class="controls">
+            <textarea rows="8" id="input_website_intro" name="website_intro" class="span8" placeholder="简介"><?php echo $this->detailWebsite['website_intro'];?></textarea>
+            <span class="help-inline">限256个字以内</span>
+        </div>
+    </div>
+    <hr>
+    <div class="control-group">
+        <div class="controls">
+            <button type="submit" class="btn">变更网站资料</button>
+        </div>
+    </div>
+</form>

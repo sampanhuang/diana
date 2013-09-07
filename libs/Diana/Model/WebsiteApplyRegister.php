@@ -6,12 +6,12 @@
  * Time: 上午1:10
  * To change this template use File | Settings | File Templates.
  */
-class Diana_Model_WebsiteApply extends Diana_Model_Abstract
+class Diana_Model_WebsiteApplyRegister extends Diana_Model_Abstract
 {
     function __construct()
     {
         parent::__construct();
-        $this->dt = new Diana_Model_DbTable_WebsiteApply();
+        $this->dt = new Diana_Model_DbTable_WebsiteApplyRegister();
     }
 
     /**
@@ -25,7 +25,7 @@ class Diana_Model_WebsiteApply extends Diana_Model_Abstract
      * @param $continent 大陆
      * @param $country 国家
      */
-    function register($memberId,$name,$domain,$tag,$category,$continent,$country)
+    function postApply($memberId,$name,$domain,$tag,$category,$continent,$country)
     {
         $data = array(
             'website_memberId' => intval($memberId),
@@ -35,15 +35,15 @@ class Diana_Model_WebsiteApply extends Diana_Model_Abstract
             'website_categoryId' => intval($category),
             'website_continent' => trim(strtolower($continent)),
             'website_country' => trim(strtolower($country)),
-            'apply_insert_time' => time(),
-            'apply_insert_ip' => $_SERVER['REMOTE_ADDR'],
+            'register_insert_time' => time(),
+            'register_insert_ip' => $_SERVER['REMOTE_ADDR'],
         );
         return $this->saveData(1,$data);
     }
 
     function deleteById($id)
     {
-        $condition = array("apply_id" => $id);
+        $condition = array("register_id" => $id);
         return $this->delData($condition);
     }
 
@@ -55,7 +55,7 @@ class Diana_Model_WebsiteApply extends Diana_Model_Abstract
      */
     function getRowsById($refresh = null,$id)
     {
-        $condition = array("apply_id" => $id);
+        $condition = array("register_id" => $id);
         return $this->getRowsByCondition($refresh,$condition);
     }
 
@@ -67,11 +67,11 @@ class Diana_Model_WebsiteApply extends Diana_Model_Abstract
     function updatePass($id,$pass = 0)
     {
         $data = array(
-            'apply_pass' => $pass,
-            'apply_update_time' => time(),
-            'apply_update_ip' => $_SERVER['REMOTE_ADDR'],
+            'register_pass' => $pass,
+            'register_update_time' => time(),
+            'register_update_ip' => $_SERVER['REMOTE_ADDR'],
         );
-        $condition = array('apply_id' => $id);
+        $condition = array('register_id' => $id);
         return $this->saveData(2,$data,$condition);
     }
 
