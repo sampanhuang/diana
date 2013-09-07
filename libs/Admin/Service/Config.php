@@ -14,6 +14,11 @@ class Admin_Service_Config extends Diana_Service_Config
     }
 
 
+    /**
+     * 通过父级ID得到子配置索引
+     * @param $fatherId
+     * @return array|bool 配置列表
+     */
     function indexByFather($fatherId)
     {
         $modelConfig = new Diana_Model_Config();
@@ -23,6 +28,11 @@ class Admin_Service_Config extends Diana_Service_Config
         return $rows;
     }
 
+    /**
+     * 获取配置详细信息
+     * @param $configId
+     * @return bool
+     */
     function getDetail($configId)
     {
         if(empty($configId)){

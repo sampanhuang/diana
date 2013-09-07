@@ -14,6 +14,18 @@ class Diana_Service_Config extends Diana_Service_Abstract
         parent::__construct();
     }
 
+    /**
+     * 通过KEy获取value
+     * @param $key
+     */
+    function getValueByKey($key)
+    {
+        $modelConfig = new Diana_Model_Config();
+        if(!$rows = $modelConfig->getValueByKey(null,$key)){
+
+        }
+    }
+
 
 
 

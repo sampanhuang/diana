@@ -24,8 +24,10 @@ class Diana_Model_Config extends Diana_Model_Abstract
 		if (!$rows = $this->getRowsByCondition($refresh,$condition)) {
 			throw new Exception("你需要定义此项配置参数{{$key}}");
 		}else{
-			$row = current($rows);
-			return $row["config_value"];
+            if(empty($rows[0]['conf_value'])){
+                $rows[0]['conf_value'] = $rows[0]['conf_default'];
+            }
+			return $rows[0]['conf_value'];
 		}
 	}
 	

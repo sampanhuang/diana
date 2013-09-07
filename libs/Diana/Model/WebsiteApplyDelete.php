@@ -16,21 +16,29 @@ class Diana_Model_WebsiteApplyDelete extends Diana_Model_Abstract
 
     /**
      * 提交一个删除申请
-     * @param $websiteId
+     * @param $websiteId 网站ID
      * @param $websiteRow 表纪录
+     * @param $source 来源，1前台，2后台
+     * @param $source
      * @return array
      */
-    function postApply($websiteId,$websiteRow)
+    function postApply($websiteId,$websiteRow,$source,$sourceId)
     {
+        if(empty($websiteId)||empty($websiteRow)||empty($source)||empty($sourceId)){
+            return false;
+        }
         $data = array(
+            'delete_source' => $source,
+            'delete_sourceId' => $sourceId,
             'delete_insert_time' => time(),
             'delete_insert_ip' => $_SERVER['REMOTE_ADDR'],
             'website_id' => intval($websiteId),
-            'website_memberId' => intval($memberId),
             'website_row' => json_encode($websiteRow),
         );
         return $this->saveData(1,$data);
     }
+
+
 
     /**
      * 变更删除申请的状态
@@ -54,6 +62,20 @@ class Diana_Model_WebsiteApplyDelete extends Diana_Model_Abstract
     {
         $condition = array("update_id" => $id);
         return $this->delData($condition);
+    }
+
+    /**
+     * 参赛过处理状态和网站ID得到纪录
+     * @param $pass
+     * @param $websiteId
+     */
+    function getRowsByPassWebsite($refresh,$pass,$websiteId)
+    {
+        $condition = array(
+            "delete_pass" => $pass,
+            "website_id" => $websiteId,
+        );
+        return $this->getRowsByCondition($refresh,$condition);
     }
 
     /**
