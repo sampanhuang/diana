@@ -1,5 +1,7 @@
 <?php
 /**
+ * 网站删除申请
+ * 只有后台在删除的时候才需要申请，前台用户在删除他自己的网站时，不需要申请
  * Created by JetBrains PhpStorm.
  * User: sampan
  * Date: 13-8-1
@@ -78,7 +80,7 @@ class Diana_Service_WebsiteApplyDelete extends Diana_Service_Abstract
     function accedeApply($applyId)
     {
         //确认申请单ID是否正确，并取出申请单
-        if(!$rowsWebsiteApply = $this->checkApplyId($applyId)){
+        if(!$tmpCountWebsiteApply = $this->checkApplyId($applyId)){
             return false;
         }
         if(!is_array($applyId)){
@@ -87,17 +89,52 @@ class Diana_Service_WebsiteApplyDelete extends Diana_Service_Abstract
     }
 
     /**
-     * 拒绝申请
+     * 拒绝删除申请
      * @param $applyId
      * @return bool
      */
-    function demurApply($applyId)
+    function demurApply($applyId,$reply = null,$managerId)
     {
-        if(!$rowsWebsiteApply = $this->checkApplyId($applyId)){
+        //参数不能为空
+        if(empty($applyId)||empty($managerId)){
+            $this->setMsgs('参数不能为空');
             return false;
         }
+        //确认拒绝申请的ID
+        if(!$tmpCountWebsiteApply = $this->checkApplyId($applyId)){
+            return false;
+        }
+        //确认reply
+        if((!empty($applyId))&&(!is_scalar($reply))){
+            $this->setMsgs('错误的删除备注');
+            return false;
+        }
+        //确认manager
+        $modelManager = new Diana_Model_Manager();
+        if(!$rowsManager = $modelManager->getRowsById(null,$managerId)){
+            $this->setMsgs('无效的参数 managerId - '.$managerId);
+            return false;
+        }
+        $managerName = $rowsManager[0]['manager_name'];
+        $managerEmail = $rowsManager[0]['manager_email'];
+        //更新状态
         $modelWebsiteApplyDelete = new Diana_Model_WebsiteApplyDelete();
-        $modelWebsiteApplyDelete->updatePass($applyId,2);
+        if($rowsWebsiteApply = $modelWebsiteApplyDelete->updatePass($applyId,2,$reply)){
+            $this->setMsgs('状态更新失败');
+            return false;
+        }
+        foreach($rowsWebsiteApply as $rowWebsiteApply){
+            $tmpRrowWebsite = json_decode($rowWebsiteApply['website_row'],true);
+            if($rowWebsiteApply['delete_source'] == 2){
+                if($rowsManager = $modelManager->getRowsById(null,$rowWebsiteApply['delete_sourceId'])){
+                    $msgSubject = '你申请删除网站【'.$tmpRrowWebsite['website_name'].'】的申请被【'.$managerName.' - '.$managerEmail.' 】拒绝';
+                    $msgContent = '';
+                }
+            }
+        }
+        //向管理员发送邮件拒绝删除申请的提醒
+        $msgSubject = "你删除'.$tmpCountWebsiteApply.'个网站的申请被【'.$managerName.' - '.$managerEmail.' 】拒绝";
+        $msgContent = "";
         return $rowsWebsiteApply;
     }
 
@@ -113,11 +150,11 @@ class Diana_Service_WebsiteApplyDelete extends Diana_Service_Abstract
             return false;
         }
         $modelWebsiteApplyDelete = new Diana_Model_WebsiteApplyDelete();
-        if(!$rowsWebsiteApply = $modelWebsiteApplyDelete->getRowsById(null,$applyId)){
+        if(!$countWebsiteApply = $modelWebsiteApplyDelete->getCountById(null,$applyId)){
             $this->setMsgs('无效的参数');
             return false;
         }
-        return $rowsWebsiteApply;
+        return $countWebsiteApply;
     }
 
     function pageByCondition($page = 1,$pagesize = 1,$condition = array(),$order = null)

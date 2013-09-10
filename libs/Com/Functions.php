@@ -283,6 +283,8 @@ class Com_Functions {
 		if (is_scalar($replaces)) {
 			$replaces = array($replaces);
 		}
+        $haystack = str_replace('[#DATA-CURRENT-DATETIME#]',date("Y-m-d H:i"),$haystack);
+        $haystack = str_replace('[#DATA-CURRENT-DATE#]',date("Y-m-d"),$haystack);
 		foreach ($replaces as $replace){
 			$pos = strpos($haystack, $needle);
 			if ($pos === false) {

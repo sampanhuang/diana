@@ -46,7 +46,7 @@ class Diana_Model_WebsiteApplyDelete extends Diana_Model_Abstract
      * @param int $pass
      * @return array
      */
-    function updatePass($id,$pass = 0,$reply)
+    function updatePass($id,$pass = 0,$reply = null)
     {
         $data = array(
             'delete_pass' => $pass,
@@ -88,6 +88,12 @@ class Diana_Model_WebsiteApplyDelete extends Diana_Model_Abstract
     {
         $condition = array("apply_id" => $id);
         return $this->getRowsByCondition($refresh,$condition);
+    }
+
+    function getCountById($refresh = null,$id)
+    {
+        $condition = array("apply_id" => $id);
+        return $this->getCountByCondition($refresh,$condition);
     }
 
 

@@ -118,5 +118,4 @@ class Diana_Service_ManagerMsg extends Diana_Service_Abstract
         }
         return $input->getEscaped();
     }
-
 }

@@ -18,17 +18,20 @@ class Diana_Model_Config extends Diana_Model_Abstract
 	 * @param string $key KEY值
 	 * @return array
 	 */
-	function getValueByKey($refresh = null,$key)
+	function getValueByKey($refresh = null,$key,$default = null)
 	{
 		$condition = array("conf_key" => $key);
-		if (!$rows = $this->getRowsByCondition($refresh,$condition)) {
-			throw new Exception("你需要定义此项配置参数{{$key}}");
-		}else{
-            if(empty($rows[0]['conf_value'])){
-                $rows[0]['conf_value'] = $rows[0]['conf_default'];
+		if ((!$rows = $this->getRowsByCondition($refresh,$condition))) {
+            if(empty($default)){
+                throw new Exception("你需要定义此项配置参数{{$key}}");
+                return false;
             }
-			return $rows[0]['conf_value'];
+            return $default;
 		}
+        if(empty($rows[0]['conf_value'])){
+            $rows[0]['conf_value'] = $rows[0]['conf_default'];
+        }
+        return $rows[0]['conf_value'];
 	}
 	
 	/**
