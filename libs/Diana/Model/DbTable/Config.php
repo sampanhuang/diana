@@ -22,6 +22,8 @@ class Diana_Model_DbTable_Config extends Diana_Model_DbTable_Abstract
 	{
 		$this->_orders = array(
 			"order" => array("conf_order desc"),
+            "last_update_time" => array("conf_update_time desc"),
+            'last_insert_time' => array('conf_insert_time desc'),
 		);
 	}
 			

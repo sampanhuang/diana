@@ -3,6 +3,7 @@
 .idea/*
 temp/*
 data/configs/*
+data/filter_word/*
 data/sqls/*
 app/Define.php
 app/www/public/index.htm

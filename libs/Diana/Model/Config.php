@@ -33,6 +33,26 @@ class Diana_Model_Config extends Diana_Model_Abstract
         }
         return $rows[0]['conf_value'];
 	}
+
+
+    /**
+     * 获取这个表的最后时间（插入或是更新）
+     * @return bool 最后更新时间
+     */
+    function getLastTime()
+    {
+        if(!$rowsLastUpdateTime = $this->getRowsByCondition(null,null,'last_update_time',1)){
+            return false;
+        }
+        if(!$rowsLastInsertTime = $this->getRowsByCondition(null,null,'last_insert_time',1)){
+            return false;
+        }
+        $lastTime = $rowsLastUpdateTime[0]['conf_update_time'];
+        if($rowsLastInsertTime[0]['conf_insert_time'] > $lastTime){
+            $lastTime = $rowsLastInsertTime[0]['conf_insert_time'];
+        }
+        return $lastTime;
+    }
 	
 	/**
 	 * 通过流水号ID获取多条纪录

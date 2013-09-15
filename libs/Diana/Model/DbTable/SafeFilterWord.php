@@ -24,6 +24,7 @@ class Diana_Model_DbTable_SafeFilterWord extends Diana_Model_DbTable_Abstract
     function setOrders()
     {
         $this->_orders = array(
+            "hot" => array("word_count desc"),
             "new" => array("word_time desc"),
         );
     }

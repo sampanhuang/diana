@@ -14,6 +14,23 @@ class Diana_Model_SafeFilterWord extends Diana_Model_Abstract
         $this->dt = new Diana_Model_DbTable_SafeFilterWord();
     }
 
+    /**
+     * 更新敏感词使用量
+     * @param $word 敏感词
+     * @param $count 使用量
+     * @param null $isFull 是否为全的
+     * @return array
+     */
+    function updateCount($word,$count,$isFull = null)
+    {
+        if(empty($isFull)){
+            $data = array( "word_count" => new Zend_Db_Expr(" word_count + ".$count) );
+        }else{
+            $data = array( "word_count" => $count );
+        }
+        $condition = array("word_val" => $word);
+        return $this->saveData(2,$data,$condition);
+    }
 
     /**
      * 保存敏感词
@@ -38,7 +55,7 @@ class Diana_Model_SafeFilterWord extends Diana_Model_Abstract
      */
     function lastTime()
     {
-        if(!$rowsSafeFilterWord = $this->getRowsByCondition(null,null,null,1)){
+        if(!$rowsSafeFilterWord = $this->getRowsByCondition(null,null,"new",1)){
             return false;
         }
         return $rowsSafeFilterWord['word_time'];
