@@ -197,9 +197,11 @@ class Diana_Service_Website extends Diana_Service_Abstract
      * 更新网站资料
      * @param $websiteId 网站ID
      * @param $data 网站资料
+     * @param $isAdmin 是否为管理员
+     * @param $man ID
      * @return bool|array 是否成功，成功返回更新后的东西，失败就返回false
      */
-    function updateById($websiteId,$data)
+    function updateById($websiteId,$data,$isAdmin = null,$man = null)
     {
         //参数不能为空
         if(empty($websiteId)||empty($data)){
@@ -216,8 +218,13 @@ class Diana_Service_Website extends Diana_Service_Abstract
             $this->setMsgs($serviceWebsiteApply->getMsgs());
             return false;
         }
-        //网站名称和域名不能重复
+        //确认ID是否正确
         $modelWebsite = new Diana_Model_Website();
+        if(!$oldRowsWebsite = $modelWebsite->getRowsById(null,$websiteId)){
+            $this->setMsgs("无效的网站ID");
+            return false;
+        }
+        //网站名称和域名不能重复
         if($modelWebsite->checkName(true,$data['website_name'],$websiteId)){
             $this->setMsgs("当前网站名称【".$data['website_name']."】已经被使用");
             return false;

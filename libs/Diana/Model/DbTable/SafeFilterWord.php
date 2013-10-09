@@ -25,7 +25,8 @@ class Diana_Model_DbTable_SafeFilterWord extends Diana_Model_DbTable_Abstract
     {
         $this->_orders = array(
             "hot" => array("word_count desc"),
-            "new" => array("word_time desc"),
+            "new" => array("word_insert_time desc"),
+            "old" => array("word_insert_time"),
         );
     }
 

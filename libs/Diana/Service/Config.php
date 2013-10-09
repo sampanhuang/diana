@@ -73,7 +73,7 @@ class Diana_Service_Config extends Diana_Service_Abstract
         //写入配置文件
         foreach($importConfig as $pre => $tmpRowsConfig){
             $tmpPath = $this->getPathByPre($pre);
-            $tmpContent = "return ".var_export($tmpRowsConfig);
+            $tmpContent = "<?php return ".var_export($tmpRowsConfig, true).';';
             file_put_contents($tmpPath,$tmpContent);
         }
         return true;

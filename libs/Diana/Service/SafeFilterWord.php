@@ -21,6 +21,93 @@ class Diana_Service_SafeFilterWord extends Diana_Service_Abstract
         $this->dirWords = DIANA_DIR_DATA.'/filter_word/';
     }
 
+    /**
+     * 概述
+     * array('total' => 数量,'time_frist' => 最开始导入的时间,'time_last' => 最后导入时间)
+     */
+    function summarize()
+    {
+        $summarize = array(
+            'total' => 0,//数量
+            'time_first' => 0,//最开始导入的时间
+            'time_last' => 0,//最后导入时间
+            'import_count' => 0,//导入次数
+        );
+
+        $modelSafeFilterWord = new Diana_Model_SafeFilterWord();
+        if($total = $modelSafeFilterWord->getCountByCondition()){
+            $summarize['total'] = $total;
+        }
+        if($timeFirst = $modelSafeFilterWord->firstTime()){
+            $summarize['time_first'] = $timeFirst;
+        }
+        if($timeLast = $modelSafeFilterWord->lastTime()){
+            $summarize['time_last'] = $timeLast;
+        }
+        $serviceState = new Diana_Service_State();
+        if($valFilterWordImportCount = $serviceState->getValueByKey('safe_filter_word_import_count',0)){
+            $summarize['import_count'] = $valFilterWordImportCount;
+        }
+        //获取各个敏感词库的配置信息
+        $serviceConfig = new Diana_Model_Config();
+        $summarize['filter_word_size'] = $serviceConfig->getValueByKey(null,'filter_word_size','small');
+        $summarize['filter_word_replace'] = $serviceConfig->getValueByKey(null,'filter_word_replace','*');
+        foreach($this->optionsFilterWordSize as $optionFilterWordSize){
+            $tmpConfigKey = 'filter_word_count_'.$optionFilterWordSize;
+            $summarize[$tmpConfigKey] = $serviceConfig->getValueByKey(null,$tmpConfigKey,1000);
+        }
+        return $summarize;
+    }
+
+    function getHot($count)
+    {
+        $modelSafeFilterWord = new Diana_Model_SafeFilterWord();
+        if(!$rows = $modelSafeFilterWord->getRowsByCondition(null,null,'hot',$count)){
+            $this->setMsgs("暂无敏感词数据!");
+            return false;
+        }
+        return $rows;
+    }
+
+    /**
+     *
+     * @param $word
+     * @return bool|int
+     */
+    function import($word)
+    {
+        if((empty($word))||(!is_scalar($word))){
+            $this->setMsgs("参数不能为空");
+            return false;
+        }
+        //各种形式的分隔符都需要接受
+        $word = str_replace(array("、","，","|"),",",$word);
+        $word = strtolower($word);
+        $arrWord = explode(',',$word);
+        $arrWord = array_map('trim',$arrWord);//过滤空值
+        $arrWord = array_unique($arrWord);//过滤重复值
+        $arrWord = array_filter($arrWord);//过滤空值
+        //开始写入
+        $counterSuccess = 0;
+        $wordInsertTime = time();
+        $modelSafeFilterWor = new Diana_Model_SafeFilterWord();
+        foreach($arrWord as $tmpWord){
+            echo $tmpWord;
+            if($modelSafeFilterWor->saveWord($tmpWord,$wordInsertTime)){
+                $counterSuccess++;
+            }
+        }
+        if($counterSuccess == 0){
+            $this->setMsgs("导入失败，你导入的都是重复的敏感词");
+            return false;
+        }
+        //加入状态
+        $serviceState = new Diana_Service_State();
+        if(!$valueState = $serviceState->setValueByKey('safe_filter_word_import_count',1)){
+            $this->setMsgs($serviceState->getMsgs());
+        }
+        return $counterSuccess;
+    }
 
     /**
      * 获取单词库
@@ -37,15 +124,15 @@ class Diana_Service_SafeFilterWord extends Diana_Service_Abstract
             //最后一次提交时间
 
             //创建文件
-            if(!file_exists($pathWords)){//不存在则创建
-                $this->generateData();
-            }else{//对比时间，如果晚于最后导入时间，则需要重新导过
-                $fileLasttime = filemtime($pathWords);//文件最后被修改时间
+            if(file_exists($pathWords)){//对比时间，如果晚于最后导入时间，则需要重新导过
+                $fileLastTime = filemtime($pathWords);//文件最后被修改时间
                 $modelSafeFilterWord = new Diana_Model_SafeFilterWord();
-                $importLasttime = $modelSafeFilterWord->lastTime();
-                if($importLasttime > $fileLasttime){
+                $dbLastTime = $modelSafeFilterWord->lastTime();
+                if($dbLastTime > $fileLastTime){
                     $this->generateData();
                 }
+            }else{//不存在则创建
+                $this->generateData();
             }
             self::$words = include($pathWords);
         }
@@ -76,7 +163,7 @@ class Diana_Service_SafeFilterWord extends Diana_Service_Abstract
         //写入敏感词库
         foreach($this->optionsFilterWordSize as $optionFilterWordSize){
             $tmpPath = $this->dirWords.'/'.$optionFilterWordSize.'.php';
-            $tmpContent = "return ".var_export(array_slice ($tmpArrFilterWord, 0, $configFilterWordCount[$optionFilterWordSize]));
+            $tmpContent = '<?php return '.var_export(array_slice ($tmpArrFilterWord, 0, $configFilterWordCount[$optionFilterWordSize]),true).';';
             file_put_contents($tmpPath,$tmpContent);
         }
         return true;

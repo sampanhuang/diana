@@ -227,13 +227,13 @@ class WebsiteController extends Www_Controller_Action
                     return false;
                 }
             }
-            //提交申请
-            $serviceWebsiteApply = new Diana_Service_WebsiteApply();
-            if($serviceWebsiteApply->postApply($post)){
+            //提交网站注册申请
+            $serviceWebsiteApplyRegister = new Diana_Service_WebsiteApplyRegister();
+            if($serviceWebsiteApplyRegister->postApply($post)){
                 $this->setMsgs('提交成功，我会们在你的网站审核成功后以电子邮件的形式通知你');
                 unset($post);
             }else{
-                $this->setMsgs($serviceWebsiteApply->getMsgs());
+                $this->setMsgs($serviceWebsiteApplyRegister->getMsgs());
                 $this->view->post = $post;
                 if(!empty($post['website_continent'])){
                     if($countriesKey = $serviceCountry->getCountriesKey()){

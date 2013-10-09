@@ -197,7 +197,7 @@ class Com_Functions {
 	{
 		$separtor = '_';
 		if ((!empty($keys))&&(is_array($keys))) {
-            $keys = md5($keys);
+            $keys = md5(json_encode($keys));
 			/*foreach ($keys as $k => $v){
 				if (!is_null($v)) {
 					if (is_scalar($v)) {

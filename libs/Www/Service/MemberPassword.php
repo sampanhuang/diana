@@ -46,14 +46,15 @@ class Www_Service_MemberPassword extends Diana_Service_Abstract
             return false;
         }
         //更新密码
-        if (!$this->modifyPasswd($memberId,$pwdNew,$memberEmail,$memberName)) {
+        if (!$this->modifyPasswd($memberId,$pwdNew,$memberEmail,$memberName,$pwdOld)) {
             return false;
         }
-        //写入新session
+        //重新获取用户数据
         if (!$detailMember = $serviceMember->getMemberById($memberId)) {
             $this->setMsgs("错误的用户ID");
             return false;
         }
+        //写入新session
         $serviceDoorkeeper = new Www_Service_Doorkeeper();
         $serviceDoorkeeper->writeSession($detailMember);
         return true;
@@ -180,12 +181,13 @@ class Www_Service_MemberPassword extends Diana_Service_Abstract
         $memberId = $rowMember["member_id"];//ID
         $memberName = $rowMember['member_name']?$rowMember['member_name']:Com_Functions::getNameFromEmail($rowMember["member_email"]);//姓名
         $memberEmail = $rowMember["member_email"];//帐号
+        $memberPasswd = $rowMember["member_passwd"];//旧密码
         if (strtolower(trim($memberEmail)) <> $email) {
             $this->setMsgs("错误的链接数据");
             return false;
         }
         //修改密码
-        if (!$this->modifyPasswd($memberId,$md5Pwd,$memberEmail,$memberName)) {
+        if (!$this->modifyPasswd($memberId,$md5Pwd,$memberEmail,$memberName,$memberPasswd)) {
             return false;
         }
         return true;
@@ -226,9 +228,10 @@ class Www_Service_MemberPassword extends Diana_Service_Abstract
      * @param string $md5Pwd 新密码（加密过后的）
      * @param string $email 用户帐号
      * @param string $name 用户名称
+     * @param string $oldMd5Pwd  旧密码
      * @return bool
      */
-    function modifyPasswd($id,$md5Pwd,$email,$name)
+    function modifyPasswd($id,$md5Pwd,$email,$name,$oldMd5Pwd)
     {
         //更新新密码
         $modelMember = new Diana_Model_Member();
@@ -237,6 +240,7 @@ class Www_Service_MemberPassword extends Diana_Service_Abstract
             return false;
         }
         //写入纪录
+        $modelMemberLog = new Diana_Model_MemberLog();
         $modelMemberLogResetpwd = new Diana_Model_MemberLogResetpwd();
         if (!$modelMemberLogResetpwd->write($id,$email,$name)) {
             $this->setMsgs("当前用户【{$email}】密码变更日志写入失败");

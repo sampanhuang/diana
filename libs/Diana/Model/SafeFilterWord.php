@@ -23,10 +23,11 @@ class Diana_Model_SafeFilterWord extends Diana_Model_Abstract
      */
     function updateCount($word,$count,$isFull = null)
     {
+        $data = array('word_update_time' => time());
         if(empty($isFull)){
-            $data = array( "word_count" => new Zend_Db_Expr(" word_count + ".$count) );
+            $data['word_count'] = new Zend_Db_Expr(" word_count + ".$count);
         }else{
-            $data = array( "word_count" => $count );
+            $data['word_count'] = $count;
         }
         $condition = array("word_val" => $word);
         return $this->saveData(2,$data,$condition);
@@ -37,20 +38,24 @@ class Diana_Model_SafeFilterWord extends Diana_Model_Abstract
      * @param $word
      * @return bool|array
      */
-    function saveWord($word)
+    function saveWord($word,$wordInsertTime = 0)
     {
         if(empty($word)){
             return false;
         }
+        if(empty($wordInsertTime)){
+            $wordInsertTime = time();
+        }
         $word = trim(strtolower($word));
-        if(!$this->getCountByWord(null,$word)){
+        if($this->getCountByWord(null,$word)){
             return false;
         }
-        $tmpData = array("word_val" => $word,"word_time" => time());
+        $tmpData = array("word_val" => $word,"word_insert_time" => $wordInsertTime);
         return $this->saveData(1,$tmpData);
     }
 
-    /**最后一次的插入时间
+    /**
+     * 最后一次的插入时间
      * @return bool
      */
     function lastTime()
@@ -58,7 +63,19 @@ class Diana_Model_SafeFilterWord extends Diana_Model_Abstract
         if(!$rowsSafeFilterWord = $this->getRowsByCondition(null,null,"new",1)){
             return false;
         }
-        return $rowsSafeFilterWord['word_time'];
+        return $rowsSafeFilterWord[0]['word_insert_time'];
+    }
+
+    /**
+     * 获取第一次插入的时间
+     * @return bool
+     */
+    function firstTime()
+    {
+        if(!$rowsSafeFilterWord = $this->getRowsByCondition(null,null,"old",1)){
+            return false;
+        }
+        return $rowsSafeFilterWord[0]['word_insert_time'];
     }
 
     /**

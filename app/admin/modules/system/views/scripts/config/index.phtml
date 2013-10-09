@@ -54,14 +54,17 @@ if(!empty($this->fatherId)){
     </div>
 </div>
 <table width="100%" border="0" cellspacing="0" cellpadding="0" class="table table-striped table-hover">
-    <tr>
-        <th  width="20"><input type="checkbox" name="checkall" id="checkall"></th>
-        <th  width="30">ID</th>
-        <th  width="120">KEY</th>
-        <th  width="120">名称</th>
-        <?php if(empty($showSonLink)){echo '<th  width="300">值</th>';} ?>
-        <th >选项</th>
-    </tr>
+    <thead>
+        <tr>
+            <th  width="20"><input type="checkbox" name="checkall" id="checkall"></th>
+            <th  width="30">ID</th>
+            <th  width="150">KEY</th>
+            <th  width="150">名称</th>
+            <th><?php if(empty($showSonLink)){echo '值';} ?></th>
+            <th  width="150">选项</th>
+        </tr>
+    </thead>
+    <tbody>
     <?php
     foreach($this->rows as $row){
         ?>
@@ -70,7 +73,7 @@ if(!empty($this->fatherId)){
             <td><?php echo $row['conf_id'];?></td>
             <td><?php echo $row['conf_key'];?></td>
             <td><?php echo $row['conf_label'];?></td>
-            <?php if(empty($showSonLink)){echo '<td>'.$row['conf_value'].'</td>';} ?>
+            <td><?php if(empty($showSonLink)){echo $row['conf_value'];} ?></td>
             <td>
                 <?php
                 if($showSonLink){
@@ -86,4 +89,5 @@ if(!empty($this->fatherId)){
             </td>
         </tr>
         <?php }?>
+    </tbody>
 </table>

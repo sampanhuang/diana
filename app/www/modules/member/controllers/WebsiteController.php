@@ -70,10 +70,24 @@ class Member_WebsiteController extends Www_Controller_ActionMember
      */
     function updateAction()
     {
-        $this->view->websiteId = $websiteId = $this->getRequest()->getUserParam('website_id',0);
+        //获取ID
+        $this->view->websiteId = $websiteId = $this->getRequest()->getParam('website_id',0);
         if(empty($websiteId)){
             $this->setMsgs("参数website_id不能为空");
             return false;
+        }
+        //处理提交请求
+        $request = $this->_request;
+        if($request->isPost()) {
+            $post = $request->getPost();
+            if($websiteId <> $post['website_id']){
+                $this->setMsgs('无效的提交数据');
+                return false;
+            }
+            $serviceWebsite = new Diana_Service_Website();
+            if($serviceWebsite->updateById($websiteId,$post)){
+
+            }
         }
         //获取网站详细资料
         $serviceWebsite = new Diana_Service_Website();

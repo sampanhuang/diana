@@ -1,5 +1,5 @@
 <?php
-error_reporting(E_ALL || ~E_NOTICE);
+//error_reporting(E_ALL || ~E_NOTICE);
 date_default_timezone_set('asia/shanghai');
 mb_internal_encoding("UTF-8");//编码
 //定义起始时间
@@ -39,6 +39,7 @@ define('DIANA_DIR_LIBS_ZEND', realpath("D:/PhpSourceCode/FrameWrok/ZendFramework
 
 define('DIANA_DIR_DATA', DIANA_DIR_ROOT."/../data");//数据目录
 define('DIANA_DIR_DATA_CONFIG', DIANA_DIR_DATA."/configs");//配置文件目录
+define('DIANA_DIR_DATA_STATE', DIANA_DIR_DATA."/state");//配置文件目录
 define('DIANA_DIR_DATA_TEMPLATE', DIANA_DIR_DATA."/template");//模板目录
 define('DIANA_DIR_DATA_TRANSLATE', DIANA_DIR_DATA."/translate");//语言包目录
 define('DIANA_DIR_DATA_FONT', DIANA_DIR_DATA."/font");//字体目录

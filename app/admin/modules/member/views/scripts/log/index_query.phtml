@@ -1,0 +1,87 @@
+<?php
+$this->headLink()->setStylesheet('/static/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css');
+$this->headScript()->appendFile('/static/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js');
+$this->headScript()->captureStart();
+?>
+$(function() {
+    $('#div_datetimepicker_time_min').datetimepicker({
+        language: 'en',
+        pickTime: true,
+    });
+    $('#div_datetimepicker_time_max').datetimepicker({
+        language: 'en',
+        pickTime: true,
+    });
+});
+<?php $this->headScript()->captureEnd();?>
+<form class="form-horizontal" id="form_log-query" name="form_log-query" method="get">
+    <div class="control-group">
+        <label class="control-label" for="div_datetimepicker_time_min">开始时间</label>
+        <div class="controls">
+            <div id="div_datetimepicker_time_min" class="input-append date">
+                <input data-format="yyyy/MM/dd hh:mm:ss" type="text" id="input_log_time_min" name="log_time_min"/>
+                <span class="add-on">
+                  <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="div_datetimepicker_time_max">结束时间</label>
+        <div class="controls">
+            <div id="div_datetimepicker_time_max" class="input-append date">
+                <input data-format="yyyy/MM/dd hh:mm:ss" type="text" id="input_log_time_max" name="log_time_max"/>
+                <span class="add-on">
+                  <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" >日志类型</label>
+        <div class="controls">
+            <?php foreach($this->optionsLogType as $optionLogType){ ?>
+                <label class="checkbox inline">
+                    <input type="checkbox" id="checkbox_log_type_<?php echo $optionLogType;?>" name="log_type" value="<?php echo $optionLogType;?>">
+                    <?php echo $this->translate("member_log_type_".$optionLogType);?>
+                </label>
+            <?php } ?>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="input_log_memberId">会员ID</label>
+        <div class="controls">
+            <input type="text" id="input_log_memberId" name="log_memberId" tabindex="2" class="span4" placeholder="" value="<?php echo $this->get['log_memberId'];?>">
+            <span class="help-inline" id="help_log_memberId">多个帐号以,隔开</span>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="input_memberName">会员帐号</label>
+        <div class="controls">
+            <input type="text" id="input_memberName" name="memberName" tabindex="2" class="span4" placeholder="" value="<?php echo $this->get['memberName'];?>">
+            <span class="help-inline" id="help_password_new">多个帐号以,隔开</span>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="input_memberEmail">会员邮箱</label>
+        <div class="controls">
+            <input type="text" id="input_memberEmail" name="memberEmail" tabindex="2" class="span4" placeholder="" value="<?php echo $this->get['memberEmail'];?>">
+            <span class="help-inline" id="help_memberEmail">多个邮箱以,隔开</span>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="input_log_sessionId">会话ID</label>
+        <div class="controls">
+            <input type="text" id="input_log_sessionId" name="log_sessionId" tabindex="2" class="span4" placeholder="" value="<?php echo $this->get['memberEmail'];?>">
+            <span class="help-inline" id="help_log_sessionId">多个会话ID以,隔开</span>
+        </div>
+    </div>
+    <hr>
+    <div class="control-group">
+        <div class="controls">
+            <button id="btn_login" type="submit" tabindex="5" class="btn btn-primary">确定</button>&nbsp;&nbsp;&nbsp;&nbsp;
+            <button id="btn_reset" type="reset" tabindex="6" class="btn">取消</button>
+            <input type="hidden" id="input_query" name="query" value="1" />
+        </div>
+    </div>
+</form>

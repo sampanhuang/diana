@@ -1,0 +1,7 @@
+<?php
+if(empty($get['query'])){
+    echo $this->render('log/index_query.phtml');
+}else{
+    echo $this->render('log/index_result.phtml');
+}
+?>
