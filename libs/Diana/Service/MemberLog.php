@@ -14,7 +14,7 @@ class Diana_Service_MemberLog extends Diana_Service_Abstract
      * 写入登录日志
      *
      */
-    function write($type,$memberId,$memberEmail,$memberName,$remark)
+    function write($type,$memberId,$memberEmail,$memberName,$remark = null)
     {
         if (empty($type)||empty($memberId)||empty($memberEmail)||empty($memberName)) {
             $this->setMsgs('各项参数不能为空');
@@ -58,11 +58,13 @@ class Diana_Service_MemberLog extends Diana_Service_Abstract
                 break;
             case 21://登录
                 break;
-            case 22://取回密码
+			case 221://发送密保邮件
+                break;                
+            case 222://通过密保邮件取回密码
                 break;
-            case 23://修改密码
-                break;
-            case 31://网站发布
+            case 223://通过后台修改密码
+            	break;
+            case 31://提交网站发布申请
                 break;
             case 32://修改网站
                 break;

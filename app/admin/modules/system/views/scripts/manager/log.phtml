@@ -1,0 +1,7 @@
+<?php
+if(($this->dataget['log_detail'] == 'yes')&&(!empty($this->dataget['log_id']))){
+    echo $this->render('manager/log-detail.phtml');
+}else{
+    echo $this->render('manager/log-index.phtml');
+}
+?>

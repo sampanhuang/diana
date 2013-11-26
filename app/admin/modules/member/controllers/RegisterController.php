@@ -17,7 +17,7 @@ class Member_RegisterController extends Admin_Controller_Action
     /**
      * 查询模块
      */
-    function selectAction(){
+    function indexAction(){
         $pagesize = 15;
         $this->view->page = $page = $this->getRequest()->getUserParam('page',1);
         $serviceMember = new Diana_Service_Member();

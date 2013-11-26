@@ -9,7 +9,7 @@ class GuestController extends Diana_Controller_Action
     function init()
     {
         parent::init();
-        $this->_helper->layout->setLayout('guest');
+        //$this->_helper->layout->setLayout('guest');
         $this->view->menus = $this->menus = array(
             array(
                 'action' => 'login',
@@ -33,6 +33,16 @@ class GuestController extends Diana_Controller_Action
     function indexAction()
     {
         //$this->getHelper("layout")->disableLayout();//关闭布局
+    }
+
+    /**
+     * 提示，警告
+     */
+    function warningAction()
+    {
+        $this->_helper->layout->setLayout('layouts');
+        $this->view->content = $this->getRequest()->getParam('content');
+        $this->setMsgs($this->view->content);
     }
 
     /**
@@ -81,7 +91,7 @@ class GuestController extends Diana_Controller_Action
         if ($detailManager = $serviceDoorkeeper->logout()) {
             $this->view->manager = $detailManager;
         }else{
-            $this->redirect("/default/guest/login");
+            //$this->redirect("/default/guest/login");
         }
     }
 
@@ -98,7 +108,7 @@ class GuestController extends Diana_Controller_Action
             $serviceManagerPassword = new Admin_Service_ManagerPassword();
             if ($serviceManagerPassword->forgetPwd(2,$dataget)) {
                 $serviceManager = new Admin_Service_Manager();
-                $this->setMsgs('你已经成功更新了密码！如果忘记了请返回你的邮箱查看。建议你在登录之后再修改一次密码（改成你好记又安全的）');
+                $this->view->alert = '你已经成功更新了密码！如果忘记了请返回你的邮箱查看。建议你在登录之后再修改一次密码（改成你好记又安全的）';
                 if ($managerDetail = $serviceManager->getManagerById($dataget['id'])) {
                     $this->view->managerDetail = $managerDetail;
                     $this->view->dataget = $dataget;
@@ -106,8 +116,7 @@ class GuestController extends Diana_Controller_Action
                     $this->setMsgs($serviceManager->getMsgs());
                 }
             }else{
-                $this->setMsgs('无效的链接');
-                $this->setMsgs($serviceManagerPassword->getMsgs());
+                $this->view->alert = '无效的链接'.implode(';',$serviceManagerPassword->getMsgs());
             }
         }
         if (!empty($dataget["show_data"])) {

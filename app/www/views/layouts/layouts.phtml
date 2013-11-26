@@ -34,7 +34,7 @@
                     }
                     ?>
                     <input type="text" class="<?php echo $cssSpan;?> search-query" id="input_keyword" name="keyword" value="<?php echo $this->keyword;?>">
-                    <button type="submit" class="btn" style="margin-top: 25px;">搜索</button>
+                    <button type="submit" class="btn" style="margin-top: 25px;"><?php echo $this->translate("global_search");?></button>
                 </div>
             </form>
         </div>
@@ -49,17 +49,17 @@
         <div class="navbar-inner">
             <div class="container">
                 <ul class="nav">
-                    <li><a href="/default/website"><?php echo $this->translate("global_index");?></a></li>
-                    <li><a href="/default/website/list/continent/as"><?php echo $this->translate("continent_code_as");?></a></li>
-                    <li><a href="/default/website/list/continent/eu"><?php echo $this->translate("continent_code_eu");?></a></li>
-                    <li><a href="/default/website/list/continent/na"><?php echo $this->translate("continent_code_na");?></a></li>
-                    <li><a href="/default/website/list/continent/sa"><?php echo $this->translate("continent_code_sa");?></a></li>
-                    <li><a href="/default/website/list/continent/oa"><?php echo $this->translate("continent_code_oa");?></a></li>
-                    <li><a href="/default/website/list/continent/an"><?php echo $this->translate("continent_code_an");?></a></li>
+                    <?php
+                    if(!empty($this->mainChannels)){
+                        foreach($this->mainChannels as $rowChannel){
+                            echo '<li><a href="'.$rowChannel['channel_link'].'">'.$rowChannel['channel_name_'.DIANA_TRANSLATE_CURRENT].'</a></li>';
+                        }
+                    }
+                    ?>
                 </ul>
                 <ul class="nav pull-right">
-                    <li><a href="/default/website/apply" target="_blank">提交网站</a></li>
-                    <li><a href="/member/website" target="_blank">会员中心</a></li>
+                    <li><a href="/default/website/apply" target="_blank"><?php echo $this->translate("member_post_apply_website");?></a></li>
+                    <li><a href="/member/website" target="_blank"><?php echo $this->translate("member_center");?></a></li>
                 </ul>
             </div>
         </div>
@@ -79,27 +79,32 @@
 <footer>
     <div class="container">
         <p class="footer">
-            <ul class="inline">
-                <li>Langer:<?php echo DIANA_TRANSLATE_DEFAULT;?></li>
-                <li>Version:<?php echo DIANA_WEBSITE_VERSION;?></li>
-                <li>Time:<?php echo number_format($this->pageCostMicrotime,2);?>Sec</li>
-                <li>Memory:<?php echo $this->formatSize(memory_get_usage());?></li>
-            </ul>
+        <ul class="inline">
+            <li><a href="http://<?php echo DIANA_DOMAIN_WWW_CN.$this->url();?>">简体中文</a></li>
+            <li><a href="http://<?php echo DIANA_DOMAIN_WWW_TW.$this->url();?>">繁體中文</a></li>
+            <li><a href="http://<?php echo DIANA_DOMAIN_WWW_US.$this->url();?>">English</a></li>
+        </ul>
+        <ul class="inline">
+            <li>Langer:<?php echo DIANA_TRANSLATE_CURRENT;?></li>
+            <li>Version:<?php echo DIANA_WEBSITE_VERSION;?></li>
+            <li>Time:<?php echo number_format($this->pageCostMicrotime,2);?>Sec</li>
+            <li>Memory:<?php echo $this->formatSize(memory_get_usage());?></li>
+        </ul>
         </p>
     </div>
 </footer>
 <!--Google Analytics 跟踪代码-->
 <script type="text/javascript">
 
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-36134102-1']);
-  _gaq.push(['_trackPageview']);
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-36134102-1']);
+    _gaq.push(['_trackPageview']);
 
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
 
 </script>
 </body>

@@ -1,35 +1,54 @@
-<table width="100%" border="0" cellspacing="0" cellpadding="0" class="table table-striped table-hover">
-    <tbody>
-        <tr>
-            <th width="15%">敏感词汇量</th>
-            <td width="35%"><?php echo $this->summarize['total'];?></td>
-            <th width="15%">导入次数</th>
-            <td width="35%"><?php echo $this->summarize['import_count'];?></td>
-        </tr>
-        <tr>
-            <th>第一次导入</th>
-            <td><?php echo $this->formatDate('Y-m-d H:i',$this->summarize['time_first']);?></td>
-            <th>最后一次导入</th>
-            <td><?php echo $this->formatDate('Y-m-d H:i',$this->summarize['time_last']);?></td>
-        </tr>
-        <tr>
-            <th width="10%">当前词库</th>
-            <td width="40%"><?php echo $this->summarize['filter_word_size'];?></td>
-            <th width="10%">替换字符</th>
-            <td width="40%"><?php echo $this->summarize['filter_word_replace'];?></td>
-        </tr>
-        <tr>
-            <th width="10%">Samll词库数量</th>
-            <td width="40%"><?php echo $this->summarize['filter_word_count_small'];?></td>
-            <th width="10%">Medium词库数量</th>
-            <td width="40%"><?php echo $this->summarize['filter_word_count_medium'];?></td>
-        </tr>
-        <tr>
-            <th width="10%">Largen词库数量</th>
-            <td width="40%"><?php echo $this->summarize['filter_word_count_largen'];?></td>
-            <th width="10%">Huge词库数量</th>
-            <td width="40%"><?php echo $this->summarize['filter_word_count_huge'];?></td>
-        </tr>
-    </tbody>
-</table>
-
+<div class="div_bg_fa separator_bot">
+        <fieldset border="false"  class="fieldset_border separator_bot" >
+            <legend>词库概况</legend>
+            <table width="100%" border="0" cellspacing="1" cellpadding="5" class="table_border separator_top separator_bot">
+            <tr>
+                <th width="10%">敏感词汇量</th>
+                <td width="23%"><?php echo $this->summarize['total'];?></td>
+                <th width="10%">导入次数</th>
+                <td width="23%"><?php echo $this->summarize['import_count'];?></td>
+                <th width="10%">替换字符</th>
+                <td width="23%"><?php echo $this->summarize['filter_word_replace'];?></td>
+            </tr>
+            <tr>
+                <th>当前词库</th>
+                <td><?php echo $this->summarize['filter_word_size'];?></td>
+                <th>第一次导入</th>
+                <td><?php echo $this->formatDate('Y-m-d H:i',$this->summarize['time_first']);?></td>
+                <th>最后一次导入</th>
+                <td><?php echo $this->formatDate('Y-m-d H:i',$this->summarize['time_last']);?></td>
+            </tr>
+            <tr>
+                <th>Samll词库数量</th>
+                <td><?php echo $this->summarize['filter_word_count_small'];?></td>
+                <th>Medium词库数量</th>
+                <td><?php echo $this->summarize['filter_word_count_medium'];?></td>
+                <th>Largen词库数量</th>
+                <td><?php echo $this->summarize['filter_word_count_largen'];?></td>
+            </tr>
+            <tr>
+                <th>Huge词库数量</th>
+                <td><?php echo $this->summarize['filter_word_count_huge'];?></td>
+                <th></th>
+                <td></td>
+                <th></th>
+                <td></td>
+            </tr>
+        </table>
+    </fieldset>
+    <form class="form-horizontal" id="form_apply" name="form_apply" method="post">
+    <fieldset border="false"  class="fieldset_border separator_bot" >
+        <legend>词库概况</legend>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="separator_top separator_bot">
+            <tr>
+                <td>
+                    <textarea rows="15" id="text_filter_word" name="filter_word" style="width:99%" placeholder="多个敏感词请用半角逗号隔开"></textarea>
+                </td>
+            </tr>
+        </table>
+        <div border="false" class="div_btn">
+            <a id="linkbtn_submit" class="easyui-linkbutton" iconCls="icon-ok">确定</a>
+        </div>
+    </fieldset>
+    </form>
+</div>

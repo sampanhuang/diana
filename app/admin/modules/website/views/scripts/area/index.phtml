@@ -1,0 +1,36 @@
+<?php $this->headScript()->captureStart();?>
+$(function(){
+    $('#treegrid_area').treegrid({
+        rownumbers: true,
+        animate: true,
+        collapsible: true,
+        fitColumns: true,
+        url: '<?php echo $this->url(array('show_ajax' => 'json','show_data'=>'treegrid_data'));?>',
+        idField: 'area_id',
+        treeField: 'area_name_zh-cn'
+    });
+})
+function collapseAll(){
+    $('#treegrid_area').treegrid('collapseAll');
+}
+function expandAll(){
+    $('#treegrid_area').treegrid('expandAll');
+}
+<?php $this->headScript()->captureEnd();?>
+<div style="margin:10px 0;">
+    <a href="javascript:void(0)" class="easyui-linkbutton" onclick="collapseAll()">全部关闭</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton" onclick="expandAll()">全部展开</a>
+</div>
+<table id="treegrid_area" class="easyui-treegrid" title="索引列表" width="100%" height="100%" >
+    <thead>
+    <tr>
+        <th data-options="field:'area_name_zh-cn',width:300">中文简体</th>
+        <th data-options="field:'area_name_zh-tw',width:300">中文繁体</th>
+        <th data-options="field:'area_name_en-us',width:400">英文</th>
+        <th data-options="field:'area_count_website',width:150">网站数</th>
+        <th data-options="field:'area_count_click_in',width:150">流入点击</th>
+        <th data-options="field:'area_count_click_out',width:150">流出点击</th>
+        <th data-options="field:'area_order',width:150">排序</th>
+    </tr>
+    </thead>
+</table>

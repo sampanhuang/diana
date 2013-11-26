@@ -39,21 +39,24 @@ $(function(){
     <div class="span7"><?php echo $this->render('paginator.phtml'); ?></div>
 </div>
 <table width="100%" border="0" cellspacing="0" cellpadding="0" class="table table-striped table-hover">
-    <tr>
-        <th  width="20"><input type="checkbox" id="checkall"></th>
-        <th  width="50">ID</th>
-        <th  width="150">名称</th>
-        <th  width="200">域名</th>
-        <th  width="65">点击流入</th>
-        <th  width="65">点击流出</th>
-        <th  width="100">时间</th>
-        <th >选项</th>
-    </tr>
+	<thead>
+	    <tr>
+	        <th  width="20"><input type="checkbox" id="checkall"></th>
+	        <th  width="50">ID</th>
+	        <th  width="150">名称</th>
+	        <th  width="200">域名</th>
+	        <th  width="65">点击流入</th>
+	        <th  width="65">点击流出</th>
+	        <th  width="100">时间</th>
+	        <th >选项</th>
+	    </tr>
+    </thead>
+    <tbody>
     <?php
     foreach($this->paginator['rows'] as $row){
         ?>
         <tr>
-            <td><input type="checkbox" name="website_id[]" id="website_<?php echo $row['website_id'];?>" value="<?php echo $row['website_id'];?>"></td>
+            <td><input type="checkbox" name="website_id[]" id="website_id_<?php echo $row['website_id'];?>" value="<?php echo $row['website_id'];?>"></td>
             <td><?php echo $row['website_id'];?></td>
             <td><a href="<?php echo $this->url(array("module" => "default","controller" => "website","action" => "detail","website_id" => $row['website_id']));?>" title="<?php echo $row['website_name'];?>" target="_blank"><?php echo $this->utf8Substr($row['website_name'],12);?></a></td>
             <td><a href="<?php echo $row['website_domain'];?>" title="<?php echo $row['website_name'];?>" target="_blank"><?php echo $this->utf8Substr($row['website_domain'],32);?></a></td>
@@ -61,16 +64,17 @@ $(function(){
             <td><span class="badge"><?php echo $row['website_click_out'];?></span></td>
             <td><?php echo $this->formatDate("Y-m-d H:i",$row['website_apply_time']);?></td>
             <td>
-                <a href="<?php echo $this->url(array('action'=>'update','website_id'=>$row['website_id']));?>">编辑</a>
-                <span class="divider">/</span>
-                <a href="<?php echo $this->url(array('action'=>'detail','website_id'=>$row['website_id']));?>">明细</a>
-                <span class="divider">/</span>
                 <a href="<?php echo $this->url(array('action'=>'click-in','event'=>$row['website_id']));?>">点击流入</a>
                 <span class="divider">/</span>
                 <a href="<?php echo $this->url(array('action'=>'click-out','event'=>$row['website_id']));?>">点击流出</a>
+                <span class="divider">/</span>
+                <a href="<?php echo $this->url(array('action'=>'update','website_id'=>$row['website_id']));?>">编辑</a>
+                <span class="divider">/</span>
+                <a href="<?php echo $this->url(array('action'=>'detail','website_id'=>$row['website_id']));?>">明细</a>
             </td>
         </tr>
         <?php }?>
+	</tbody>        
 </table>
 <div class="row" style="margin-bottom: 5px;">
     <div class="span3">

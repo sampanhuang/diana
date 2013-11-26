@@ -2,3 +2,52 @@ p.footer {
     color: #999999;
     font-size: 9px;
 }
+/*分隔专用*/
+.separator_top{margin-top:5px;}
+.separator_bot{margin-bottom:5px;}
+/*div灰色底框专用*/
+.div_bg_fa{padding:5px;background: #fafafa;}
+.div_btn{
+    text-align:center;
+    height:30px;
+    line-height:30px;
+}
+/*div提示框专用*/
+.div_border{padding:5px;border:1px solid #ddd;}
+.div_tip{/*提示框*/
+    border: #d1af70 1px solid;
+    background:#FFFEE6;
+    color:#8F5700;
+    padding:12px;
+}
+.div_tip_icon{/*提示框图标*/
+    width:16px;
+    height:16px;
+    margin-right:8px;
+    float:left;
+}
+.div_tip_text{/*提示框*/
+    margin-right:8px;
+    float:left;
+}
+/*帮助列表*/
+.ul_help{
+    padding-top:5px;
+    color:#666;
+}
+.ul_help ul{margin:0px;}
+.ul_help ul li{padding-left:0px;}
+/*表单专用css*/
+.fieldset_border{
+    margin-bottom:10px;
+    background:#fff;
+    border:1px solid #ccc;
+}
+/*表格专用CSS*/
+.table_border{background-color: #dddddd;}
+.table_border th{font-weight:normal;background-color: #f4f4f4;}
+.table_border td{background-color: #fff;}
+
+/*输入提示*/
+.span_notice{color: #999999;}
+

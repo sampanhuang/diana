@@ -35,9 +35,9 @@ class Www_Controller_ActionMember extends Www_Controller_Action
         $this->view->currentMemberRoleMenuTree = $this->currentMemberRoleMenuTree = $detailMember['role_menuTree'];//角色资源范围
 
         //获取当前位置
-        $currentModuleLabel = $this->view->currentModuleLabel = $this->currentMemberRoleMenuTree[$this->currentModuleName]["menu_label"];
-        $currentControllerLabel = $this->view->currentControllerLabel = $this->currentMemberRoleMenuTree[$this->currentModuleName]["son"][$this->currentControllerName]["menu_label"];
-        $currentActionLabel = $this->view->currentActionLabel = $this->currentMemberRoleMenuTree[$this->currentModuleName]["son"][$this->currentControllerName]["son"][$this->currentActionName]["menu_label"];
+        $currentModuleLabel = $this->view->currentModuleLabel = $this->currentMemberRoleMenuTree[$this->currentModuleName]['menu_label_'.DIANA_TRANSLATE_CURRENT];
+        $currentControllerLabel = $this->view->currentControllerLabel = $this->currentMemberRoleMenuTree[$this->currentModuleName]["son"][$this->currentControllerName]['menu_label_'.DIANA_TRANSLATE_CURRENT];
+        $currentActionLabel = $this->view->currentActionLabel = $this->currentMemberRoleMenuTree[$this->currentModuleName]["son"][$this->currentControllerName]["son"][$this->currentActionName]['menu_label_'.DIANA_TRANSLATE_CURRENT];
 
         //当前导航
         $this->view->headTitle(implode(">",array($currentModuleLabel,$currentControllerLabel,$currentActionLabel)));

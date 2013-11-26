@@ -1,5 +1,6 @@
 <?php
 /**
+ * 网站标签的使用情况
  * Created by JetBrains PhpStorm.
  * User: sampan
  * Date: 13-8-17
@@ -98,7 +99,7 @@ class Diana_Model_WebsiteTagRelation extends Diana_Model_Abstract
      * @param int|string|array $id
      * @return array
      */
-    function getRowsByWebsiteTag($refresh = null,$websiteId,$tagId)
+    function getRowsByWebsiteTag($refresh = null,$websiteId = null,$tagId = null)
     {
         if(empty($websiteId)&&empty($tagId)){
             return false;

@@ -57,6 +57,13 @@ class Member_WebsiteController extends Www_Controller_ActionMember
             $this->setMsgs("参数website_id不能为空");
             return false;
         }
+        //获取分类信息
+        $serviceWebsiteCategory = new Diana_Service_WebsiteCategory();
+        $this->view->allWebsiteCategory = $allWebsiteCategory = $serviceWebsiteCategory->getAll();
+        //获取地区信息
+        $serviceWebsiteArea = new Diana_Service_WebsiteArea();
+        $this->view->allWebsiteArea = $allWebsiteArea = $serviceWebsiteArea->getAll();
+        //获取网站详细内容
         $serviceWebsite = new Diana_Service_Website();
         if($detailWebsite = $serviceWebsite->detailById($websiteId)){
             if($detailWebsite['website_memberId'] == $this->currentMemberId){
@@ -84,9 +91,14 @@ class Member_WebsiteController extends Www_Controller_ActionMember
                 $this->setMsgs('无效的提交数据');
                 return false;
             }
+            if(!empty($this->currentMemberEmail)){
+                $post['website_memberEmail'] = $post['website_update_man'] = $this->currentMemberEmail;
+            }
             $serviceWebsite = new Diana_Service_Website();
-            if($serviceWebsite->updateById($websiteId,$post)){
-
+            if($serviceWebsite->updateById($websiteId,$post,$this->currentMemberEmail)){
+				$this->setMsgs('修改成功');
+            }else{
+            	$this->setMsgs($serviceWebsite->getMsgs());
             }
         }
         //获取网站详细资料
@@ -99,23 +111,50 @@ class Member_WebsiteController extends Www_Controller_ActionMember
                 return false;
             }
         }
-        //获取网站分类代码
+        //获取全部分类信息
         $serviceWebsiteCategory = new Diana_Service_WebsiteCategory();
-        $this->view->websiteCategoryIds = $serviceWebsiteCategory->getIds();
-        //获取洲与国家代码
-        $serviceCountry = new Diana_Service_Country();
-        $this->view->websiteContinents = $continents =  $serviceCountry->getContinentsKey();
-        if($countries = $serviceCountry->getCountriesKey()){
-            $optionsCountry = array();
-            $translate = Zend_Registry::get('Zend_Translate');
-            foreach($countries as $continentKey => $countries){
-                foreach($countries as $countryKey => $countryValue){
-                    $optionsCountry[$continentKey][$countryKey] = $countryKey;
-                }
+        $this->view->allWebsiteCategory = $allWebsiteCategory = $serviceWebsiteCategory->getAll(null,'website');
+        //父级分类,array(id=>array(...))
+        $rowsWebsiteCategoryFather = array();
+        //子级分类,array(father_id => array( id => array(..) ))
+        $rowsWebsiteCategorySon = array();
+        $optionsWebsiteCategorySon = array();
+        //从$allWebsiteArea中循环得到$rowsWebsiteAreaFather与$rowsWebsiteAreaSon
+        foreach ($allWebsiteCategory as $rowWebsiteCategory){
+            $tmpCategoryId = $rowWebsiteCategory['category_id'];
+            $tmpCategoryFatherId = $rowWebsiteCategory['category_fatherId'];
+            if(empty($tmpAreaFatherId)){
+                $rowsWebsiteCategoryFather[$tmpCategoryId] = $rowWebsiteCategory;
+            }else{
+                $rowsWebsiteCategorySon[$tmpCategoryFatherId][$tmpCategoryId] = $rowWebsiteCategory;
+                $optionsWebsiteCategorySon[$tmpCategoryFatherId][$tmpCategoryId] = $rowWebsiteCategory['category_name_'.DIANA_TRANSLATE_CURRENT];
             }
-            $this->view->optionsCountry = $optionsCountry;
         }
-
+        $this->view->rowsWebsiteCategoryFather = $rowsWebsiteCategoryFather;
+        $this->view->rowsWebsiteCategorySon = $rowsWebsiteCategorySon;
+        $this->view->optionsWebsiteCategorySon = $optionsWebsiteCategorySon;
+        //获取全部地区信息
+        $serviceWebsiteArea = new Diana_Service_WebsiteArea();
+        $this->view->allWebsiteArea = $allWebsiteArea = $serviceWebsiteArea->getAll(null,'website');
+        //父级地区,array(id=>array(...))
+        $rowsWebsiteAreaFather = array();
+        //子级地区,array(father_id => array( id => array(..) ))
+        $rowsWebsiteAreaSon = array();
+        $optionsWebsiteAreaSon = array();
+        //从$allWebsiteArea中循环得到$rowsWebsiteAreaFather与$rowsWebsiteAreaSon
+        foreach ($allWebsiteArea as $rowWebsiteArea){
+            $tmpAreaId = $rowWebsiteArea['area_id'];
+            $tmpAreaFatherId = $rowWebsiteArea['area_fatherId'];
+            if(empty($tmpAreaFatherId)){
+                $rowsWebsiteAreaFather[$tmpAreaId] = $rowWebsiteArea;
+            }else{
+                $rowsWebsiteAreaSon[$tmpAreaFatherId][$tmpAreaId] = $rowWebsiteArea;
+                $optionsWebsiteAreaSon[$tmpAreaFatherId][$tmpAreaId] = $rowWebsiteArea['area_name_'.DIANA_TRANSLATE_CURRENT];
+            }
+        }
+        $this->view->rowsWebsiteAreaFather = $rowsWebsiteAreaFather;
+        $this->view->rowsWebsiteAreaSon = $rowsWebsiteAreaSon;
+        $this->view->optionsWebsiteAreaSon = $optionsWebsiteAreaSon;
     }
 
     /**

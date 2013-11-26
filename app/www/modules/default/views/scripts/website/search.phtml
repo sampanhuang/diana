@@ -3,10 +3,10 @@
 
     <?php
     if($this->paginator['total'] > 0){
-        echo '<li>搜索结果<span class="divider">/</span></li>';
-        echo '<li>获得约 '.$this->paginator['total'].' 条结果，共 '.$this->pagenum['last'].' 页，以下是第 '.$this->pagenum['current'].' 页</li>';
+        echo '<li class="active">搜索结果：';
+        echo '获得约 '.$this->paginator['total'].' 条结果，共 '.$this->pagenum['last'].' 页，以下是第 '.$this->pagenum['current'].' 页</li>';
     }else{
-        echo '<li>暂无搜索结果</li>';
+        echo '<li class="active">暂无搜索结果</li>';
     }
     ?>
 
@@ -27,7 +27,7 @@
                     ?>
                     <tr>
                         <td>
-                            <h4><?php echo $this->utf8Substr($row['website_name'],32);?><small>&nbsp;&nbsp;<?php echo $this->translate("continent_code_".$row['website_continent']).'/'.$this->translate("country_code_".$row['website_country']).'&nbsp;&nbsp;&nbsp;'.$this->translate('category_id_'.$row['website_categoryId']);?></small></h4>
+                            <h4><?php echo $this->utf8Substr($row['website_name'],32);?><small>&nbsp;&nbsp;<?php echo $this->allWebsiteArea[$row['website_areaFatherId']]['area_name_'.DIANA_TRANSLATE_CURRENT].'/'.$this->allWebsiteArea[$row['website_areaId']]['area_name_'.DIANA_TRANSLATE_CURRENT].'&nbsp;&nbsp;&nbsp;'.$this->allWebsiteCategory[$row['website_categoryId']]['category_name_'.DIANA_TRANSLATE_CURRENT];?></small></h4>
                             <a href="<?php echo $this->url(array("action" => "detail","website_id" => $row['website_id']));?>" title="<?php echo $row['website_name'];?>" target="_blank"><?php echo $this->utf8Substr($row['website_domain'],32);?></a><br>
                             <?php echo $this->utf8Substr($row['website_intro'],160);?><br>
                             <small>

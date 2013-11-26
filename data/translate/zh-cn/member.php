@@ -1,5 +1,13 @@
 <?php
 return array(
+    'member_center' => '会员中心',
+    'member_register' => '注册',
+    'member_login' => '登录',
+    'member_forgetpwd' => '取回密码',
+    'member_post_apply_website' => '提交网站',
+    'member_resetpwd' => '修改密码',
+    'member_logout' => '注销登录',
+    'member_mywebsite' => '我的网站',
     //日志类型,11注册，12修改个人资料，21登录，22取回密码，23修改密码，31网站发布，32修改网站，33删除网站
     'member_log_type' => '日志类型',
     'member_log_type_11' => '注册',

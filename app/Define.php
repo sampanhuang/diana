@@ -15,15 +15,25 @@ define('DIANA_WEBSITE_SUBTITLE',"海外华人同出一门");//网站名称
 
 //定义域名常量
 define('DIANA_DOMAIN_ROOT',"diana.local");//根域名
-define('DIANA_DOMAIN_STATIC',"http://static.".DIANA_DOMAIN_ROOT);//静态
-define('DIANA_DOMAIN_WWW',"http://www.".DIANA_DOMAIN_ROOT);//客人
-define('DIANA_DOMAIN_ADMIN',"http://admin.".DIANA_DOMAIN_ROOT);//主人
+define('DIANA_DOMAIN_STATIC',"static.".DIANA_DOMAIN_ROOT);//静态
+
+define('DIANA_DOMAIN_WWW',"www.".DIANA_DOMAIN_ROOT);//www,www-cn,www-tw,www-us域名下的
+define('DIANA_DOMAIN_WWW_CN',"www-cn.".DIANA_DOMAIN_ROOT);//www,www-cn,www-tw,www-us域名下的
+define('DIANA_DOMAIN_WWW_TW',"www-tw.".DIANA_DOMAIN_ROOT);//www,www-cn,www-tw,www-us域名下的
+define('DIANA_DOMAIN_WWW_US',"www-us.".DIANA_DOMAIN_ROOT);//www,www-cn,www-tw,www-us域名下的
+
+define('DIANA_DOMAIN_CLIENT',"client.".DIANA_DOMAIN_ROOT);//client,client-cn,client-tw,client-us域名下的
+define('DIANA_DOMAIN_CLIENT_CN',"client-cn.".DIANA_DOMAIN_ROOT);//
+define('DIANA_DOMAIN_CLIENT_TW',"client-tw.".DIANA_DOMAIN_ROOT);//
+define('DIANA_DOMAIN_CLIENT_US',"client-us.".DIANA_DOMAIN_ROOT);//
+
+define('DIANA_DOMAIN_ADMIN',"admin.".DIANA_DOMAIN_ROOT);//管理员
+define('DIANA_DOMAIN_ADMIN_CN',"admin-cn.".DIANA_DOMAIN_ROOT);//
+define('DIANA_DOMAIN_ADMIN_TW',"admin-tw.".DIANA_DOMAIN_ROOT);//
+define('DIANA_DOMAIN_ADMIN_US',"admin-us.".DIANA_DOMAIN_ROOT);//
+
 define('DIANA_DOMAIN_CURRENT',$_SERVER['SERVER_NAME']);
 
-
-define('DIANA_DOMAIN_WWW_CN',"http://cn.".DIANA_DOMAIN_ROOT);//简体中文
-define('DIANA_DOMAIN_WWW_TW',"http://tw.".DIANA_DOMAIN_ROOT);//繁体中文
-//define('DIANA_DOMAIN_WWW_EN',"http://en.".DIANA_DOMAIN_ROOT);//英文
 
 define('DIANA_WEBSITE_VERSION','beate 1');//网站版本
 
@@ -73,6 +83,14 @@ define('DIANA_TAG_SESSIONNAMESPAN_CAPTCHA_PLAYERREGISTER',"Diana_Font_Captcha_Me
 //全站跨接器安全私钥
 define('DIANA_JUMPER_PRIVATEKEY',"lenovo2012#!$!%(@^");
 
+//后台管理分页
+define('DIANA_DATAGRID_PAGELIST_ADMIN','1,20,40,80');
+//默认一页多少条
+define('DIANA_DATAGRID_PAGESIZE_ADMIN','20');
+//日志
+define('DIANA_MANAGERLOG_TYPE_LOGIN',210);
+define('DIANA_MANAGERLOG_TYPE_RESETPWD_AFTER_LOGIN',223);
+define('DIANA_MANAGERLOG_TYPE_RESETPWD_BEFORE_LOGIN',222);
 //当前使用的语言
 /*
 if (strtolower($_SERVER['SERVER_NAME']) == strtolower(DIANA_DOMAIN_WWW_CN)) {
@@ -87,7 +105,7 @@ if (strtolower($_SERVER['SERVER_NAME']) == strtolower(DIANA_DOMAIN_WWW_CN)) {
 	}	
 }
 */
-define('DIANA_TRANSLATE_DEFAULT',"zh-cn");
-define('DIANA_DIR_DATA_TRANSLATE_CURRENT', DIANA_DIR_DATA_TRANSLATE."/".DIANA_TRANSLATE_DEFAULT);//语言包目录
+
+define('DIANA_TRANSLATE_DEFAULT',"zh-cn");//zh-cn 简体中文件 zh-tw 繁体中文 en-us 英文
 
 include_once("Environment.php");

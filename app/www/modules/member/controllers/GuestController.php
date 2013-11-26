@@ -75,7 +75,7 @@ class Member_GuestController extends Www_Controller_Action
         $this->view->headTitle("忘记密码");
         $this->view->dataget = $dataget = array_map("trim",array_filter($this->getRequest()->getParams()));
         $this->view->step = $step = $dataget['step'];
-        if($dataget['step'] == 2){
+        if($dataget['step'] == 2){//更新密码
             $serviceMemberPassword = new Www_Service_MemberPassword();
             if ($serviceMemberPassword->forgetPwd(2,$dataget)) {
                 $serviceMember = new Diana_Service_Member();

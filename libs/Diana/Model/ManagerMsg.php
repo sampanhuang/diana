@@ -15,48 +15,61 @@ class Diana_Model_ManagerMsg extends Diana_Model_Abstract
         $this->dt = new Diana_Model_DbTable_ManagerMsg();
     }
 
-    /**
-     * 保存消息
-     * @param $data 保存内容
-     * @param null $id 消息流水号
-     */
-    function write($data,$id = null)
+    function updateInboxOutbox($msgId,$inBox = null,$outBox = null)
     {
-        if(empty($data)||(!is_array($data))){
+        if(empty($msgId)&&(empty($inBox)||empty($outBox))){
             return false;
         }
+        $data = array();
+        $condition = array('msg_id' => $msgId);
+        if($inBox){
+            $data['msg_delete_inbox'] = 1;
+        }
+        if($outBox){
+            $data['msg_delete_outbox'] = 1;
+        }
+        return $this->saveData(2,$data,$condition);
+    }
+
+    /**
+     *
+     * @param $source
+     * @param $subject
+     * @param $id
+     */
+    function saveMain($source,$subject,$id = null)
+    {
+        $data = array(
+            'msg_source' => intval($source),
+            'msg_subject' => $subject,
+        );
         if(empty($id)){
+            $type = 1;
+            $condition = array();
             $data['msg_insert_time'] = time();
             $data['msg_insert_ip'] = $_SERVER['REMOTE_ADDR'];
-            return $this->saveData(1,$data);
-        }else{
             $data['msg_update_time'] = time();
             $data['msg_update_ip'] = $_SERVER['REMOTE_ADDR'];
-            $condition = array("msg_id" => $id);
-            return $this->saveData(2,$data,$condition);
+        }else{
+            $type = 2;
+            $condition = array('msg_id' => $id);
+            $data['msg_update_time'] = time();
+            $data['msg_update_ip'] = $_SERVER['REMOTE_ADDR'];
         }
+        return $this->saveData($type,$data,$condition);
     }
 
-    /**
-     * 通过管理员ID获取他收到的消息数量
-     * @param $managerId
-     * @return int 收件箱数量
-     */
-    function getCountWithInboxByMnanager($managerId)
+    function getIdWithDelete()
     {
-        $condition = array("msg_dest" => $managerId);
-        return $this->getCountByCondition(null,$condition);
-    }
-
-    /**
-     * 通过管理员ID获取他发送的消息数量
-     * @param $managerId
-     * @return int 收件箱数量
-     */
-    function getCountWithOutboxByMnanager($managerId)
-    {
-        $condition = array("msg_source" => $managerId);
-        return $this->getCountByCondition(null,$condition);
+        $msgId = array();
+        $condition = array('msg_delete_inbox' => 1,'msg_delete_outbox' => 1);
+        if(!$rows = $this->getRowsByCondition(null,$condition)){
+            return false;
+        }
+        foreach($rows as $row){
+            $msgId[] = $row['msg_id'];
+        }
+        return $msgId;
     }
 
     /**
@@ -68,6 +81,9 @@ class Diana_Model_ManagerMsg extends Diana_Model_Abstract
     function getRowsById($refresh = null,$id)
     {
         $condition = array("msg_id" => $id);
-        return $this->getRowsByCondition($refresh,$condition);
+        if(!$rows = $this->getRowsByCondition($refresh,$condition)){
+            return false;
+        }
+        return $rows;
     }
 }

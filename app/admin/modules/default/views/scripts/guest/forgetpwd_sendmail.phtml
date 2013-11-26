@@ -1,12 +1,22 @@
-<?php $this->headScript()->captureStart();?>
+<script type="text/javascript">
 $(function(){
+    $('#dialog_forgetpwd').dialog({
+        //buttons: '#dialog-buttons',
+        iconCls:'icon-user',
+        closable:false,
+        modal:true,
+        title:'取回密码'
+    });
     var urlcaptcha = "/default/guest/captcha/key/manager-forgetpwd";
     var imgcaptcha = "#img_captcha";
     refreshCaptcha(imgcaptcha,urlcaptcha);
     //点击图片更换验证码
     $(imgcaptcha).bind('click',function(){refreshCaptcha(imgcaptcha,urlcaptcha);});
-
-    $("#btn_forgetpwd").bind("click", forgetpwd);
+    $("#form_forgetpwd").keydown(function(event){
+        if(event.keyCode==13){forgetpwd();}
+    });
+    $("#linkbtn_submit").bind("click", forgetpwd());
+    $('#linkbtn_cancel').bind('click',function(){$('#form_forgetpwd').get(0).reset();});
     function forgetpwd() {
         var email = document.getElementById("input_email").value;
         var captcha = document.getElementById("input_captcha").value;
@@ -19,12 +29,12 @@ $(function(){
         }else if(!isEmail(email)){
             $("#help_email").css({ color: "#B94A48"});
             $("#help_email").html("要取回密码的帐号格式错误");
-　　		refreshCaptcha(imgcaptcha,urlcaptcha);
+            refreshCaptcha(imgcaptcha,urlcaptcha);
             return false;
-　　	}else{
+        }else{
             $("#help_email").css({ color: "#468847"});
             $("#help_email").html("验证码输入正常");
-        }　　
+        }
         if(captcha == ""){
             $("#help_captcha").css({ color: "#B94A48"});
             $("#help_captcha").html("验证码不能为空");
@@ -49,30 +59,24 @@ $(function(){
             data: { email: email, captcha: captcha },
             success: function(json) {
                 if (json.stat == 1) {
-                    $("#div_alert").html("邮件发送成功，请查收（邮件有效期为48小时！）!");
-                    $("#div_alert").removeClass("hidden");
-                } else {
-                    $("#div_alert").html(json.msgs);
-                    $("#div_alert").removeClass("hidden");
+                    $.messager.alert('邮件发送成功',"邮件发送成功，请查收（邮件有效期为48小时！）!");
                 }
             },
             beforeSend: function (){
-                $("#btn_reset").attr({"disabled":"disabled"});//将按钮禁用
-                $("#btn_forgetpwd").attr({"disabled":"disabled"});//将按钮禁用
-                $("#btn_forgetpwd").text("请稍候..");
-                $("#btn_forgetpwd").unbind( "click" ,forgetpwd );
+                $.messager.progress({
+                    title: '邮件发送中',
+                    msg: '新密码确认邮件正在发送中，请耐心等待...'
+                });
+                $("#linkbtn_submit").unbind( "click" ,forgetpwd );
             },
             error: function() {
-                $("#div_alert").html('获取账号信息失败...请联系管理员!');
-                $("#div_alert").removeClass("hidden");
+                $.messager.alert('获取账号信息失败','获取账号信息失败...请联系管理员!');
             },
             complete:function (){
+                $.messager.progress('close');
                 refreshCaptcha(imgcaptcha,urlcaptcha);
-                $("#btn_reset").removeAttr("disabled");//将按钮可用
-                $("#btn_forgetpwd").removeAttr("disabled");//将按钮可用
-                $("#btn_forgetpwd").bind( "click" ,forgetpwd );
-                $("#btn_forgetpwd").text("确定");
-            },
+                $("#linkbtn_submit").bind( "click" ,forgetpwd );
+            }
         });
     }
     //邮箱验证
@@ -94,32 +98,31 @@ $(function(){
         $(img).attr("src",url);
     }
 });
-<?php $this->headScript()->captureEnd() ?>
-<div class="alert hidden" id="div_alert"></div>
-<form class="form-horizontal" id="form_login" name="form_login" method="post">
-    <div class="alert hidden" id="div_alert">
-        <strong>Warning!</strong> Best check yo self, you're not looking too good.
-    </div>
-    <div class="control-group">
-        <label class="control-label" for="input_email">登录帐号</label>
-        <div class="controls">
-            <input type="text" id="input_email" name="email" tabindex="1" class="span4" placeholder="登录帐号" value="">
-            <span class="help-inline muted" id="help_email">必填选，帐号不能为空</span>
-        </div>
-    </div>
-    <div class="control-group">
-        <label class="control-label" for="input_captcha">验证字符</label>
-        <div class="controls">
-            <input type="text" id="input_captcha" name="captcha" tabindex="3" class="span4" placeholder="验证字符" value="">
-            <span class="help-inline" id="help_captcha">请输入下面图片内的字符</span><br>
-            <img id="img_captcha" name="img_captcha" width="100" height="40" alt="点击更换验证码" title="点击更换验证码" style="cursor:pointer;">
-        </div>
-    </div>
-    <hr>
-    <div class="control-group">
-        <div class="controls">
-            <button id="btn_forgetpwd" type="button" tabindex="4" class="btn btn-primary">确定</button>&nbsp;&nbsp;&nbsp;&nbsp;
-            <button id="btn_reset" type="reset" tabindex="5" class="btn">取消</button>
-        </div>
+</script>
+<div id="dialog_forgetpwd" class="easyui-dialog" style="width:780px;height:260px;padding:10px">
+<form class="form-horizontal" id="form_forgetpwd" name="form_forgetpwd" method="post">
+
+    <table width="100%" border="0" cellspacing="1" cellpadding="5" class="table_border separator_top separator_bot">
+        <tr>
+            <th>登录帐号</th>
+            <td>
+                <input type="text" id="input_email" name="email" tabindex="1" class="span4" placeholder="登录帐号" value=""style="width:200px;">
+                <span class="help-inline muted" id="help_email">必填选，帐号不能为空</span>
+            </td>
+        </tr>
+        <tr>
+            <th>验证字符</th>
+            <td>
+                <input type="text" id="input_captcha" name="captcha" tabindex="3" class="span4" placeholder="验证字符" value=""style="width:200px;">
+                <span class="help-inline" id="help_captcha">请输入下面图片内的字符</span><br>
+                <img id="img_captcha" name="img_captcha" width="100" height="40" alt="点击更换验证码" title="点击更换验证码" style="cursor:pointer;">
+            </td>
+        </tr>
+    </table>
+    <div border="false" class="div_btn">
+        <a id="linkbtn_submit" class="easyui-linkbutton" iconCls="icon-ok">确定</a>
+        <a id="linkbtn_cancel" class="easyui-linkbutton" iconCls="icon-cancel">取消</a>
+        <a id="linkbtn_login" class="easyui-linkbutton" iconCls="icon-help" href="<?php echo $this->url(array('action' => 'login'));?>">用户登录</a>
     </div>
 </form>
+</div>

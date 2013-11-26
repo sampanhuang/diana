@@ -28,7 +28,8 @@ abstract class Diana_Model_DbTable_Abstract extends Zend_Db_Table_Abstract
 			if ($wheres = $this->getWheresByCondition($condition)) {	
 				return $this->update($data,$wheres);
 			}else{
-				throw new Exception("错误的保存条件".json_encode($condition).json_encode($wheres));
+				return false;
+				//throw new Exception("错误的保存条件".json_encode($condition).json_encode($wheres));
 			}			
 		}else{
 			throw new Exception("错误的类型");
@@ -138,7 +139,6 @@ abstract class Diana_Model_DbTable_Abstract extends Zend_Db_Table_Abstract
 		}elseif ($type == 11){
 			$columnVal = array_map("intval",$columnVal);			
 			$wheres["{$columnKey} not in (?)"] = $columnVal;
-			
 		}elseif ($type == 2){//字符
 			$arrWheres = array();
 			$strWheres = "";

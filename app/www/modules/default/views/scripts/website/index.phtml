@@ -3,13 +3,14 @@ if(!empty($this->indexContent)){
     foreach($this->indexContent as $continentKey => $continentContent){
 ?>
 <h3>
-    <?php echo $this->translate("continent_code_".$continentKey);?>
+    <?php echo $this->rowsWebsiteAreaFather[$continentKey]['area_name_'.DIANA_TRANSLATE_CURRENT];?>
     <small>
         <?php
-        if(!empty($continentContent['countries'])){
+        if(!empty($this->$rowsWebsiteAreaSon[$continentKey])){
+            $countries = array_slice($this->$rowsWebsiteAreaSon[$continentKey], 0, 10);
             $htmlContry = array();
-            foreach($continentContent['countries'] as $countryKey => $countryContent){
-                $htmlContry[] = '<a href="'.$this->url(array("action" => 'list','continent' => $continentKey,'country' => $countryKey)).'">'.$this->translate("country_code_".$countryKey).'</a>';
+            foreach($countries as $countryKey => $country){
+                $htmlContry[] = '<a href="'.$this->url(array("action" => 'list','area_id' => $countryKey)).'">'.$country['area_name_'.DIANA_TRANSLATE_CURRENT].'</a>';
             }
             echo implode('&nbsp;&nbsp;',$htmlContry);
         }
@@ -26,11 +27,10 @@ if(!empty($this->indexContent)){
                 echo '<td width="20%">';
                 if(!empty($continentContent['website']['new'][$i])){
                     echo '<h5>'.$this->utf8Substr($continentContent['website']['new'][$i]['website_name'],10).'</h5>';
-                    echo '<span class="muted">'.$this->translate("country_code_".$continentContent['website']['new'][$i]['website_country']).'&nbsp;&nbsp;'.$this->translate('category_id_'.$continentContent['website']['new'][$i]['website_categoryId']).'</span><br>';
+                    echo '<span class="muted">'.$this->allWebsiteArea[$continentContent['website']['new'][$i]['website_areaId']]['area_name_'.DIANA_TRANSLATE_CURRENT].'&nbsp;&nbsp;'.$this->allWebsiteCategory[$continentContent['website']['new'][$i]['website_categoryId']]['category_name_'.DIANA_TRANSLATE_CURRENT].'</span><br>';
                     echo '<a href="'.$this->url(array("action" => "detail","website_id" => $continentContent['website']['new'][$i]['website_id'])).'"  title="'.$continentContent['website']['new'][$i]['website_name'].'" target="_blank">'.$this->utf8Substr($continentContent['website']['new'][$i]['website_domain'],32).'</a>';
                 }
                 echo '</td>';
-
             }
             ?>
         </tr>

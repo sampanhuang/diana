@@ -28,11 +28,15 @@ class Diana_Model_WebsiteIntro extends Diana_Model_Abstract
         }
         $condition = array("website_id" => $id);
         $data = array("website_intro" => $intro);
-        if(!$rows = $this->saveData(2,$data,$condition)){
+        if($rows = $this->getRowsById(null,$id)){
+            $data['website_intro_update_time'] = time();
+            $data['website_intro_update_ip'] = $_SERVER['REMOTE_ADDR'];
+            $rows = $this->saveData(2,$data,$condition);
+        }else{
+            $data['website_intro_insert_time'] = time();
+            $data['website_intro_insert_ip'] = $_SERVER['REMOTE_ADDR'];
             $data['website_id'] = $id;
-            if(!$rows = $this->saveData(1,$data)){
-                return false;
-            }
+            $rows = $this->saveData(1,$data);
         }
         return $rows;
     }

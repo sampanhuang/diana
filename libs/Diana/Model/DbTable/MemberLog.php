@@ -1,6 +1,6 @@
 <?php
 /**
- * 管理员
+ * 会员
  *
  */
 class Diana_Model_DbTable_MemberLog extends Diana_Model_DbTable_Abstract
@@ -11,6 +11,13 @@ class Diana_Model_DbTable_MemberLog extends Diana_Model_DbTable_Abstract
     function __construct()
     {
         parent::__construct();
+        if(empty($year)){
+            $year = date('Y');
+        }
+        $source = $this->_name;
+        $dest = $this->_name.'_'.$year;
+        $this->copyTableStructure($source,$dest);
+        $this->_name = $dest;
     }
 
     /**

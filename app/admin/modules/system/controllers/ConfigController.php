@@ -18,12 +18,13 @@ class System_ConfigController extends Admin_Controller_Action
      * 查询模块
      */
     function indexAction(){
-        $this->view->fatherId = $fatherId = $this->getRequest()->getUserParam('father_id',0);
-        $serviceConfig = new Admin_Service_Config();
-        $this->view->rows = $serviceConfig->indexByFather($fatherId);
-        $this->view->fatherRow = $serviceConfig->getDetail($fatherId);
-
-
+        $dataget = $this->getRequest()->getParams();
+        if ($dataget['show_data'] == 'treegrid_data') {
+            $serviceConfig = new Admin_Service_Config();
+            if($datatreegrid = $serviceConfig->makeTreegrid()){
+                echo json_encode($datatreegrid);
+            }
+        }
     }
 
     function insertAction()

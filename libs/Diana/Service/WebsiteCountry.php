@@ -42,11 +42,10 @@ class Diana_Service_WebsiteCountry extends Diana_Service_Abstract
             return false ;
         }
         if(!$modelWebsiteCountry->updateCountWebsiteClickInClickOut($newCountry,$countWebsite,$clickIn,$clickOut)){
-            $modelWebsiteCountry->updateCountWebsiteClickInClickOut($oldCountry,$countWebsite,$clickIn,$clickOut);
-            $this->setMsgs("更新失败 - 1");
+            $this->setMsgs("更新失败 - 3");
             return false ;
         }
-        return false;
+        return true;
     }
 
     /**

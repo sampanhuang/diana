@@ -21,8 +21,8 @@ class Member_ApplyController extends Www_Controller_ActionMember
         $this->view->page = $page = $this->getRequest()->getUserParam('page',1);
         $condition = array("website_memberId" => $this->currentMemberId );
         if(is_null($applyPass) ){$condition['apply_pass'] = $applyPass;}
-        $serviceWebsiteApply = new Diana_Service_WebsiteApply();
-        $this->view->paginator = $paginator = $serviceWebsiteApply->pageByCondition($page,$pagesize,$condition);
+        $serviceWebsiteApplyRegister = new Diana_Service_WebsiteApplyRegister();
+        $this->view->paginator = $paginator = $serviceWebsiteApplyRegister->pageByCondition($page,$pagesize,$condition);
         if($paginator['total'] > 0){
             $servicePageNum = new Diana_Service_PageNum($paginator['total'],$pagesize,$page);
             $this->view->pagenum = $pagenum = $servicePageNum->getPageNum();
@@ -39,8 +39,8 @@ class Member_ApplyController extends Www_Controller_ActionMember
             $this->setMsgs("缺少参数apply_id");
         }
         if(!empty($applyId)){
-            $serviceWebsiteApply = new Diana_Service_WebsiteApply();
-            if($detailWebsiteApply = $serviceWebsiteApply->detailById($applyId)){
+            $serviceWebsiteApplyRegister = new Diana_Service_WebsiteApplyRegister();
+            if($detailWebsiteApply = $serviceWebsiteApplyRegister->detailById($applyId)){
                 if($detailWebsiteApply['website_memberId'] == $this->currentMemberId){
                     $this->view->detailApply = $detailWebsiteApply;
                 }else{

@@ -23,7 +23,7 @@ class Diana_Service_Config extends Diana_Service_Abstract
         //获取前缀
         $arrConfKey = explode("_",$key);
         $preConfKey = $arrConfKey[0];
-        $configWithPre = $this->getConfig($preConfKey);
+        $configWithPre = $this->getData($preConfKey);
         return $configWithPre[$key];
     }
 
@@ -32,7 +32,7 @@ class Diana_Service_Config extends Diana_Service_Abstract
      * @param $pre 前缀
      * @return mixed|array 获取配置文件
      */
-    function getConfig($pre)
+    function getData($pre)
     {
         if(empty(self::$config[$pre])){
             $tmpPath = $this->getPathByPre($pre);

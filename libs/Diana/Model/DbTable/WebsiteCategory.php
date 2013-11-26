@@ -25,6 +25,7 @@ class Diana_Model_DbTable_WebsiteCategory extends Diana_Model_DbTable_Abstract
     {
         $this->_orders = array(
             "order" => array("category_order desc"),
+            'website' => array('category_count_website desc'),
         );
     }
 
@@ -42,6 +43,12 @@ class Diana_Model_DbTable_WebsiteCategory extends Diana_Model_DbTable_Abstract
             $tmpWheres = $this->getWhereByCondition("category_id",$condition["category_id"],1);
             $wheres = array_merge($wheres,$tmpWheres);
         }
+        if (!empty($condition["category_fatherId"])) {//父ID
+            $tmpWheres = array();
+            $tmpWheres = $this->getWhereByCondition("category_fatherId",$condition["category_fatherId"],1);
+            $wheres = array_merge($wheres,$tmpWheres);
+        }
+
         return $wheres;
     }
 }

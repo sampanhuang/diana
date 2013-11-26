@@ -167,6 +167,30 @@ class Diana_Service_MemberMenu extends Www_Service_Abstract
     }
 
     /**
+     * 通过ID获取菜单详细信息
+     * @param $id 流水号
+     */
+    function getDetailById($id)
+    {
+        $modelMemberMenu = new Diana_Model_MemberMenu();
+        if(!$rows = $modelMemberMenu->getRowsById(null,$id)){
+            return false;
+        }
+        $row = $rows[0];
+        if(!empty($row['menu_fatherId'])){
+            if($rowsFather = $modelMemberMenu->getRowsById(null,$row['menu_fatherId'])){
+                $row['menu_father'] = $rowsFather[0];
+            }
+            if(!empty($row['menu_father']['menu_fatherId'])){
+                if($rowsGrandfather = $modelMemberMenu->getRowsById(null,$row['menu_father']['menu_fatherId'])){
+                    $row['menu_father']['menu_father'] = $rowsGrandfather[0];
+                }
+            }
+        }
+        return $row;
+    }
+
+    /**
      * 获取详细信息
      * @param $id
      * @return array|bool

@@ -17,8 +17,52 @@ class IndexController extends Admin_Controller_Action
 	 */
 	function indexAction()
 	{
-        //$this->getHelper("layout")->disableLayout();//关闭布局
+        $this->getHelper("layout")->disableLayout();//关闭布局
+        $dataGet = $this->getRequest()->getParams();
+        if ($dataGet['show_data'] == 'menu_tree') {
+            echo json_encode($this->currentManagerRoleMenu);
+        }
 	}
+
+    function welcomeAction()
+    {
+        //$this->getHelper("layout")->disableLayout();//关闭布局
+        //$this->getHelper("viewRenderer")->setNoRender();//关闭视图
+        $arrIpAddr = array();//array(ip=> addre)
+        //获取日志
+        $serviceManagerLog = new Admin_Service_ManagerLog();
+        if($dataManagerLogLogin = $serviceManagerLog->makeDataGrid(1,5,array('log_type' => DIANA_MANAGERLOG_TYPE_LOGIN))){
+            foreach($dataManagerLogLogin['rows'] as $tmpRow){
+                $arrIpAddr[$tmpRow['log_ip']] = '';
+            }
+            $this->view->rowsManagerLogLogin = $dataManagerLogLogin['rows'];//登录日志
+        }
+        if($dataManagerLogResetPwdAfterLogin = $serviceManagerLog->makeDataGrid(1,5,array('log_type' => DIANA_MANAGERLOG_TYPE_RESETPWD_AFTER_LOGIN))){
+            foreach($dataManagerLogResetPwdAfterLogin['rows'] as $tmpRow){
+                $arrIpAddr[$tmpRow['log_ip']] = '';
+            }
+            $this->view->rowsManagerLogResetPwdAfterLogin = $dataManagerLogResetPwdAfterLogin['rows'];//修改密码，登录后
+        }
+        if($dataManagerLogResetPwdBeforeLogin = $serviceManagerLog->makeDataGrid(1,5,array('log_type' => DIANA_MANAGERLOG_TYPE_RESETPWD_BEFORE_LOGIN))){
+            foreach($dataManagerLogResetPwdBeforeLogin['rows'] as $tmpRow){
+                $arrIpAddr[$tmpRow['log_ip']] = '';
+            }
+            $this->view->rowsManagerLogResetPwdBeforeLogin = $dataManagerLogResetPwdBeforeLogin['rows'];//修改密码，登录前
+        }
+        //IP转换地址
+        if(!empty($arrIpAddr)){
+            $comIpLocation = new Com_IpLocation(DIANA_PATH_DATA_IPLIBS);
+            foreach($arrIpAddr as $ip => &$addr){
+                $addr = $comIpLocation->getaddressutf($ip);
+            }
+            $this->view->arrIpAddr = $arrIpAddr;
+        }
+
+
+        //获取环境变量
+        $this->view->servInfo = $_SERVER;
+        $this->view->phpInfo = ini_get_all();
+    }
 	
 	function testAction()
 	{

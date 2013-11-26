@@ -1,13 +1,14 @@
 <?php
 if(!empty($this->detailWebsite)){
 ?>
-<div class="row" style="margin-bottom: 5px;">
-    <div class="span5">
-        <button id="button_checkall" name="button_checkall" class="btn  btn-small" onclick="history.go(-1)">返回上一页</button>
-    </div>
-    <div class="span5"></div>
-</div>
 <table width="100%" border="0" cellspacing="0" cellpadding="0" class="table table-striped">
+    <thead>
+    <tr>
+        <th>流水号</th>
+        <td colspan="3"><?php echo $this->detailWebsite['website_id'];?></td>
+    </tr>
+    </thead>
+    <tbody>
     <tr>
         <th valign="top" scope="row" style="width: 10%;">名称</th>
         <td valign="top" style="width: 40%;"><?php echo $this->detailWebsite['website_name'];?></td>
@@ -16,9 +17,9 @@ if(!empty($this->detailWebsite)){
     </tr>
     <tr>
         <th valign="top" scope="row" style="width: 10%;">区域</th>
-        <td valign="top" style="width: 40%;"><?php echo $this->translate("continent_code_".$this->detailWebsite['website_continent']).'/'.$this->translate("country_code_".$this->detailWebsite['website_country']);?></td>
+        <td valign="top" style="width: 40%;"><?php echo $this->allWebsiteArea[$this->detailWebsite['website_areaFatherId']]['area_name_'.DIANA_TRANSLATE_CURRENT].'/'.$this->allWebsiteArea[$this->detailWebsite['website_areaId']]['area_name_'.DIANA_TRANSLATE_CURRENT];?></td>
         <th valign="top" scope="row" style="width: 10%;">类型</th>
-        <td valign="top" style="width: 40%;"><?php echo $this->translate("category_id_".$this->detailWebsite['website_categoryId']);?></td>
+        <td valign="top" style="width: 40%;"><?php echo $this->allWebsiteCategory[$this->detailWebsite['website_categoryId']]['category_name_'.DIANA_TRANSLATE_CURRENT];?></td>
     </tr>
     <?php
     if(!empty($this->websiteId)){
@@ -55,19 +56,20 @@ if(!empty($this->detailWebsite)){
     ?>
     <tr>
         <th valign="top" scope="row">申请时间</th>
-        <td valign="top"><?php echo date('Y-m-d H:i:s',$this->detailWebsite['website_apply_time']);?></td>
+        <td valign="top"><?php echo $this->formatDate('Y-m-d H:i:s',$this->detailWebsite['website_apply_time']);?></td>
         <th valign="top" scope="row">申请IP</th>
         <td valign="top"><?php echo $this->detailWebsite['website_apply_ip'];?></td>
     </tr>
     <tr>
         <th valign="top" scope="row">发布时间</th>
-        <td valign="top"><?php echo date('Y-m-d H:i:s',$this->detailWebsite['website_insert_time']);?></td>
+        <td valign="top"><?php echo $this->formatDate('Y-m-d H:i:s',$this->detailWebsite['website_insert_time']);?></td>
         <th valign="top" scope="row">最后编辑时间</th>
-        <td valign="top"><?php echo $this->detailWebsite['website_update_time'];?></td>
+        <td valign="top"><?php echo $this->formatDate('Y-m-d H:i:s',$this->detailWebsite['website_update_time']);?></td>
     </tr>
     <?php
     }
     ?>
+    </tbody>
 </table>
 <?php
 }

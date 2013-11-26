@@ -1,0 +1,49 @@
+<div class="div_bg_fa separator_bot">
+    <?php if (!empty($this->detailOutbox)) {?>
+    <table width="100%" border="0" cellspacing="0" cellpadding="5">
+        <tr>
+            <td align="center"><strong><?php echo $this->detailOutbox['msg_subject'];?></strong></td>
+        </tr>
+        <tr>
+            <td align="center">
+                <?php
+                echo $this->formatDate('Y-m-d H:i',$this->detailOutbox['outbox_msg_send_time']);
+                if($this->detailOutbox['outbox_msg_send_time'] > 0){ echo '&nbsp;&nbsp;<a href="#outbox_read_receipt">查看收件人回执</a>';}
+                ?>
+            </td>
+        </tr>
+        <tr>
+            <td><?php echo $this->detailOutbox['msg_content'];?></td>
+        </tr>
+        <tr>
+            <td  align="center">
+                <a name="outbox_read_receipt" id="outbox_read_receipt"></a>
+                <table width="100%" border="0" cellspacing="1" cellpadding="5" class="table_border separator_top separator_bot">
+                    <tr>
+                        <th scope="col">收件人</th>
+                        <th scope="col" width="150">回执</th>
+                    </tr>
+                    <?php
+                    foreach($this->detailOutbox['msg_dest_man'] as $managerId => $rowManager){
+                        ?>
+                        <tr>
+                            <td><?php echo $rowManager['manager_name'];?>&lt;<?php echo $rowManager['manager_email'];?>&gt;</td>
+                            <td><?php
+                                if(empty($this->detailOutbox['outbox_read_receipt'][$managerId])){
+                                    echo '已删';
+                                }elseif(empty($this->detailOutbox['outbox_read_receipt'][$managerId]['inbox_msg_read_time'])){
+                                    echo '未读';
+                                }else{
+                                    echo date('Y-m-d H:i',$this->detailOutbox['outbox_read_receipt'][$managerId]['inbox_msg_read_time']);
+                                }
+                                ?></td>
+                        </tr>
+                        <?php
+                    }
+                    ?>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <?php }?>
+</div>

@@ -18,7 +18,7 @@ class Website_TrendController extends Admin_Controller_Action
     }
 
     /**
-     * 查询模块
+     * 网站注册
      */
     function registerAction(){
         $this->view->year = $year = $this->getRequest()->getUserParam('year',date('Y'));
@@ -66,7 +66,7 @@ class Website_TrendController extends Admin_Controller_Action
     {
         $this->view->year = $year = $this->getRequest()->getUserParam('year',date('Y'));
         $serviceTrend = new Diana_Service_Trend();
-        if($trendYear = $serviceTrend->getWebsiteApply($year)){
+        if($trendYear = $serviceTrend->getWebsiteApplyRegister($year)){
             $this->view->trendYear = $trendYear;
         }else{
             $this->setMsgs($serviceTrend->getMsgs());

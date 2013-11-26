@@ -9,6 +9,7 @@ if(!empty($this->paginator['rows'])){
         <div class="span5"><?php echo $this->render('paginator.phtml'); ?></div>
     </div>
     <table width="100%" border="0" cellspacing="0" cellpadding="0" class="table table-striped table-hover">
+        <thead>
         <tr>
             <th  width="100">时间</th>
             <th  width="150">名称</th>
@@ -18,11 +19,13 @@ if(!empty($this->paginator['rows'])){
             <th  width="60">结果</th>
             <th >选项</th>
         </tr>
+        </thead>
+        <tbody>
         <?php
         foreach($this->paginator['rows'] as $row){
             ?>
             <tr>
-                <td><?php echo $this->formatDate("Y-m-d H:i",$row['apply_insert_time']);?></td>
+                <td><?php echo $this->formatDate("Y-m-d H:i",$row['register_insert_time']);?></td>
                 <td><?php echo $this->utf8Substr($row['website_name'],12);?></td>
                 <td><a href="<?php echo$row['website_domain'];?>" title="<?php echo$row['website_name'];?>" target="_blank"><?php echo $this->utf8Substr($row['website_domain'],32);?></a></td>
                 <td><?php echo $this->utf8Substr($this->translate('category_id_'.$row['website_categoryId']),8);?></td>
@@ -31,10 +34,10 @@ if(!empty($this->paginator['rows'])){
                     <?php
                     $passcss = '';
                     $passstr = '未处理';
-                    if($row['apply_pass'] == 1){
+                    if($row['register_pass'] == 1){
                         $passcss = 'label-success';
                         $passstr = '同意';
-                    }elseif($row['apply_pass'] == 2){
+                    }elseif($row['register_pass'] == 2){
                         $passcss = 'label-important';
                         $passstr = '拒绝';
                     }
@@ -42,10 +45,11 @@ if(!empty($this->paginator['rows'])){
                     ?>
                 </td>
                 <td>
-                    <a href="<?php echo $this->url(array('action'=>'detail','apply_id'=>$row['apply_id']));?>">明细</a>
+                    <a href="<?php echo $this->url(array('action'=>'detail','apply_id'=>$row['register_id']));?>">明细</a>
                 </td>
             </tr>
             <?php }?>
+        </tbody>
     </table>
 </form>
 <div class="row" style="margin-bottom: 5px;">

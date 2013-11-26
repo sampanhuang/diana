@@ -139,6 +139,7 @@ abstract class Diana_Model_Abstract
 			if ($this->dt->save(2,$data,$condition)) {//更新纪录
 				//self::$cacheDefault->clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG, $this->preCachekey);//更新缓存
 				$rows = $this->getRowsByCondition(true,$condition);
+				//print_r($rows);
 			}
 		}
 		return $rows;

@@ -78,6 +78,52 @@ abstract class Diana_Service_Abstract
 		}
 		return $bootstrap->getResource("log");
     }
+
+    /**
+     * 过滤无效字段
+     * @param $rows 数据库里取出来的值
+     * @param $formatColumns 要保留的字段
+     * @return array
+     */
+    function filterColumns($rows,$formatColumns)
+    {
+        $data = array();
+        foreach($rows as $row){
+            foreach($row as $key => $value){
+                $tmpData = array();
+                if(in_array($key,$formatColumns)){
+                    $tmpData[$key] = $value;
+                }
+                $data[] = $tmpData;
+            }
+        }
+        return $data;
+    }
+
+    /**
+     * 过滤
+     * @param $rows 数据库中输出的值array(array(表字段 => 表值))
+     * @param $format array('表字段'=>'输出的字段')
+     * @return array array('输出的字段'=>'表值')
+     */
+    function formatDbTable($rows,$format)
+    {
+        $data = array();
+        foreach($rows as $row){
+            $tmpData = array();
+            foreach($format as $tbColumn => $outputColumn){
+                if($outputColumn == '_parentId' && empty($row[$tbColumn])){
+                    unset($tmpData[$outputColumn]);
+                }elseif(in_array($tbColumn,array('state'))){
+                    $tmpData[$tbColumn] = $outputColumn;
+                }else{
+                    $tmpData[$outputColumn] = $row[$tbColumn];
+                }
+            }
+            $data[] = $tmpData;
+        }
+        return $data;
+    }
     
 	/**
 	 * 读取信息

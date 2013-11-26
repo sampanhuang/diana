@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <?php echo $this->headMeta().chr(13).chr(10);?>
+    <?php echo $this->headTitle().chr(13).chr(10);?>
+    <link rel="stylesheet" type="text/css" href="/static/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/bootstrap/css/bootstrap-responsive.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/custom/css/id.css">
+    <link rel="stylesheet" type="text/css" href="/static/custom/css/tag.css">
+    <link rel="stylesheet" type="text/css" href="/static/custom/css/class.css">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/vnd.microsoft.icon">
+    <script type="text/javascript" src="/static/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="/static/bootstrap/js/bootstrap.min.js"></script>
+    <?php echo $this->headLink().chr(13).chr(10);?>
+    <?php echo $this->headStyle().chr(13).chr(10);?>
+    <?php echo $this->headScript().chr(13).chr(10);?>
+</head>
+<body>
+<!--头部-->
+<header class="container">
+    <div class="row">
+        <div class="span4"><h3 class="muted" style="line-height: 80px;"><?php echo $this->translate("www_websitename");?><small>&nbsp;&nbsp;
+            <?php echo $this->translate("www_title_subtitle");?></small></h3></div>
+        <div class="span4">
+            <form id="form_search" class="form-search"  method="get" action="/default/website/search">
+                <div class="input-append" style="line-height: 80px;">
+                    <?php
+                    $cssSpan = 'span3';
+                    if(empty($this->keyword)){
+                        $cssSpan = 'span2';
+                    }
+                    ?>
+                    <input type="text" class="<?php echo $cssSpan;?> search-query" id="input_keyword" name="keyword" value="<?php echo $this->keyword;?>">
+                    <button type="submit" class="btn" style="margin-top: 25px;">搜索</button>
+                </div>
+            </form>
+        </div>
+        <div class="span4 text-right">
+            <script type="text/javascript" src="/member/guest/menu"></script>
+        </div>
+    </div>
+</header>
+<!--导航-->
+<nav class="container">
+    <div class="navbar">
+        <div class="navbar-inner">
+            <div class="container">
+                <ul class="nav">
+                    <li><a href="/default/website"><?php echo $this->translate("global_index");?></a></li>
+                    <li><a href="/default/website/list/continent/as"><?php echo $this->translate("continent_code_as");?></a></li>
+                    <li><a href="/default/website/list/continent/eu"><?php echo $this->translate("continent_code_eu");?></a></li>
+                    <li><a href="/default/website/list/continent/na"><?php echo $this->translate("continent_code_na");?></a></li>
+                    <li><a href="/default/website/list/continent/sa"><?php echo $this->translate("continent_code_sa");?></a></li>
+                    <li><a href="/default/website/list/continent/oa"><?php echo $this->translate("continent_code_oa");?></a></li>
+                    <li><a href="/default/website/list/continent/an"><?php echo $this->translate("continent_code_an");?></a></li>
+                </ul>
+                <ul class="nav pull-right">
+                    <li><a href="/default/website/apply" target="_blank">提交网站</a></li>
+                    <li><a href="/member/website" target="_blank">会员中心</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+<!--内容区-->
+<section class="container">
+    <?php
+    if($this->currentModuleName == 'member' && $this->currentControllerName <> 'guest'){
+        echo $this->render('member.phtml');
+    }else{
+        echo $this->render('content.phtml');
+    }
+    ?>
+</section>
+<!--底部-->
+<footer>
+    <div class="container">
+        <p class="footer">
+        <ul class="inline">
+            <li>Langer:<?php echo DIANA_TRANSLATE_DEFAULT;?></li>
+            <li>Version:<?php echo DIANA_WEBSITE_VERSION;?></li>
+            <li>Time:<?php echo number_format($this->pageCostMicrotime,2);?>Sec</li>
+            <li>Memory:<?php echo $this->formatSize(memory_get_usage());?></li>
+        </ul>
+        </p>
+    </div>
+</footer>
+<!--Google Analytics 跟踪代码-->
+<script type="text/javascript">
+
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-36134102-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+
+</script>
+</body>
+</html>

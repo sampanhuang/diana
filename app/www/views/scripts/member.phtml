@@ -18,7 +18,7 @@
                 if($controllerKey == $this->currentControllerName){
                     $cssActive = 'active';
                 }
-                echo '<li class="'.$cssActive.'"><a href="/'.$rowController['menu_link_frist'].'">'.$rowController['menu_label'].'</a></li>';
+                echo '<li class="'.$cssActive.'"><a href="/'.$rowController['menu_link_frist'].'">'.$rowController['menu_label_'.DIANA_TRANSLATE_CURRENT].'</a></li>';
             }
             ?>
         </ul>
@@ -27,7 +27,7 @@
         <ul id="tab" class="nav nav-tabs">
             <?php
             foreach($this->currentMemberRoleMenu[$this->currentModuleName]['son'][$this->currentControllerName]['son'] as $actionKey => $rowAction){
-                $actionLabel = $rowAction['menu_label'];
+                $actionLabel = $rowAction['menu_label_'.DIANA_TRANSLATE_CURRENT];
                 $cssActive = '';
                 if($actionKey == $this->currentActionName){
                     $cssActive = 'active';

@@ -1,0 +1,26 @@
+<?php
+if(!empty($this->rows)){
+?>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="table table-striped table-hover">
+	<thead>
+    <tr>
+        <th  width="250">名称</th>
+        <th  >域名</th>
+        <th  width="250">类型</th>
+        <th  width="250">区域</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php
+    foreach($this->rows as $row){
+        ?>
+        <tr>
+            <td><?php echo $this->utf8Substr($row['website_name'],12);?></td>
+            <td><?php echo $this->utf8Substr($row['website_domain'],32);?></td>
+            <td><?php echo $this->translate('category_id_'.$row['website_categoryId']);?></td>
+            <td><?php echo $this->translate('continent_code_'.$row['website_continent']).' / '.$this->translate('country_code_'.$row['website_country']);?></td>
+        </tr>
+        <?php }?>
+    </tbody>
+</table>
+<?php } ?>

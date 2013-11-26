@@ -13,6 +13,34 @@ class Admin_Service_Config extends Diana_Service_Config
         parent::__construct();
     }
 
+    /**
+     * 生成treegrid所需数据
+     */
+    function makeTreegrid()
+    {
+        $treeGrid = array();
+        $modelConfig = new Diana_Model_Config();
+        //获取所有数据
+        if(!$rows = $modelConfig->getRowsByCondition()){
+            return false;
+        }
+        //获取一级配置
+        foreach($rows as $row){
+            if(empty($row['conf_fatherId'])){
+                $row['state'] = 'closed';
+                $treeGrid[] = $row;
+            }
+        }
+        foreach($treeGrid as &$rowFather){
+            foreach($rows as $row){
+                if($rowFather['conf_id'] == $row['conf_fatherId']){
+                    $rowFather['children'][] = $row;
+                }
+            }
+        }
+        return $treeGrid;
+        
+    }
 
     /**
      * 通过父级ID得到子配置索引

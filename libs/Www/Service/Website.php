@@ -87,8 +87,8 @@ class Www_Service_Website extends Www_Service_Abstract
         $modelWebsiteTrendClickOut->update(1,$rowWebsite['website_id']);
         $modelWebsiteCategory = new Diana_Model_WebsiteCategory();
         $modelWebsiteCategory->updateCountClickOut(1,$rowWebsite['website_categoryId']);
-        $modelWebsiteCountry = new Diana_Model_WebsiteCountry();
-        $modelWebsiteCountry->updateCountClickOut(1,$rowWebsite['website_continent'],$rowWebsite['website_country']);
+        $modelWebsiteArea = new Diana_Model_WebsiteArea();
+        $modelWebsiteArea->updateCountClickOut(1,$rowWebsite['website_areaId']);
         return $websiteDomain;
     }
 

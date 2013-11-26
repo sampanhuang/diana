@@ -84,6 +84,18 @@ class Diana_Model_WebsiteCategory extends Diana_Model_Abstract
     }
 
     /**
+     * 通过父ID获取纪录
+     * @param null $refresh 是否刷新
+     * @param $fatherId 父ID
+     * @return array
+     */
+    function getRowsByFather($refresh = null,$fatherId)
+    {
+        $condition = array("category_fatherId" => $fatherId);
+        return $this->getRowsByCondition($refresh,$condition);
+    }
+
+    /**
      * 通过流水号ID获取多条纪录
      *
      * @param int|string|array $id

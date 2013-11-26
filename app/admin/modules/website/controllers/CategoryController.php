@@ -16,6 +16,14 @@ class Website_CategoryController extends Admin_Controller_Action
 
     function indexAction()
     {
+        $dataget = $this->getRequest()->getParams();
+        if ($dataget['show_data'] == 'treegrid_data') {
+            $serviceWebsiteCategory = new Diana_Service_WebsiteCategory();
+            if($datatreegrid = $serviceWebsiteCategory->makeTreegrid()){
+                echo json_encode($datatreegrid);
+            }
+        }
+
         $serviceWebsiteCategory = new Diana_Service_WebsiteCategory();
         $this->view->rows = $serviceWebsiteCategory->getAll();
     }

@@ -100,7 +100,7 @@ class Admin_Service_Doorkeeper extends Diana_Service_Abstract
         }
         if ($detailManager['manager_passwd'] <> $passwd) {
             $this->focus = 2;
-            $this->setMsgs("密码输入错误！".$detailManager['manager_passwd'].'-'.$passwd);
+            $this->setMsgs("密码输入错误！");
             return false;
         }
         //更新最后登录时间
@@ -109,9 +109,9 @@ class Admin_Service_Doorkeeper extends Diana_Service_Abstract
             $detailManager = array_merge($detailManager,$rowsManager[0]);//更新值
         }
         //写入登录纪录
-        $serviceManagerLogLogin = new Admin_Service_ManagerLogLogin();
-        if (!$rowsManagerLogLogin = $serviceManagerLogLogin->write($detailManager['manager_id'],$detailManager['manager_email'],$detailManager['manager_name'])) {
-            $this->setMsgs($serviceManagerLogLogin->getMsgs());
+        $serviceManagerLog = new Admin_Service_ManagerLog();
+        if (!$serviceManagerLog = $serviceManagerLog->write(210,$detailManager['manager_id'],$detailManager['manager_email'],$detailManager['manager_name'])) {
+            $this->setMsgs($serviceManagerLog->getMsgs());
         }
         //写入会话
         $this->writeSession($detailManager);
@@ -187,8 +187,8 @@ class Admin_Service_Doorkeeper extends Diana_Service_Abstract
         }
         //能否根据条件得到用户信息
         if (!$detailManager) {
-            $this->setMsgs($serviceManager->getMsgs());
-            $this->setMsgs("当前帐号【｛$id｝{$loginUser}】并不存在");
+            //$this->setMsgs($serviceManager->getMsgs());
+            $this->setMsgs("当前帐号【 $id $loginUser 】并不存在");
             return false;
         }
         //判断用户是否被锁定

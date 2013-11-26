@@ -45,7 +45,7 @@ class Diana_Model_DbTable_Website extends Diana_Model_DbTable_Abstract
         }
         if (!empty($condition["website_id_not"])) {//流水号
             $tmpWheres = array();
-            $tmpWheres = $this->getWhereByCondition("website_id",$condition["website_id"],1);
+            $tmpWheres = $this->getWhereByCondition("website_id",$condition["website_id_not"],11);
             $wheres = array_merge($wheres,$tmpWheres);
         }
         if (!empty($condition["website_memberId"])) {//会员流水号
@@ -68,14 +68,9 @@ class Diana_Model_DbTable_Website extends Diana_Model_DbTable_Abstract
             $tmpWheres = $this->getWhereByCondition("website_categoryId",$condition["website_categoryId"],1);
             $wheres = array_merge($wheres,$tmpWheres);
         }
-        if (!empty($condition["website_continent"])) {//所属大陆
+        if (!empty($condition["website_areaId"])) {//所属地区
             $tmpWheres = array();
-            $tmpWheres = $this->getWhereByCondition("website_continent",$condition["website_continent"],2);
-            $wheres = array_merge($wheres,$tmpWheres);
-        }
-        if (!empty($condition["website_country"])) {//所属国家
-            $tmpWheres = array();
-            $tmpWheres = $this->getWhereByCondition("website_country",$condition["website_country"],2);
+            $tmpWheres = $this->getWhereByCondition("website_areaId",$condition["website_areaId"],1);
             $wheres = array_merge($wheres,$tmpWheres);
         }
         if (!empty($condition["keywork"])) {//关键字

@@ -28,10 +28,16 @@ class Diana_Service_Trend extends Diana_Service_Abstract
         return $this->formatRows($all);
     }
 
-    function getWebsiteApply($year = null)
+    /**
+     * 获取注册申请状态
+     *
+     * @param unknown_type $year
+     * @return unknown
+     */
+    function getWebsiteApplyRegister($year = null)
     {
-        $modelWebsiteTrendApply = new Diana_Model_WebsiteTrendApply($year);
-        if(!$all = $modelWebsiteTrendApply->getRowsByCondition()){
+        $modelWebsiteTrendApplyRegister = new Diana_Model_WebsiteTrendApplyRegister($year);
+        if(!$all = $modelWebsiteTrendApplyRegister->getRowsByCondition()){
             return $all;
         }
         return $this->formatRows($all);

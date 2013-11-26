@@ -1,1 +1,96 @@
-1
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title><?php echo implode('-',array($this->currentManagerName,$this->currentManagerEmail,DIANA_WEBSITE_NAME));?></title>
+    <link rel="stylesheet" type="text/css" href="/static/jquery-easyui-1.3.3/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="/static/jquery-easyui-1.3.3/themes/icon.css">
+    <script type="text/javascript" src="/static/jquery-easyui-1.3.3/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/jquery-easyui-1.3.3/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/static/jquery-easyui-1.3.3/locale/easyui-lang-<?php echo $this->suffixJqueryLang;?>.js"></script>
+    <script type="text/javascript" src="/static/custom/script/common.js"></script>
+    <script>
+        $(function(){
+            $('#loading-mask').fadeOut();
+        	addTab('Welcome','/default/index/welcome');
+            //树状菜单
+            $('#west_menu_tree').tree({
+                animate:true,
+                dnd:true,
+                url:'<?php echo $this->url(array("show_ajax"=>"json","show_data" => "menu_tree"));?>',
+                onClick:function(node){
+                    if(node.attributes.url !== null && node.attributes.url !== '' && node.attributes.url !== undefined){
+                         addTab(node.attributes.nav,node.attributes.url,true);
+                    }else{
+                        $(this).tree('toggle', node.target);
+                    }
+                }
+            })
+            //注销确认
+            $('#link_logout').click(function() {
+                $.messager.confirm('<?php echo $this->translate('admin_message_notie');?>', '哈楼，<?php echo $this->currentManagerName;?><br>您确定要退出本次登录吗?', function(r) {
+                    if (r) {
+                        location.href = '/default/guest/logout';
+                    }
+                });
+            })
+            //个人资料
+            $('#link_profile_intro').click(function() {
+                addTab('个人中心/个人资料/资料明细','/profile/intro/index');
+            });
+            //日志查询
+            $('#link_log').click(function() {
+                addTab('个人中心/个人资料/日志查询','/profile/intro/log');
+            });
+            //查看消息
+            $('#link_msg_inbox').click(function() {
+                addTab('个人中心/消息中心/收件箱','/profile/message/inbox');
+            });
+            //重置密码
+            $('#link_reset_pwd').click(function() {
+                addTab('个人中心/用户安全/密码变更','/profile/safe/resetpwd');
+            });
+        });
+    </script>
+    <style>
+        .div_layout_north{
+            overflow: hidden; height: 30px;
+            background: url('static/custom/image/layout-browser-hd-bg.gif') #E6EEF8 repeat-x center 50%;
+            line-height: 20px;color: #fff; font-family: Verdana, Microsoft YaHei
+        }
+            /*顶部链接*/
+        .span_north_head a{color:White;text-decoration:underline;}
+    </style>
+</head>
+<body class="easyui-layout" style="overflow-y: hidden;padding:0px;margin:0px;"  fit="true"   scroll="no">
+<div region="north" split="true" border="false" class="div_layout_north">
+    <span style="float:right; padding-right:5px;" class="span_north_head">
+        <?php echo $this->currentManagerName;?>
+        &lt;<a href="#" id="link_profile_intro"><?php echo $this->currentManagerEmail;?></a>&gt;
+        <a href="#" id="link_log">日志查询</a>
+        <a href="#" id="link_msg_inbox">查看消息</a>
+        <a href="#" id="link_reset_pwd"><?php echo $this->translate("admin_resetpwd");?></a>
+        <a href="#" id="link_logout"><?php echo $this->translate("admin_logout");?></a></span>
+    <span style="padding-left:5px; font-size: 16px; " class="span_north_head"><?php echo $this->translate("admin_websitename");?></span>
+    <span style="padding-left:5px; " class="span_north_head">
+    <a href="http://<?php echo DIANA_DOMAIN_ADMIN_CN;?>" title="简体中文">简体中文</a>&nbsp;
+    <a href="http://<?php echo DIANA_DOMAIN_ADMIN_TW;?>" title="繁體中文">繁體中文</a>&nbsp;
+    <a href="http://<?php echo DIANA_DOMAIN_ADMIN_US;?>" title="English">English</a>
+    [当前语言包：<?php echo DIANA_TRANSLATE_CURRENT;?>]
+    </span>
+</div>
+<div id="layout_west" data-options="region:'west',split:true,title:'<?php echo $this->translate('admin_west_menu_title');?>'" style="width:180px;padding:5px;">
+    <ul id="west_menu_tree" class="easyui-tree"></ul>
+</div>
+<div id="layout_center" region="center" style="overflow-y:hidden">
+    <div id="tabs" class="easyui-tabs"  fit="true" border="false" ></div>
+</div>
+<!--<div data-options="region:'south',split:true,border:false" style="height:0px;"></div>-->
+<!--加载load-->
+<div id="loading-mask" style="position:absolute;top:0px; left:0px; width:100%; height:100%; background:#D2E0F2; z-index:20000">
+    <div id="pageloading" style="position:absolute; top:50%; left:50%; margin:-120px 0px 0px -120px; text-align:center;  border:2px solid #8DB2E3; width:200px; height:40px;  font-size:14px;padding:10px; font-weight:bold; background:#fff; color:#15428B;">
+        <img src="/static/custom/image/loading.gif" align="absmiddle" /> 正在加载中,请稍候...
+    </div>
+</div>
+</body>
+</html>

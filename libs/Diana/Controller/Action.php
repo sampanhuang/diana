@@ -5,7 +5,7 @@
  */
 class Diana_Controller_Action extends Zend_Controller_Action
 {
-	var $msgs = array();
+	var $msgs;
 	var $currentModuleName;
 	var $currentControllerName;
 	var $currentActionName;
@@ -30,8 +30,7 @@ class Diana_Controller_Action extends Zend_Controller_Action
             }
         }
 	}
-	
-	
+
 	/**
 	 * 读取信息
 	 *

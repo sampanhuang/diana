@@ -1,0 +1,7 @@
+<?php
+if(($this->dataget['inbox_detail'] == 'yes')&&(!empty($this->dataget['inbox_id']))){
+    echo $this->render('message/inbox-detail.phtml');
+}else{
+    echo $this->render('message/inbox-index.phtml');
+}
+?>

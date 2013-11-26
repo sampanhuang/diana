@@ -1,0 +1,31 @@
+<?php
+//加载幻灯片专用的css及JS
+$this->headLink()->appendStylesheet('/www/third-part/nivo/nivo-slider.css');
+$this->headLink()->appendStylesheet('/www/third-part/nivo/themes/default/default.css');
+$this->headScript()->appendFile('/www/third-part/nivo/jquery.nivo.slider.js');
+$this->headScript()->captureStart();
+?>
+$(window).load(function() {
+   $('#slider').nivoSlider();
+});
+<?php
+$this->headScript()->captureEnd();
+?>
+<div id="wrapper">
+        <div class="slider-wrapper theme-default">
+            <div id="slider" class="nivoSlider">
+            	<?php 
+            	foreach ($this->advSlides as $id => $advSlide){
+            	?>
+                <a href="<?php echo $advSlide["link"];?>" target="_blank"><img src="<?php echo $advSlide["image"];?>" data-thumb="images/toystory.jpg" alt="" title="#htmlcaption-<?php echo $id;?>" /></a>
+                <?php }?>
+            </div>
+            <?php 
+            	foreach ($this->advSlides as $id => $advSlide){
+            ?>
+            <div id="htmlcaption-<?php echo $id;?>" class="nivo-html-caption">
+                <strong><?php echo $advSlide["label"];?></strong><br><?php echo $advSlide["remark"];?>.
+            </div>
+            <?php }?>            
+        </div>
+    </div>  

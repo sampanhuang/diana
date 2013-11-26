@@ -22,41 +22,57 @@ class Diana_Model_WebsiteCountry extends Diana_Model_Abstract
      * @param $clickOut
      * @param null $subtract
      */
-    function updateCountWebsiteClickInClickOut($country,$countWebsite,$clickIn,$clickOut,$subtract = null)
+    function updateCountWebsiteClickInClickOut($continent,$country,$countWebsite,$clickIn,$clickOut,$subtract = null)
     {
         if(empty($country)){
+            throw new Exception('$country is empty');
             return false;
         }
         //变更项不能全为空
         if(empty($countWebsite)&empty($clickIn)&empty($clickOut)){
+        	throw new Exception('$countWebsite $clickIn $clickOut is empty');
             return false;
         }
-        //判断这个类别是否正确
+        //判断这个国家是否正确
         if(!$rows = $this->getRowsByContinent(true,$country)){
-            return false;
+            if(empty($subtract)){//增加的话
+            	$data = array(
+            		'country_continent' => $continent,
+            		'country_key' => $country,
+            		'country_count_website' => $countWebsite,
+            		'country_count_click_in' => $clickIn,
+            		'country_count_click_out' => $clickOut,
+            		'country_order' => 0,
+            		'country_insert_time' => time(),
+            	);
+            }
+        }else{
+            $symbol = " + ";
+            if($subtract){$symbol = " - ";}
+            $condition = array( 'country_key' => $country);
+            $data = array('country_update_time' => time());
+            if(intval($countWebsite) > 0){//更新类别网站数
+                $data['country_count_website'] = new Zend_Db_Expr( 'country_count_website ' . $symbol . $countWebsite);
+            }
+            if(intval($clickIn) > 0){//更新类别点击流入
+                $data['country_count_click_in'] = new Zend_Db_Expr( 'country_count_click_in ' . $symbol . $clickIn);
+            }
+            if(intval($clickOut) > 0){//更新类别点击流出
+                $data['country_count_click_out'] = new Zend_Db_Expr( 'country_count_click_out ' . $symbol . $clickOut);
+            }
+            return $this->saveData(2,$data,$condition);
         }
-        $symbol = " + ";
-        if($subtract){$symbol = " - ";}
-        $condition = array( 'country_key' => $country);
-        $data = array();
-        if(intval($countWebsite) > 0){//更新类别网站数
-            $data['country_count_website'] = new Zend_Db_Expr( 'country_count_website ' . $symbol . $countWebsite);
-        }
-        if(intval($clickIn) > 0){//更新类别点击流入
-            $data['country_count_click_in'] = new Zend_Db_Expr( 'country_count_click_in ' . $symbol . $clickIn);
-        }
-        if(intval($clickOut) > 0){//更新类别点击流出
-            $data['country_count_click_out'] = new Zend_Db_Expr( 'country_count_click_out ' . $symbol . $clickOut);
-        }
-        return $this->saveData(2,$data,$condition);
     }
 
 
-    function updateCountWebsite($value,$continent,$country)
+    function updateCountWebsite($value,$continent,$country,$subtract = null)
     {
-        $data = array(  "country_count_website" => new Zend_Db_Expr( 'country_count_website + ' . $value));
+        $symbol = " + ";
+        if($subtract){$symbol = " - ";}
+
+        $data = array(  "country_count_website" => new Zend_Db_Expr( 'country_count_website '.$symbol . $value));
         $condition = array( 'country_key' => $country);
-        if(!$rows = $this->saveData(2,$data,$condition)){
+        if((!$rows = $this->saveData(2,$data,$condition))&&(!$subtract)){
             $data = array(
                 "country_continent" => $continent,
                 "country_key" => $country,
@@ -90,6 +106,13 @@ class Diana_Model_WebsiteCountry extends Diana_Model_Abstract
         return $rows;
     }
 
+    /**
+     * 变更某个网站的
+     * @param $value
+     * @param $continent
+     * @param $country
+     * @return array
+     */
     function updateCountClickIn($value,$continent,$country)
     {
         $data = array(  "country_count_click_in" => new Zend_Db_Expr( 'country_count_click_in + ' . $value));

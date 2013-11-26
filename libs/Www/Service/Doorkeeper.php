@@ -122,10 +122,14 @@ class Www_Service_Doorkeeper extends Diana_Service_Abstract
         if ($rowsMember = $modelMember->updateWithLogin($detailMember['member_id'])) {
             $detailMember = array_merge($detailMember,$rowsMember[0]);//更新值
         }
-        //写入登录纪录
-        $serviceMemberLogLogin = new Diana_Service_MemberLogLogin();
-        if (!$rowsMemberLogLogin = $serviceMemberLogLogin->write($detailMember['member_id'],$detailMember['member_email'],$detailMember['member_name'])) {
-            $this->setMsgs($serviceMemberLogLogin->getMsgs());
+        //写入注册日志
+        $serviceMemberLog = new Diana_Service_MemberLog();
+        if(!$rowsMemberLog = $serviceMemberLog->write(11,$detailMember['member_id'],$detailMember['member_email'],$detailMember['member_name'])){
+        	$this->setMsgs($serviceMemberLog->getMsgs());
+        }
+        //写入登录日志
+        if(!$rowsMemberLog = $serviceMemberLog->write(21,$detailMember['member_id'],$detailMember['member_email'],$detailMember['member_name'])){
+        	$this->setMsgs($serviceMemberLog->getMsgs());
         }
         //更新统计
         $modelMemberTrendLogin = new Diana_Model_MemberTrendLogin();
@@ -176,10 +180,10 @@ class Www_Service_Doorkeeper extends Diana_Service_Abstract
         if ($rowsMember = $modelMember->updateWithLogin($detailMember['member_id'])) {
             $detailMember = array_merge($detailMember,$rowsMember[0]);//更新值
         }
-        //写入登录纪录
-        $serviceMemberLogLogin = new Diana_Service_MemberLogLogin();
-        if (!$rowsMemberLogLogin = $serviceMemberLogLogin->write($detailMember['member_id'],$detailMember['member_email'],$detailMember['member_name'])) {
-            $this->setMsgs($serviceMemberLogLogin->getMsgs());
+        //写入登录日志
+        $serviceMemberLog = new Diana_Service_MemberLog();
+        if(!$rowsMemberLog = $serviceMemberLog->write(21,$detailMember['member_id'],$detailMember['member_email'],$detailMember['member_name'])){
+        	$this->setMsgs($serviceMemberLog->getMsgs());
         }
         //更新统计
         $modelMemberTrendLogin = new Diana_Model_MemberTrendLogin();

@@ -11,6 +11,7 @@ class Admin_Service_ManagerPassword extends Diana_Service_Abstract
         parent::__construct();
     }
 
+
     /**
      * 重设密码
      *
@@ -237,10 +238,10 @@ class Admin_Service_ManagerPassword extends Diana_Service_Abstract
             return false;
         }
         //写入纪录
-        $modelManagerLogResetpwd = new Diana_Model_ManagerLogResetpwd();
-        if (!$modelManagerLogResetpwd->write($id,$email,$name)) {
+        $serviceManagerLog = new Admin_Service_ManagerLog();
+        if (!$serviceManagerLog->write(223,$id,$email,$name)) {
             $this->setMsgs("当前用户【{$email}】密码变更日志写入失败");
-            return false;
+            //return false;
         }
         return true;
     }

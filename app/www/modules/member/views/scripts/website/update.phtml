@@ -12,17 +12,17 @@ url = url + "?rand=" + Math.random()
 $(img).attr("src",url);
 }
 function onchangeShow(oneId){
-var arrOptionsCountry = <?php echo json_encode($this->optionsCountry)?>;
+var arrOptionsCountry = <?php echo json_encode($this->optionsWebsiteAreaSon)?>;
 //alert(arrOptionsCountry[oneId]);
 onchangecallback(arrOptionsCountry[oneId]);
 }
 function onchangecallback(data){
-$("#input_website_country").html("");  //清空原有的option
+$("#input_website_areaId").html("");  //清空原有的option
 var str="<option value=''>请选择</option>";
 for(var key in data){
 str+="<option value='"+key+"'>"+data[key]+"</option>"
 }
-$("#input_website_country").html(str);
+$("#input_website_areaId").html(str);
 }
 <?php $this->headScript()->captureEnd();?>
 <form class="form-horizontal"  id="form_website_update" name="form_website_update" method="post" >
@@ -46,12 +46,12 @@ $("#input_website_country").html(str);
             <select id="input_website_categoryId" name="website_categoryId" class="span3">
                 <option>请选择</option>
                 <?php
-                foreach($this->websiteCategoryIds as $websiteCategoryId){
+                foreach($this->rowsWebsiteCategoryFather as $websiteCategoryId => $rowWebsiteCategoryFather){
                     $optionsSelected = '';
                     if($websiteCategoryId == $this->detailWebsite['website_categoryId']){
                         $optionsSelected = ' selected ';
                     }
-                    echo '<option value="'.$websiteCategoryId.'" '.$optionsSelected.'>'. $this->translate("category_id_".$websiteCategoryId).'</option>';
+                    echo '<option value="'.$websiteCategoryId.'" '.$optionsSelected.'>'. $rowWebsiteCategoryFather['category_name_'.DIANA_TRANSLATE_CURRENT].'</option>';
                 }
                 ?>
             </select>
@@ -59,35 +59,35 @@ $("#input_website_country").html(str);
         </div>
     </div>
     <div class="control-group">
-        <label class="control-label" for="input_website_continent">大陆/国家</label>
+        <label class="control-label" for="input_website_areaFatherId">大陆/国家</label>
         <div class="controls">
-            <select id="input_website_continent" name="website_continent" class="span2" onchange="onchangeShow(this.value)">
+            <select id="input_website_areaFatherId" name="website_areaFatherId" class="span2" onchange="onchangeShow(this.value)">
                 <option value="">请选择</option>
                 <?php
-                foreach($this->websiteContinents as $websiteContinent){
+                foreach($this->rowsWebsiteAreaFather as $websiteAreaFatherId => $rowWebsiteAreaFather){
                     $optionsSelected = '';
-                    if($websiteContinent == $this->detailWebsite['website_continent']){
+                    if($websiteAreaFatherId == $this->detailWebsite['website_areaFatherId']){
                         $optionsSelected = ' selected ';
                     }
-                    echo '<option value="'.$websiteContinent.'"  '.$optionsSelected.'>'. $this->translate("continent_code_".$websiteContinent).'</option>';
+                    echo '<option value="'.$websiteAreaFatherId.'"  '.$optionsSelected.'>'. $rowWebsiteAreaFather['area_name_'.DIANA_TRANSLATE_CURRENT] .'</option>';
                 }
                 ?>
             </select>
-            <select id="input_website_country" name="website_country" class="span3">
+            <select id="input_website_areaId" name="website_areaId" class="span3">
                 <option value="">请选择</option>
                 <?php
-                if(!empty($this->optionsCountry)){
-                    foreach($this->optionsCountry[$this->detailWebsite['website_continent']] as $country){
+                if(!empty($this->rowsWebsiteAreaSon)){
+                    foreach($this->rowsWebsiteAreaSon[$this->detailWebsite['website_areaFatherId']] as $websiteAreaSonId => $rowWebsiteAreaSon){
                         $optionsSelected = '';
-                        if($country == $this->detailWebsite['website_country']){
+                        if($websiteAreaSonId == $this->detailWebsite['website_areaId']){
                             $optionsSelected = ' selected ';
                         }
-                        echo '<option value="'.$country.'"  '.$optionsSelected.'>'. $this->translate("country_code_".$country).'</option>';
+                        echo '<option value="'.$websiteAreaSonId.'"  '.$optionsSelected.'>'. $rowWebsiteAreaSon['area_name_'.DIANA_TRANSLATE_CURRENT] .'</option>';
                     }
                 }
                 ?>
             </select>
-            <span class="help-inline" id="help_website_country">必选项</span>
+            <span class="help-inline" id="help_website_areaId">必选项</span>
         </div>
     </div>
     <div class="control-group">
@@ -101,7 +101,7 @@ $("#input_website_country").html(str);
         <label class="control-label" for="input_website_intro">简介</label>
         <div class="controls">
             <textarea rows="8" id="input_website_intro" name="website_intro" class="span8" placeholder="简介"><?php echo $this->detailWebsite['website_intro'];?></textarea>
-            <span class="help-inline">限256个字以内</span>
+            <span class="help-inline">简介限20000汉字以内</span>
         </div>
     </div>
     <hr>

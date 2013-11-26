@@ -1,50 +1,52 @@
 <ul class="breadcrumb">
     <li><a href="/">首页</a> <span class="divider">/</span></li>
     <?php
-    if(!empty($this->continent)){
+    if(!empty($this->areaFather)){
         $htmlCategory = '';
         if(!empty($this->category)){
-            $htmlCategory =  '<li class="active"><span class="divider">/</span>'.$this->translate("category_id_".$this->category).'</li>';
+            $htmlCategory =  '<li class="active"><span class="divider">/</span>'.$this->allWebsiteCategory[$this->category]['category_name_'.DIANA_TRANSLATE_CURRENT].'</li>';
         }
-        if(empty($this->country)){
-            echo '<li class="active">'.$this->translate("continent_code_".$this->continent).$htmlCategory.'</li>';
+        if(empty($this->area)){
+            echo '<li class="active">'.$this->allWebsiteArea[$this->areaFather]['area_name_'.DIANA_TRANSLATE_CURRENT].$htmlCategory.'</li>';
         }else{
-            echo '<li><a href="'.$this->url(array("continent" => $this->continent,'country' => $this->country)).'">'.$this->translate("continent_code_".$this->continent).'</a> <span class="divider">/</span></li>';
-            echo '<li class="active">'.$this->translate("country_code_".$this->country).$htmlCategory.'</li>';
+            echo '<li><a href="'.$this->url(array("area_father" => $this->areaFather,'area' => null)).'">'.$this->allWebsiteArea[$this->areaFather]['area_name_'.DIANA_TRANSLATE_CURRENT].'</a> <span class="divider">/</span></li>';
+            echo '<li class="active">'.$this->allWebsiteArea[$this->area]['area_name_'.DIANA_TRANSLATE_CURRENT].$htmlCategory.'</li>';
         }
 
     }
     ?>
 </ul>
-<div class="row">
-    <div class="span2" >
-        <h4>国家<small style="margin-left:5px;">[<a href="<?php echo $this->url(array("country" => null));?>">全部</a>]</small></h4>
-        <p>
+<ul class="inline">
         <?php
-        if(!empty($this->countries)){
+        if(!empty($this->areaFather)){
             $htmlCountry = array();
-            foreach($this->countries as $country){
-                $htmlCountry[] = '<a href="'.$this->url(array("country" => $country['country_key'])).'">'.$this->translate('country_code_'.$country['country_key']).'</a>';
+            $htmlCountry[] = '<li><a href="'.$this->url(array("area" => null)).'">全部</a></li>';
+            foreach($this->rowWebsiteAreaSon as $rowsAreaSon){
+                $tmpWebsiteCount = '';
+                if($rowsAreaSon['area_count_website'] > 0){
+                    $tmpWebsiteCount = '<small class="muted">['.$rowsAreaSon['area_count_website'].']</small>';
+                }
+                $htmlCountry[] = '<li><a href="'.$this->url(array("area" => $rowsAreaSon['area_id'])).'">'.$rowsAreaSon['area_name_'.DIANA_TRANSLATE_CURRENT].'</a>'.$tmpWebsiteCount.'</li>';
             }
-            echo implode('&nbsp;<small class="muted">、</small>&nbsp;',$htmlCountry);
+            echo '<li><strong class="muted">国家：</strong></li>'.implode('',$htmlCountry);
         }
         ?>
-        </p>
-        <h4>分类<small  style="margin-left:5px;">[<a href="<?php echo $this->url(array("category" => null));?>">全部</a>]</small></h4>
-        <p>
-
+</ul>
+<ul class="inline">
         <?php
-        if(!empty($this->rowsCategory)){
+        if(!empty($this->allWebsiteCategory)){
             $htmlCategory = array();
-            foreach($this->rowsCategory as $rowCategory){
-                $htmlCategory[] =  '<a href="'.$this->url(array("category" => $rowCategory['category_id'])).'">'.$this->translate('category_id_'.$rowCategory['category_id']).'</a>';
+            $htmlCategory[] =  '<li><a href="'.$this->url(array("category" => null)).'">全部</a></li>';
+            foreach($this->allWebsiteCategory as $rowWebsiteCategory){
+                $htmlCategory[] =  '<li><a href="'.$this->url(array("category" => $rowWebsiteCategory['category_id'])).'">'.$rowWebsiteCategory['category_name_'.DIANA_TRANSLATE_CURRENT].'</a></li>';
             }
-            echo implode('&nbsp;<small class="muted">、</small>&nbsp;',$htmlCategory);
+            echo '<li><strong class="muted">类别：</strong></li>'.implode('',$htmlCategory);
         }
         ?>
-        </p>
-    </div>
-    <div class="span10" >
+</ul>
+<br>
+<div class="row">
+    <div class="span12" >
         <?php
         if($this->paginator['total'] > 0){
         ?>
@@ -59,9 +61,9 @@
                 ?>
                 <tr>
                     <td>
-                        <h4><?php echo $this->utf8Substr($row['website_name'],32);?><small>&nbsp;&nbsp;<?php echo $this->translate("continent_code_".$row['website_continent']).'/'.$this->translate("country_code_".$row['website_country']).'&nbsp;&nbsp;&nbsp;'.$this->translate('category_id_'.$row['website_categoryId']);?></small></h4>
+                        <h4><?php echo $this->utf8Substr($row['website_name'],32);?><small>&nbsp;&nbsp;<?php echo $this->allWebsiteArea[$row['website_areaFatherId']]['area_name_'.DIANA_TRANSLATE_CURRENT].'/'.$this->allWebsiteArea[$row['website_areaId']]['area_name_'.DIANA_TRANSLATE_CURRENT].'&nbsp;&nbsp;&nbsp;'.$this->allWebsiteCategory[$row['website_categoryId']]['category_name_'.DIANA_TRANSLATE_CURRENT];?></small></h4>
                         <a href="<?php echo $this->url(array("action" => "detail","website_id" => $row['website_id']));?>" title="<?php echo $row['website_name'];?>" target="_blank"><?php echo $this->utf8Substr($row['website_domain'],32);?></a><br>
-                        <?php echo $this->utf8Substr($row['website_intro'],150);?><br>
+                        <?php echo $this->utf8Substr($row['website_intro'],200);?><br>
                         <small>
                             <?php
                                 if(!empty($row['website_tag'])){

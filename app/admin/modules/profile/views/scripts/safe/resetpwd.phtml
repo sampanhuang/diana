@@ -3,12 +3,24 @@ $this->headScript()->appendFile("/static/custom/script/md5.js");
 $this->headScript()->captureStart();
 ?>
 $(function(){
-    var urlcaptcha = "/default/guest/captcha/key/admin-manager-resetpwd";
-    var imgcaptcha = "#img_captcha";
-    refreshCaptcha(imgcaptcha,urlcaptcha);
-    //点击图片更换验证码
-    $(imgcaptcha).bind('click',function(){refreshCaptcha(imgcaptcha,urlcaptcha);});
-    $("form").submit(function(e){
+var urlcaptcha = "/default/guest/captcha/key/admin-manager-resetpwd";
+var imgcaptcha = "#img_captcha";
+refreshCaptcha(imgcaptcha,urlcaptcha);
+//提交查询表单
+$('#linkbtn_submit').click(function(){
+    submitForm();
+});
+//表单内回车提交
+$("#form-resetpwd").keydown(function(event){
+    if(event.keyCode==13){submitForm();}
+});
+//点击图片更换验证码
+$(imgcaptcha).bind('click',function(){refreshCaptcha(imgcaptcha,urlcaptcha);});
+});
+<?php $this->headScript()->captureEnd();?>
+<script type="text/javascript">
+    function submitForm()
+    {
         var password_old = $("#input_password_old").val();
         var password_new = $("#input_password_new").val();
         var password_confirmation = $("#input_password_confirmation").val();
@@ -17,16 +29,16 @@ $(function(){
         if(password_old == ""){
             $("#input_password_old").focus();
             $("#help_password_old").css({ color: "#B94A48"});
-            $("#help_password_old").html("请输入登录密码");
+            $("#help_password_old").html("请输入旧密码");
             return false;
         }else{
             $("#help_password_old").css({ color: "#468847"});
-            $("#help_password_old").html("登录密码输入正常");
+            $("#help_password_old").html("旧密码输入正常");
         }
         if(password_new == ""){
             $("#input_password_new").focus();
             $("#help_password_new").css({ color: "#B94A48"});
-            $("#help_password_new").html("请输入登录密码");
+            $("#help_password_new").html("请输入新密码");
             return false;
         }else if(password_new == password_old){
             $("#input_password_new").focus();
@@ -40,12 +52,12 @@ $(function(){
             return false;
         }else{
             $("#help_password_new").css({ color: "#468847"});
-            $("#help_password_new").html("登录密码输入正常");
+            $("#help_password_new").html("新密码输入正常");
         }
         if(password_confirmation == ""){
             $("#input_password_confirmation").focus();
             $("#help_password_confirmation").css({ color: "#B94A48"});
-            $("#help_password_confirmation").html("请输入登录密码");
+            $("#help_password_confirmation").html("请输入确认密码");
             return false;
         }else if(password_confirmation !== password_new){
             $("#input_password_confirmation").focus();
@@ -56,7 +68,6 @@ $(function(){
             $("#help_password_confirmation").css({ color: "#468847"});
             $("#help_password_confirmation").html("登录密码输入正常");
         }
-
 
         if(captcha == ""){
             $("#input_captcha").focus();
@@ -75,8 +86,9 @@ $(function(){
         $("#input_password_old").val(hex_md5(password_old));
         $("#input_password_new").val(hex_md5(password_new));
         $("#input_password_confirmation").val(hex_md5(password_confirmation));
-        return true;
-    });
+
+        $("#form-resetpwd").submit();
+    }
     //验证码
     function isCaptcha(str)
     {
@@ -89,43 +101,69 @@ $(function(){
         url = url + "?rand=" + Math.random()
         $(img).attr("src",url);
     }
-});
-<?php $this->headScript()->captureEnd();?>
+</script>
+<div class="div_bg_fa separator_bot">
 <form class="form-horizontal" id="form-resetpwd" name="form-resetpwd" method="post">
-    <div class="control-group">
-        <label class="control-label" for="input_password_old">旧密码</label>
-        <div class="controls">
-            <input type="password" id="input_password_old" name="password_old" tabindex="1" class="span4" placeholder="旧密码" value="">
-            <span class="help-inline muted" id="help_password_old">必填选，旧密码不能为空</span>
-        </div>
+    <fieldset border="false"  class="fieldset_border separator_bot" >
+        <legend>用户资料</legend>
+        <table width="100%" border="0" cellspacing="1" cellpadding="5" class="table_border">
+            <tr>
+                <th width="10%">当前用户姓名</th>
+                <td width="40%"><?php echo $this->currentManagerName;?></td>
+                <th width="10%">当前用户邮箱</th>
+                <td width="40%"><?php echo $this->currentManagerEmail;?></td>
+            </tr>
+            <tr>
+                <th width="10%">密码变更次数</th>
+                <td width="40%"><?php echo $this->currentManagerDetail['manager_passwd_change_count'];?></td>
+                <th width="10%"></th>
+                <td width="40%"></td>
+            </tr>
+            <tr>
+                <th width="10%">最后变更时间</th>
+                <td width="40%"><?php echo $this->formatDate('Y-m-d H:i',$this->currentManagerDetail['manager_passwd_change_time']);?></td>
+                <th width="10%">最后变更IP</th>
+                <td width="40%"><?php echo $this->currentManagerDetail['manager_passwd_change_ip'];?></td>
+            </tr>
+        </table>
+    </fieldset>
+    <fieldset border="false"  class="fieldset_border separator_bot" >
+        <legend>密码变更</legend>
+        <table width="100%" border="0" cellspacing="1" cellpadding="5" class="table_border">
+        <tr>
+            <th width="10%">旧密码</th>
+            <td width="90%">
+                <input type="password" id="input_password_old" name="password_old" tabindex="1" class="span4" placeholder="旧密码" class="easyui-validatebox" data-options="required:true"   style="width:350px;">
+                <span class="help-inline muted" id="help_password_old">必填选，旧密码不能为空</span>
+            </td>
+        </tr>
+        <tr>
+            <th>新密码</th>
+            <td>
+                <input type="password" id="input_password_new" name="password_new" tabindex="2" class="span4" placeholder="新密码" class="easyui-validatebox" data-options="required:true"   style="width:350px;">
+                <span class="help-inline" id="help_password_new">必填选，新密码不能为空</span>
+            </td>
+        </tr>
+        <tr>
+            <th>确认密码</th>
+            <td>
+                <input type="password" id="input_password_confirmation" name="password_confirmation" tabindex="3" class="span4" placeholder="确认密码" class="easyui-validatebox" data-options="required:true"   style="width:350px;">
+                <span class="help-inline" id="help_password_confirmation">必填选，确认密码不能为空，且要与新密码保持一致</span>
+            </td>
+        </tr>
+        <tr>
+            <th>验证字符</th>
+            <td>
+                <input type="text" id="input_captcha" name="captcha" tabindex="4" class="span4" placeholder="验证字符" class="easyui-validatebox" data-options="required:true"  style="width:350px;">
+                <span class="help-inline" id="help_captcha">请输入下面图片内的字符</span><br>
+                <img id="img_captcha" name="img_captcha" width="100" height="40" alt="点击更换验证码" title="点击更换验证码" style="cursor:pointer;">
+            </td>
+        </tr>
+    </table>
+    <div border="false" class="div_btn">
+        <a id="linkbtn_submit" class="easyui-linkbutton" iconCls="icon-ok" tabindex="5">确定</a>
+        <a id="linkbtn_reset" href="/profile/safe/resetpwd" class="easyui-linkbutton" iconCls="icon-cancel" tabindex="6">取消</a>
     </div>
-    <div class="control-group">
-        <label class="control-label" for="input_password_new">新密码</label>
-        <div class="controls">
-            <input type="password" id="input_password_new" name="password_new" tabindex="2" class="span4" placeholder="新密码" value="">
-            <span class="help-inline" id="help_password_new">必填选，新密码不能为空</span>
-        </div>
-    </div>
-    <div class="control-group">
-        <label class="control-label" for="input_password_confirmation">确认密码</label>
-        <div class="controls">
-            <input type="password" id="input_password_confirmation" name="password_confirmation" tabindex="3" class="span4" placeholder="确认密码" value="">
-            <span class="help-inline" id="help_password_confirmation">必填选，密码不能为空</span>
-        </div>
-    </div>
-    <div class="control-group">
-        <label class="control-label" for="input_captcha">验证字符</label>
-        <div class="controls">
-            <input type="text" id="input_captcha" name="captcha" tabindex="4" class="span4" placeholder="验证字符" value="">
-            <span class="help-inline" id="help_captcha">请输入下面图片内的字符</span><br>
-            <img id="img_captcha" name="img_captcha" width="100" height="40" alt="点击更换验证码" title="点击更换验证码" style="cursor:pointer;">
-        </div>
-    </div>
-    <hr>
-    <div class="control-group">
-        <div class="controls">
-            <button id="btn_login" type="submit" tabindex="5" class="btn btn-primary">确定</button>&nbsp;&nbsp;&nbsp;&nbsp;
-            <button id="btn_reset" type="reset" tabindex="6" class="btn">取消</button>
-        </div>
-    </div>
+    </fieldset>
 </form>
+</div>

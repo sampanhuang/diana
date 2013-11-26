@@ -13,9 +13,109 @@ class Admin_Service_ManagerMenu extends Admin_Service_Abstract
         parent::__construct();
     }
 
+    /**
+     * 插入数据
+     *  @param $input
+     */
+    function insert($input)
+    {
+
+    }
 
     /**
-     * 确认他是否有确认载入当前URL
+     * 确认外部参数是否正确
+     * @param $data 外部参数
+     */
+    function checkInputWithInsert($data)
+    {
+
+    }
+
+    /**
+     * 更新数据
+     * @param $input
+     * @param $menuId
+     */
+    function update($input,$menuId)
+    {
+
+    }
+
+    /**
+     * 为combo tree提供数据
+     * 用于添加与编辑菜单时的上级菜单
+     */
+    function makeComboTree($tree)
+    {
+        if((empty($tree))||(!is_array($tree))){
+            return false;
+        }
+        $treeGird = array();
+        foreach($tree as $moduleId => $rowModule){
+            if((!empty($rowModule['son']))&&(is_array($rowModule['son']))){
+                $treeGird[$moduleId]['id'] = $rowModule['menu_id'];
+                $treeGird[$moduleId]['text'] = $rowModule['menu_label_'.DIANA_TRANSLATE_CURRENT];
+                $treeGird[$moduleId]['state'] = 'closed';
+                foreach($rowModule['son'] as $controllerId => $rowController){
+                    if((!empty($rowController['son']))&&(is_array($rowController['son']))){
+                        $treeGird[$moduleId]['children'][$controllerId]['id'] = $rowController['menu_id'];
+                        $treeGird[$moduleId]['children'][$controllerId]['text'] = $rowController['menu_label_'.DIANA_TRANSLATE_CURRENT];
+                    }
+                }
+            }
+            if(count($treeGird[$moduleId]['children']) ==  0){
+                unset($treeGird[$moduleId]['state']);
+            }else{
+                $treeGird[$moduleId]['children'] = array_values($treeGird[$moduleId]['children']);
+            }
+        }
+        $treeGird = array_values($treeGird);
+        return array(array('id' => 0,'text' => 'root','children' => $treeGird));
+    }
+
+    /**
+     * 为tree grid提供数据
+     */
+    function makeTreeGrid($tree)
+    {
+        if((empty($tree))||(!is_array($tree))){
+            return false;
+        }
+        $treeGird = array();
+        foreach($tree as $moduleId => $rowModule){
+            if((!empty($rowModule['son']))&&(is_array($rowModule['son']))){
+                $treeGird[$moduleId] = $rowModule;
+                $treeGird[$moduleId]['menu_label'] = $rowModule['menu_label_'.DIANA_TRANSLATE_CURRENT];
+                $treeGird[$moduleId]['state'] = 'closed';
+                foreach($rowModule['son'] as $controllerId => $rowController){
+                    if((!empty($rowController['son']))&&(is_array($rowController['son']))){
+                        $treeGird[$moduleId]['children'][$controllerId] = $rowController;
+                        $treeGird[$moduleId]['children'][$controllerId]['menu_label'] = $rowController['menu_label_'.DIANA_TRANSLATE_CURRENT];
+                        $treeGird[$moduleId]['children'][$controllerId]['state'] = 'closed';
+                        foreach($rowController['son'] as $actionId => $rowAction){
+                            $treeGird[$moduleId]['children'][$controllerId]['children'][$actionId] = $rowAction;
+                            $treeGird[$moduleId]['children'][$controllerId]['children'][$actionId]['menu_label'] = $rowAction['menu_label_'.DIANA_TRANSLATE_CURRENT];
+                        }
+                    }
+                    if(count($treeGird[$moduleId]['children'][$controllerId]['children']) ==  0){
+                        unset($treeGird[$moduleId]['children'][$controllerId]['state']);
+                    }else{
+                        $treeGird[$moduleId]['children'][$controllerId]['children'] = array_values($treeGird[$moduleId]['children'][$controllerId]['children']);
+                    }
+                }
+            }
+            if(count($treeGird[$moduleId]['children']) ==  0){
+                unset($treeGird[$moduleId]['state']);
+            }else{
+                $treeGird[$moduleId]['children'] = array_values($treeGird[$moduleId]['children']);
+            }
+        }
+        $treeGird = array_values($treeGird);
+        return $treeGird;
+    }
+
+    /**
+     * 确认他是否有权限载入当前URL
      * @param $tree 资源数
      * @param $module 模块
      * @param $controller 控制器
@@ -24,12 +124,70 @@ class Admin_Service_ManagerMenu extends Admin_Service_Abstract
      */
     function check($tree,$module,$controller,$action)
     {
-        $temp = array();
-        if(empty($tree[$module]['son'][$controller]['son'][$action])){
+        foreach($tree as $moduleId => $rowMoudle){
+            foreach($rowMoudle['son'] as $controllerId => $rowController){
+                foreach($rowController['son'] as $actionId => $rowActon){
+                    $tmpUrl = parse_url($rowActon['menu_link']);
+                    if(strtolower(trim($tmpUrl['path'])) == strtolower(trim(implode('/',array($module,$controller,$action))))){
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 生成左侧菜单
+     * @param array $tree
+     * @return array|bool
+     */
+    function makeMenusByTreeForEasyui(array $tree)
+    {
+        if((empty($tree))||(!is_array($tree))){
             return false;
         }
-        return true;
+        $menus = array();
+        foreach($tree as $moduleId => $rowModule){
+            if((!empty($rowModule['son']))&&(is_array($rowModule['son']))){
+                $menus[$moduleId]['id'] = $rowModule['menu_id'];
+                $menus[$moduleId]['text'] = $rowModule['menu_label_'.DIANA_TRANSLATE_CURRENT];
+                $menus[$moduleId]['state'] = 'closed';
+                $menus[$moduleId]['attributes']['url'] = '';
+                foreach($rowModule['son'] as $controllerId => $rowController){
+                    if((!empty($rowController['son']))&&(is_array($rowController['son']))){
+                        $menus[$moduleId]['children'][$controllerId]['id'] = $rowController['menu_id'];
+                        $menus[$moduleId]['children'][$controllerId]['text'] = $rowController['menu_label_'.DIANA_TRANSLATE_CURRENT];
+                        $menus[$moduleId]['children'][$controllerId]['state'] = 'closed';
+                        $menus[$moduleId]['children'][$controllerId]['attributes']['url'] = '';
+                        foreach($rowController['son'] as $actionId => $rowAction){
+                            if($rowAction['menu_show'] == 1){
+                                $menus[$moduleId]['children'][$controllerId]['children'][$actionId]['id'] = $rowAction['menu_id'];
+                                $menus[$moduleId]['children'][$controllerId]['children'][$actionId]['text'] = $rowAction['menu_label_'.DIANA_TRANSLATE_CURRENT];
+                                $menus[$moduleId]['children'][$controllerId]['children'][$actionId]['attributes']['url'] = '/'.$rowAction['menu_link'];
+                                $menus[$moduleId]['children'][$controllerId]['children'][$actionId]['attributes']['show'] = $rowAction['menu_show'];
+                                $menus[$moduleId]['children'][$controllerId]['children'][$actionId]['attributes']['nav'] = implode('/',array($rowModule['menu_label_'.DIANA_TRANSLATE_CURRENT],$rowController['menu_label_'.DIANA_TRANSLATE_CURRENT],$rowAction['menu_label_'.DIANA_TRANSLATE_CURRENT]));
+                            }else{
+                                unset($menus[$moduleId]['son'][$controllerId]['son'][$actionId]);
+                            }
+                        }
+                    }
+                    if(count($menus[$moduleId]['children'][$controllerId]['children']) ==  0){
+                        unset($menus[$moduleId]['children'][$controllerId]);
+                    }else{
+                        $menus[$moduleId]['children'][$controllerId]['children'] = array_values($menus[$moduleId]['children'][$controllerId]['children']);
+                    }
+                }
+            }
+            if(count($menus[$moduleId]['children']) ==  0){
+                unset($menus[$moduleId]);
+            }else{
+                $menus[$moduleId]['children'] = array_values($menus[$moduleId]['children']);
+            }
+        }
+        $menus = array_values($menus);
+        return $menus;
     }
+    
     /**
      * @param array $tree 树状权限
      * @return array|bool 菜单
@@ -40,33 +198,34 @@ class Admin_Service_ManagerMenu extends Admin_Service_Abstract
             return false;
         }
         $menus = $tree;
-        foreach($tree as $moduleKey => $rowModule){
+        foreach($tree as $moduleId => $rowModule){
             if((!empty($rowModule['son']))&&(is_array($rowModule['son']))){
-                foreach($rowModule['son'] as $controllerKey => $rowController){
+                foreach($rowModule['son'] as $controllerId => $rowController){
                     if((!empty($rowController['son']))&&(is_array($rowController['son']))){
-                        foreach($rowController['son'] as $actionKey => $rowAction){
+                        foreach($rowController['son'] as $actionId => $rowAction){
                             if($rowAction['menu_show'] == 1){
-                                $menus[$moduleKey]['son'][$controllerKey]['son'][$actionKey]['menu_link'] = '/'.implode('/',array($moduleKey,$controllerKey,$actionKey));
+                                $menus[$moduleId]['son'][$controllerId]['son'][$actionId]['menu_link'] = '/'.$rowAction['menu_link'];
                             }else{
-                                unset($menus[$moduleKey]['son'][$controllerKey]['son'][$actionKey]);
+                                unset($menus[$moduleId]['son'][$controllerId]['son'][$actionId]);
                             }
                         }
                     }
-                    if(count($menus[$moduleKey]['son'][$controllerKey]['son']) ==  0){
-                        unset($menus[$moduleKey]['son'][$controllerKey]);
-                    }elseif(count($menus[$moduleKey]['son'][$controllerKey]['son']) == 1){
-                        $tmpAction = current($menus[$moduleKey]['son'][$controllerKey]['son']);
-                        $menus[$moduleKey]['son'][$controllerKey]['menu_link'] = $tmpAction['menu_link'];
+                    if(count($menus[$moduleId]['son'][$controllerId]['son']) ==  0){
+                        unset($menus[$moduleId]['son'][$controllerId]);
+                    }elseif(count($menus[$moduleId]['son'][$controllerId]['son']) == 1){
+                        $tmpAction = current($menus[$moduleId]['son'][$controllerId]['son']);
+                        $menus[$moduleId]['son'][$controllerId]['menu_link'] = $tmpAction['menu_link'];
                     }
                 }
             }
-            if(count($menus[$moduleKey]['son']) ==  0){
-                unset($menus[$moduleKey]);
-            }elseif(count($menus[$moduleKey]['son']) == 1){
-                $tmpController = current($menus[$moduleKey]['son']);
-                $menus[$moduleKey]['menu_link'] = $tmpController['menu_link'];
+            if(count($menus[$moduleId]['son']) ==  0){
+                unset($menus[$moduleId]);
+            }elseif(count($menus[$moduleId]['son']) == 1){
+                $tmpController = current($menus[$moduleId]['son']);
+                $menus[$moduleId]['menu_link'] = $tmpController['menu_link'];
             }
         }
+        //print_r($menus);
         return $menus;
     }
 
@@ -87,7 +246,7 @@ class Admin_Service_ManagerMenu extends Admin_Service_Abstract
 
     /**
      * 通过ID生成菜单数
-     * 本方法中出现了三次的重复循环，估计要挨骂了，口下留情啊，赶时间，没空想太多
+     * 
      * @param array $menuId 菜单ID
      */
     function makeTreeByIds($menuIds)
@@ -102,18 +261,43 @@ class Admin_Service_ManagerMenu extends Admin_Service_Abstract
             return false;
         }
         $menuIds = array_filter(array_unique($menuIds));
+        $fatherMenuIds = array();
+        $grandfatherMenuIds = array();
         $tree = array();
-        //提取原始数据
+        //提取原始数据-第一层的
         $modelManagerMenu = new Diana_Model_ManagerMenu();
         if(!$rows = $modelManagerMenu->getRowsById(null,$menuIds)){
             $this->setMsgs('数据获取失败');
             return false;
         }
-        return $this->formatTree($rows);
+        //获取第二层ID
+        foreach($rows as $row){
+            if(!empty($row['menu_fatherId'])){
+                $fatherMenuIds[] =$row['menu_fatherId'];
+            }
+        }
+        $menuIds = array_merge($menuIds,$fatherMenuIds);
+        //获取第一层ID
+        if($rowsFather = $modelManagerMenu->getRowsById(null,$fatherMenuIds)){
+            foreach($rowsFather as $rowFather){
+                if(!empty($rowFather['menu_fatherId'])){
+                    $grandfatherMenuIds[] =$rowFather['menu_fatherId'];
+                }
+            }
+            $menuIds = array_merge($menuIds,$grandfatherMenuIds);
+        }
+        $menuIds = array_filter(array_unique($menuIds));
+        //再重新取一次
+        if(!$rowsMenu = $modelManagerMenu->getRowsById(null,$menuIds)){
+            $this->setMsgs('数据获取失败');
+            return false;
+        }
+        return $this->formatTree($rowsMenu);
     }
 
     /**
      * 格式化树
+     * 本方法中出现了三次的重复循环，估计要挨骂了，口下留情啊，赶时间，没空想太多
      * @param $rowsMenu
      */
     function formatTree($rows)
@@ -124,46 +308,67 @@ class Admin_Service_ManagerMenu extends Admin_Service_Abstract
             return false;
         }
         //ID与键值对应关系表
-        $arrId2Key = array();
-        $moduleIds = array();
+        //$arrId2Key = array();
+        $moduleIds = array();//模块ID
+        $controllerIds = array();//控制器ID
         //过滤获取一级菜单
         foreach($rows as $row){
             $tmpId = $row['menu_id'];
             $tmpFatherId = $row['menu_fatherId'];
-            $tmpKey = $row['menu_key'];
-            $arrId2Key[$tmpId] = $tmpKey;
+            //$arrId2Key[$tmpId] = $tmpKey;
             if(empty($tmpFatherId)){
                 $moduleIds[] = $tmpId;
                 if(empty($tree[$tmpId])){//如果不存在就直接初始化
-                    $tree[$tmpKey] = $row;
+                    $tree[$tmpId] = $row;
                 }
             }
-        }
-        $controllerIds = array();
+        }        
         //过滤获取二级菜单
         foreach($rows as $row){
             $tmpId = $row['menu_id'];
             $tmpFatherId = $row['menu_fatherId'];
-            $tmpKey = $row['menu_key'];
+            //$tmpKey = $row['menu_key'];
             if((!empty($tmpFatherId))&&(in_array($tmpFatherId,$moduleIds))){
-                $tree[$arrId2Key[$tmpFatherId]]['son'][$tmpKey] = $row;
+                $tree[$tmpFatherId]['son'][$tmpId] = $row;
                 $controllerIds[$tmpFatherId][] = $tmpId;
             }
         }
         //过滤三级菜单
         foreach($controllerIds as $moduleId => $valueControllerIds){
             foreach($rows as $row){
+            	$tmpId = $row['menu_id'];
                 $tmpFatherId = $row['menu_fatherId'];
-                $tmpKey = $row['menu_key'];
+                //$tmpKey = $row['menu_key'];
                 if((!empty($tmpFatherId))&&(in_array($tmpFatherId,$valueControllerIds))){
-                    if(empty($tree[$arrId2Key[$moduleId]]['son'][$arrId2Key[$tmpFatherId]]['menu_link_frist'])){
-                        $tree[$arrId2Key[$moduleId]]['son'][$arrId2Key[$tmpFatherId]]['menu_link_frist'] = implode('/',array($arrId2Key[$moduleId],$arrId2Key[$tmpFatherId],$tmpKey));
-                    }
-                    $tree[$arrId2Key[$moduleId]]['son'][$arrId2Key[$tmpFatherId]]['son'][$tmpKey] = $row;
+                    $tree[$moduleId]['son'][$tmpFatherId]['son'][$tmpId] = $row;
                 }
             }
         }
         return $tree;
+    }
+
+    /**
+     * 通过ID获取菜单详细信息
+     * @param $id 流水号
+     */
+    function getDetailById($id)
+    {
+        $modelManagerMenu = new Diana_Model_ManagerMenu();
+        if(!$rows = $modelManagerMenu->getRowsById(null,$id)){
+            return false;
+        }
+        $row = $rows[0];
+        if(!empty($row['menu_fatherId'])){
+            if($rowsFather = $modelManagerMenu->getRowsById(null,$row['menu_fatherId'])){
+                $row['menu_father'] = $rowsFather[0];
+            }
+            if(!empty($row['menu_father']['menu_fatherId'])){
+                if($rowsGrandfather = $modelManagerMenu->getRowsById(null,$row['menu_father']['menu_fatherId'])){
+                    $row['menu_father']['menu_father'] = $rowsGrandfather[0];
+                }
+            }
+        }
+        return $row;
     }
 
     /**

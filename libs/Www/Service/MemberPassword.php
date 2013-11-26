@@ -57,6 +57,12 @@ class Www_Service_MemberPassword extends Diana_Service_Abstract
         //写入新session
         $serviceDoorkeeper = new Www_Service_Doorkeeper();
         $serviceDoorkeeper->writeSession($detailMember);
+        //通过后台变更密码日志
+        $serviceMemberLog = new Diana_Service_MemberLog();
+        if(!$serviceMemberLog->write(223,$memberId,$memberEmail,$memberName)){
+        	$this->setMsgs($serviceMemberLog->getMsgs());
+            return false;
+        }
         return true;
     }
 
@@ -133,6 +139,12 @@ class Www_Service_MemberPassword extends Diana_Service_Abstract
             $this->setMsgs($serviceMail->getMsgs());
             return false;
         }
+        //写入密码保护邮件发送日志
+        $serviceMemberLog = new Diana_Service_MemberLog();
+        if(!$serviceMemberLog->write(221,$memberId,$memberEmail,$memberName)){
+        	$this->setMsgs($serviceMemberLog->getMsgs());
+            return false;
+        }
         return true;
     }
 
@@ -190,6 +202,12 @@ class Www_Service_MemberPassword extends Diana_Service_Abstract
         if (!$this->modifyPasswd($memberId,$md5Pwd,$memberEmail,$memberName,$memberPasswd)) {
             return false;
         }
+        //通过密码保护邮件变更密码日志
+        $serviceMemberLog = new Diana_Service_MemberLog();
+        if(!$serviceMemberLog->write(222,$memberId,$memberEmail,$memberName)){
+        	$this->setMsgs($serviceMemberLog->getMsgs());
+            return false;
+        }
         return true;
     }
 
@@ -237,13 +255,6 @@ class Www_Service_MemberPassword extends Diana_Service_Abstract
         $modelMember = new Diana_Model_Member();
         if (!$rowsMember = $modelMember->updateWithPasswd($id,$md5Pwd)) {
             $this->setMsgs("密码更新失败");
-            return false;
-        }
-        //写入纪录
-        $modelMemberLog = new Diana_Model_MemberLog();
-        $modelMemberLogResetpwd = new Diana_Model_MemberLogResetpwd();
-        if (!$modelMemberLogResetpwd->write($id,$email,$name)) {
-            $this->setMsgs("当前用户【{$email}】密码变更日志写入失败");
             return false;
         }
         return true;

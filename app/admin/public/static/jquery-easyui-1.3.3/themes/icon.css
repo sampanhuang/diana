@@ -62,3 +62,66 @@
 .icon-mini-refresh{
 	background:url('icons/mini_refresh.png') no-repeat center center;
 }
+
+/*哥自己添加的*/
+.icon-apply{
+    background:url('icons/apply.png') no-repeat center center;
+}
+.icon-cancel{
+    background:url('icons/cancel.png') no-repeat center center;
+}
+.icon-bell{
+    background:url('icons/bell.png') no-repeat center center;
+}
+.icon-user{
+    background:url('icons/user.png') no-repeat center center;
+}
+.icon-login{
+    background:url('icons/login.png') no-repeat center center;
+}
+.icon-logout{
+    background:url('icons/logout.png') no-repeat center center;
+}
+.icon-yes{
+    background:url('icons/yes.png') no-repeat center center;
+}
+.icon-no{
+    background:url('icons/no.png') no-repeat center center;
+}
+.icon-pencil{
+    background:url('icons/pencil.png') no-repeat center center;
+}
+.icon-edit{
+    background:url('icons/edit.png') no-repeat center center;
+}
+.icon-edit_add{
+    background:url('icons/edit_add.png') no-repeat center center;
+}
+.icon-edit_remove{
+    background:url('icons/edit_remove.png') no-repeat center center;
+}
+.icon-loading{
+    background:url('icons/loading.gif') no-repeat center center;
+}
+.icon-cookie{
+    background:url('icons/cookie.png') no-repeat center center;
+}
+.icon-lock{
+    background:url('icons/lock.png') no-repeat center center;
+}
+.icon-unlock{
+    background:url('icons/unlock.png') no-repeat center center;
+}
+
+.icon-delete{
+    background:url('icons/delete.png') no-repeat center center;
+}
+.icon-archives{
+    background:url('icons/archives.png') no-repeat center center;
+}
+.icon-email{
+    background:url('icons/email.png') no-repeat center center;
+}
+.icon-contact{
+    background:url('icons/contact.png') no-repeat center center;
+}

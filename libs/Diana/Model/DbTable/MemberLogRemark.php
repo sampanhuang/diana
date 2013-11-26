@@ -11,6 +11,13 @@ class Diana_Model_DbTable_MemberLogRemark extends Diana_Model_DbTable_Abstract
     function __construct()
     {
         parent::__construct();
+        if(empty($year)){
+            $year = date('Y');
+        }
+        $source = $this->_name;
+        $dest = $this->_name.'_'.$year;
+        $this->copyTableStructure($source,$dest);
+        $this->_name = $dest;
     }
 
     /**
@@ -21,7 +28,7 @@ class Diana_Model_DbTable_MemberLogRemark extends Diana_Model_DbTable_Abstract
     function setOrders()
     {
         $this->_orders = array(
-            "new" => array("log_time desc"),
+            "new" => array("log_id desc"),
         );
     }
 

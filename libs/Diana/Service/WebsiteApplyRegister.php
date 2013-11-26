@@ -40,17 +40,19 @@ class Diana_Service_WebsiteApplyRegister extends Diana_Service_Abstract
         //查询这个邮箱有没有注册过用户，通过这个邮箱得到ID
         $modelMember = new Diana_Model_Member();
         if(!$rowsMember = $modelMember->getRowsByEmail(null,$data['website_memberEmail'])){
-            if(!$memberId = $modelMember->register(0,$data['website_memberEmail'],md5($data['website_memberEmail']),md5(time()))){
+            if(!$rowsMember = $modelMember->register(1,$data['website_memberEmail'],md5($data['website_memberEmail']),md5(time()))){
                 $this->setMsgs('邮箱'.$data['website_memberEmail'].'注册失败');
                 return false;
             }
             $rollbackMember = 1;
-        }else{
-            $memberId = $rowsMember[0]['member_id'];
         }
+        $rowMember = $rowsMember[0];
+        $memberId = $rowMember['member_id'];
+        $memberEmail = $rowMember['member_email'];
+        $memberName = $rowMember['member_name'];
         //写入纪录
         $modelWebsiteApplyRegister = new Diana_Model_WebsiteApplyRegister();
-        if(!$rowsWebsiteApply = $modelWebsiteApplyRegister->register($memberId,$data['website_name'],$data['website_domain'],$data['website_tag'],$data['website_categoryId'],$data['website_continent'],$data['website_country'])){
+        if(!$rowsWebsiteApply = $modelWebsiteApplyRegister->postApply($memberId,$data['website_name'],$data['website_domain'],$data['website_tag'],$data['website_categoryId'],$data['website_continent'],$data['website_country'])){
             //删除会员数据
             if($rollbackMember == 1){
                 $modelMember->deleteById($memberId);
@@ -59,12 +61,12 @@ class Diana_Service_WebsiteApplyRegister extends Diana_Service_Abstract
             $this->setMsgs('网站'.$data['website_name'].'申请失败，无法插入网站纪录');
             return false;
         }
-        $applyId = $rowsWebsiteApply[0]['apply_id'];
+        $registerId = $rowsWebsiteApply[0]['register_id'];
         //添加网站介绍
         $modelWebsiteApplyRegisterIntro = new Diana_Model_WebsiteApplyRegisterIntro();
-        if(!$modelWebsiteApplyRegisterIntro->saveIntro($applyId,$data['website_intro'])){
+        if(!$modelWebsiteApplyRegisterIntro->saveIntro($registerId,$data['website_intro'])){
             //删除提交数据
-            $modelWebsiteApplyRegister->deleteById($applyId);
+            $modelWebsiteApplyRegister->deleteById($registerId);
             //删除会员数据
             if($rollbackMember == 1){
                 $modelMember->deleteById($memberId);
@@ -74,12 +76,12 @@ class Diana_Service_WebsiteApplyRegister extends Diana_Service_Abstract
             return false;
         }
         //写入动态
-        $modelWebsiteTrendApply = new Diana_Model_WebsiteTrendApply();
-        if(!$modelWebsiteTrendApply->update()){
+        $modelWebsiteTrendApplyRegister = new Diana_Model_WebsiteTrendApplyRegister();
+        if(!$modelWebsiteTrendApplyRegister->update()){
             //删除提交数据
-            $modelWebsiteApplyRegister->deleteById($applyId);
+            $modelWebsiteApplyRegister->deleteById($registerId);
             //删除网站描述
-            $modelWebsiteApplyRegisterIntro->clearIntro($applyId);
+            $modelWebsiteApplyRegisterIntro->clearIntro($registerId);
             //删除会员数据
             if($rollbackMember == 1){
                 $modelMember->deleteById($memberId);
@@ -87,6 +89,11 @@ class Diana_Service_WebsiteApplyRegister extends Diana_Service_Abstract
             //返回提示信息
             $this->setMsgs('网站'.$data['website_name'].'申请失败，无法更新分析数据');
             return false;
+        }
+        //写入网站提交日志
+        $serviceMemberLog = new Diana_Service_MemberLog();
+        if(!$serviceMemberLog->write(31,$memberId,$memberEmail,$memberName)){
+        	$this->setMsgs($serviceMemberLog->getMsgs());
         }
         return true;
     }
@@ -119,12 +126,8 @@ class Diana_Service_WebsiteApplyRegister extends Diana_Service_Abstract
             $this->setMsgs('请选择网站类型');
             return false;
         }
-        if(empty($data['website_continent'])){
-            $this->setMsgs('请选择所处大陆');
-            return false;
-        }
-        if(empty($data['website_country'])){
-            $this->setMsgs('请选择所处国家');
+        if(empty($data['website_areaId'])){
+            $this->setMsgs('请选择所处区域');
             return false;
         }
         if(empty($data['website_memberEmail'])){
@@ -156,21 +159,21 @@ class Diana_Service_WebsiteApplyRegister extends Diana_Service_Abstract
 
     /**
      * 同意申请
-     * @param $applyId
+     * @param $registerId
      * @return array|bool
      */
-    function accedeApply($applyId)
+    function accedeApply($registerId)
     {
         //确认申请单ID是否正确，并取出申请单
-        if(!$rowsWebsiteApply = $this->checkApplyId($applyId)){
+        if(!$rowsWebsiteApply = $this->checkApplyId($registerId)){
             return false;
         }
-        if(!is_array($applyId)){
-            $applyId = explode(',',$applyId);
+        if(!is_array($registerId)){
+            $registerId = explode(',',$registerId);
         }
         //获取他们的简介
         $modelWebsiteApplyRegisterInstro = new Diana_Model_WebsiteApplyRegisterIntro();
-        if(!$optionsWebsiteApplyInstro = $modelWebsiteApplyRegisterInstro->getIntroById(null,$applyId)){
+        if(!$optionsWebsiteApplyInstro = $modelWebsiteApplyRegisterInstro->getIntroById(null,$registerId)){
             return false;
         }
         //已经存在重复网站名和域名的申请ID
@@ -191,8 +194,8 @@ class Diana_Service_WebsiteApplyRegister extends Diana_Service_Abstract
         $tmpInsertData = array();
         $rowsWebsite = array();
         foreach($rowsWebsiteApply as $rowWebsiteApply){
-            if($rowWebsiteApply['apply_pass'] == 0){
-                $tmpApplyId = $rowWebsiteApply['apply_id'];
+            if($rowWebsiteApply['register_pass'] == 0){
+                $tmpApplyId = $rowWebsiteApply['register_id'];
                 $checkName[$tmpApplyId] = $rowWebsiteApply['website_name'];
                 $checkDomain[$tmpApplyId] = $rowWebsiteApply['website_domain'];
                 $tmpInsertData[$tmpApplyId] = array(
@@ -205,9 +208,9 @@ class Diana_Service_WebsiteApplyRegister extends Diana_Service_Abstract
                     'website_categoryId' => $rowWebsiteApply['website_categoryId'],
                     'website_continent' => $rowWebsiteApply['website_continent'],
                     'website_country' => $rowWebsiteApply['website_country'],
-                    'website_apply_time' => $rowWebsiteApply['apply_insert_time'],
-                    'website_apply_ip' => $rowWebsiteApply['apply_insert_ip'],
-                    'website_applyId' => $rowWebsiteApply['apply_id'],
+                    'website_apply_time' => $rowWebsiteApply['register_insert_time'],
+                    'website_apply_ip' => $rowWebsiteApply['register_insert_ip'],
+                    'website_applyId' => $rowWebsiteApply['register_id'],
                     'website_insert_time' => time(),
                 );
             }
@@ -235,7 +238,7 @@ class Diana_Service_WebsiteApplyRegister extends Diana_Service_Abstract
             $insertData[$keyApplyId] = $valApply;
             $okApplyId[] = $keyApplyId;
         }
-        $existApplyId = array_diff($applyId,$okApplyId);
+        $existApplyId = array_diff($registerId,$okApplyId);
         //没有冲突的插入纪录
         if(empty($insertData)){
             $this->setMsgs('没有要插入的纪录，也就是说你要注册的网站已经存在了');
@@ -283,33 +286,33 @@ class Diana_Service_WebsiteApplyRegister extends Diana_Service_Abstract
 
     /**
      * 拒绝申请
-     * @param $applyId
+     * @param $registerId
      * @return bool
      */
-    function demurApply($applyId)
+    function demurApply($registerId)
     {
-        if(!$rowsWebsiteApply = $this->checkApplyId($applyId)){
+        if(!$rowsWebsiteApply = $this->checkApplyId($registerId)){
             return false;
         }
         $modelWebsiteApplyRegister = new Diana_Model_WebsiteApplyRegister();
-        $modelWebsiteApplyRegister->updatePass($applyId,2);
+        $modelWebsiteApplyRegister->updatePass($registerId,2);
         return $rowsWebsiteApply;
     }
 
     /**
      * 确认申请单ID是否正确
-     * @param $applyId
+     * @param $registerId
      * @return array|bool
      */
-    function checkApplyId($applyId)
+    function checkApplyId($registerId)
     {
-        if(empty($applyId)){
+        if(empty($registerId)){
             $this->setMsgs('参数不能为空');
             return false;
         }
         $modelWebsiteApplyRegister = new Diana_Model_WebsiteApplyRegister();
-        if(!$rowsWebsiteApply = $modelWebsiteApplyRegister->getRowsById(null,$applyId)){
-            $this->setMsgs('无效的参数');
+        if(!$rowsWebsiteApply = $modelWebsiteApplyRegister->getRowsById(null,$registerId)){
+            $this->setMsgs('无效的参数 - '.implode(",",$registerId));
             return false;
         }
         return $rowsWebsiteApply;
@@ -348,50 +351,49 @@ class Diana_Service_WebsiteApplyRegister extends Diana_Service_Abstract
         return array('total' => $countWebsiteApply,'rows' => $rowsWebsiteApply);
     }
 
-    function detailById($applyId)
+    function detailById($registerId)
     {
-        if(empty($applyId)){
+        if(empty($registerId)){
             $this->setMsgs('参数不能为空');
             return false;
         }
-        if(!is_numeric($applyId)){
+        if(!is_numeric($registerId)){
             $this->setMsgs('参数类型错误');
             return false;
         }
         //获取网站信息
         $modelWebsiteApplyRegister = new Diana_Model_WebsiteApplyRegister();
-        if(!$rowsWebsiteApply = $modelWebsiteApplyRegister->getRowsById(null,$applyId)){
+        if(!$rowsWebsiteApply = $modelWebsiteApplyRegister->getRowsById(null,$registerId)){
             return false;
         }
         $rowWebsiteApply = $rowsWebsiteApply[0];
-
         //获取网站详情
         $modelWebsiteApplyRegisterIntro = new Diana_Model_WebsiteApplyRegisterIntro();
-        if($rowsWebsiteIntro = $modelWebsiteApplyRegisterIntro->getIntroById(null,$applyId)){
-            $rowWebsiteApply['website_intro'] = $rowsWebsiteIntro[$applyId];
+        if($rowsWebsiteIntro = $modelWebsiteApplyRegisterIntro->getIntroById(null,$registerId)){
+            $rowWebsiteApply['website_intro'] = $rowsWebsiteIntro[$registerId];
         }
         //获取归属人信息
         $modelMember = new Diana_Model_Member();
         if($rowsMember = $modelMember->getRowsById(null,$rowWebsiteApply['website_memberId'])){
             $rowWebsite['website_memberName'] = $rowsMember[0]['website_memberName'];
             $rowWebsite['website_memberEmail'] = $rowsMember[0]['website_memberEmail'];
-            $rowWebsite = array_merge($rowWebsiteApply,$rowsMember[0]);
+            $rowWebsiteApply = array_merge($rowWebsiteApply,$rowsMember[0]);
         }
-        return $rowWebsite;
+        return $rowWebsiteApply;
     }
 
     //删除申请
-    function deleteById($applyId)
+    function deleteById($registerId)
     {
-        if(empty($applyId)){
+        if(empty($registerId)){
             $this->setMsgs('参数不能为空');
             return false;
         }
         //删除条件
-        $condition = array("apply_id" => $applyId);
+        $condition = array("register_id" => $registerId);
         //删除主体内容
         $modelWebsiteApplyRegister = new Diana_Model_WebsiteApplyRegister();
-        if(!$rowsWebsiteApply = $modelWebsiteApplyRegister->getRowsById(null,$applyId)){
+        if(!$rowsWebsiteApply = $modelWebsiteApplyRegister->getRowsById(null,$registerId)){
             $this->setMsgs('错误的流水号');
             return false;
         }
@@ -401,7 +403,7 @@ class Diana_Service_WebsiteApplyRegister extends Diana_Service_Abstract
         }
         //删除网站简介
         $modelWebsiteApplyRegisterIntro = new Diana_Model_WebsiteApplyRegisterIntro();
-        if($rowsWebsiteApplyIntro = $modelWebsiteApplyRegisterIntro->getRowsById(null,$applyId)){
+        if($rowsWebsiteApplyIntro = $modelWebsiteApplyRegisterIntro->getRowsById(null,$registerId)){
             if(!$modelWebsiteApplyRegisterIntro->delData($condition)){
                 foreach($rowsWebsiteApply as $rowWebsiteApply){
                     $modelWebsiteApplyRegister->saveData(1,$rowWebsiteApply);

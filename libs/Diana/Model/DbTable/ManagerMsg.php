@@ -24,7 +24,7 @@ class Diana_Model_DbTable_ManagerMsg extends Diana_Model_DbTable_Abstract
     function setOrders()
     {
         $this->_orders = array(
-            "new" => array("msg_id desc"),
+            "new" => array("msg_insert_time desc"),
         );
     }
 
@@ -42,14 +42,19 @@ class Diana_Model_DbTable_ManagerMsg extends Diana_Model_DbTable_Abstract
             $tmpWheres = $this->getWhereByCondition("msg_id",$condition["msg_id"],1);
             $wheres = array_merge($wheres,$tmpWheres);
         }
-        if (!empty($condition["msg_source"])) {//根据发件人来查询
+        if(!empty($condition['msg_subject_like'])){//标题模糊查询
             $tmpWheres = array();
-            $tmpWheres = $this->getWhereByCondition("msg_source",$condition["msg_source"],1);
+            $tmpWheres = $this->getWhereByCondition("msg_subject",$condition["msg_subject_like"],5);
             $wheres = array_merge($wheres,$tmpWheres);
         }
-        if (!empty($condition["msg_dest"])) {//根据收件人来查询
+        if (!empty($condition["msg_delete_inbox"])) {//根据发件人来查询
             $tmpWheres = array();
-            $tmpWheres = $this->getWhereByCondition("msg_dest",$condition["msg_dest"],1);
+            $tmpWheres = $this->getWhereByCondition("msg_delete_inbox",$condition["msg_delete_inbox"],1);
+            $wheres = array_merge($wheres,$tmpWheres);
+        }
+        if (!empty($condition["msg_delete_outbox"])) {//根据发件人来查询
+            $tmpWheres = array();
+            $tmpWheres = $this->getWhereByCondition("msg_delete_outbox",$condition["msg_delete_outbox"],1);
             $wheres = array_merge($wheres,$tmpWheres);
         }
         return $wheres;

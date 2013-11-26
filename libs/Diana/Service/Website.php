@@ -18,7 +18,7 @@ class Diana_Service_Website extends Diana_Service_Abstract
      */
     function flushHtmlIndex()
     {
-        $contentIndex = file_get_contents(DIANA_DOMAIN_WWW.'/default/website/index');
+        $contentIndex = file_get_contents('http://'.DIANA_DOMAIN_CURRENT.'/default/website/index');
         $contentIndex = $contentIndex.'<!--make time '.date('Y-m-d H:i:s').' , from '.$_SERVER['SERVER_ADDR'].'-->';
         if(!file_put_contents(DIANA_DIR_WWW_PUBLIC.'/index.htm',$contentIndex)){
             return false;
@@ -55,12 +55,25 @@ class Diana_Service_Website extends Diana_Service_Abstract
         if($offset < 0){
             $offset = 0;
         }
+        //获取所有地区信息
+        $serviceWebsiteArea = new Diana_Service_WebsiteArea();
+        if(!$allWebsiteArea = $serviceWebsiteArea->getall()){
+            return false;
+        }
+        //获取所有分类信息
+        $serviceWebsiteCategory = new Diana_Service_WebsiteCategory();
+        if(!$allWebsite = $serviceWebsiteCategory->getAll()){
+            return false;
+        }
+        //获取网站数据
         $modelWebsite = new Diana_Model_Website();
         if($countWebsite = $modelWebsite->getCountByCondition(null,$condition)){
             if($rowsWebsite = $modelWebsite->getRowsByCondition(null,$condition,null,$pagesize,$offset)){
-                $memberIds = array();
-                $websiteIds = array();
-                foreach($rowsWebsite as $rowWebsite){
+                $memberIds = array();//会员ID
+                $websiteIds = array();//网站ID
+                foreach($rowsWebsite as &$rowWebsite){
+                    $rowWebsite['website_areaFatherId'] = $allWebsiteArea[$rowWebsite['website_areaId']]['area_fatherId'];
+                    $rowWebsite['website_categoryFatherId'] = $allWebsiteArea[$rowWebsite['website_categoryId']]['category_fatherId'];
                     $websiteIds[] = $rowWebsite['website_id'];
                     if(!empty($rowWebsite['website_memberId'])){
                         $memberIds[$rowWebsite['website_memberId']] = $rowWebsite['website_memberId'];
@@ -81,7 +94,7 @@ class Diana_Service_Website extends Diana_Service_Abstract
                 }
                 //获取简介
                 $modelWebsiteIntro = new Diana_Model_WebsiteIntro();
-                if($optionsWebsiteIntro = $modelWebsiteIntro->getIntroById($websiteIds)){
+                if($optionsWebsiteIntro = $modelWebsiteIntro->getIntroById(null,$websiteIds)){
                     foreach($rowsWebsite as &$rowWebsite){
                         $rowWebsite['website_intro'] = $optionsWebsiteIntro[$rowWebsite['website_id']];
                     }
@@ -113,6 +126,11 @@ class Diana_Service_Website extends Diana_Service_Abstract
             return false;
         }
         $rowWebsite = $rowsWebsite[0];
+        //获取地区父级
+        $modelWebsiteArea = new Diana_Model_WebsiteArea();
+        if($rowsWebsiteAreaFather = $modelWebsiteArea->getRowsById(null,$rowWebsite['website_areaId'])){
+            $rowWebsite['website_areaFatherId'] =  $rowsWebsiteAreaFather[0]['area_fatherId'];
+        }
         //获取网站描述
         $modelWebsiteIntro = new Diana_Model_WebsiteIntro();
         if($websiteIntro = $modelWebsiteIntro->getIntroById(null,$websiteId)){
@@ -142,8 +160,8 @@ class Diana_Service_Website extends Diana_Service_Abstract
             $modelWebsiteTrendClickIn->update(1,$rowWebsite['website_id']);
             $modelWebsiteCategory = new Diana_Model_WebsiteCategory();
             $modelWebsiteCategory->updateCountClickIn(1,$rowWebsite['website_categoryId']);
-            $modelWebsiteCountry = new Diana_Model_WebsiteCountry();
-            $modelWebsiteCountry->updateCountClickIn(1,$rowWebsite['website_continent'],$rowWebsite['website_country']);
+            $modelWebsiteArea = new Diana_Model_WebsiteArea();
+            $modelWebsiteArea->updateCountClickIn(1,$rowWebsite['website_areaId']);
         }
         return $rowWebsite;
     }
@@ -160,7 +178,6 @@ class Diana_Service_Website extends Diana_Service_Abstract
             $this->setMsgs('参数不能为空');
             return false;
         }
-        print_r($websiteId);
         //删除条件
         $condition = array("website_id" => $websiteId);
         //删除主体内容
@@ -197,11 +214,10 @@ class Diana_Service_Website extends Diana_Service_Abstract
      * 更新网站资料
      * @param $websiteId 网站ID
      * @param $data 网站资料
-     * @param $isAdmin 是否为管理员
-     * @param $man ID
+     * @param $man 邮箱
      * @return bool|array 是否成功，成功返回更新后的东西，失败就返回false
      */
-    function updateById($websiteId,$data,$isAdmin = null,$man = null)
+    function updateById($websiteId,$data,$man = null)
     {
         //参数不能为空
         if(empty($websiteId)||empty($data)){
@@ -213,9 +229,9 @@ class Diana_Service_Website extends Diana_Service_Abstract
             return false;
         }
         //参数过滤
-        $serviceWebsiteApply = new Diana_Service_WebsiteApply();
-        if(!$data = $serviceWebsiteApply->checkApplyParams($data)){
-            $this->setMsgs($serviceWebsiteApply->getMsgs());
+        $serviceWebsiteApplyRegister = new Diana_Service_WebsiteApplyRegister();
+        if(!$data = $serviceWebsiteApplyRegister->checkApplyParams($data)){
+            $this->setMsgs($serviceWebsiteApplyRegister->getMsgs());
             return false;
         }
         //确认ID是否正确
@@ -240,34 +256,39 @@ class Diana_Service_Website extends Diana_Service_Abstract
         }
         $oldRowWebsite = $oldRowsWebsite[0];
         //保存编辑的信息
-        if(!$rowsWebsite = $modelWebsite->updateMainById($websiteId,$data)){
+        if(!$rowsWebsite = $modelWebsite->updateMainById($websiteId,$data,$man)){
             $this->setMsgs("网站数据保存失败");
             return false;
         }
         $rowWebsite = $rowsWebsite[0];
         //更新网站简介
-        $modelWebsiteIntro = new Diana_Model_WebsiteIntro();
-        if($rowsWebsiteIntro = $modelWebsiteIntro->saveIntro($websiteId,$data['website_intro'])){
-            $this->setMsgs("网站简介保存失败");
-            return false;
-        }
-        $rowWebsite['website_intro'] = $rowsWebsiteIntro[0]['website_intro'];
+        if($data['website_intro'] <> $oldRowWebsite['website_intro']){
+        	$modelWebsiteIntro = new Diana_Model_WebsiteIntro();
+	        if(!$rowsWebsiteIntro = $modelWebsiteIntro->saveIntro($websiteId,$data['website_intro'])){
+	            $this->setMsgs("网站简介保存失败");
+	            return false;
+	        }
+	        $rowWebsite['website_intro'] = $rowsWebsiteIntro[0]['website_intro'];
+        }        
         //更新网站标签
-        $serviceWebsiteTag = new Diana_Model_WebsiteTag();
+        $serviceWebsiteTag = new Diana_Service_WebsiteTag();
         if(!$serviceWebsiteTag->updateWebsiteTag($rowWebsite['website_id'],$rowWebsite['website_tag'].",".$rowWebsite['website_name'].",".$rowWebsite['website_domain'])){
+            $this->setMsgs("网站标签保存失败");
             $this->setMsgs($serviceWebsiteTag->getMsgs());
             return false;
         }
         //如果已经网站类别变更了
         $serviceWebsiteCategory = new Diana_Service_WebsiteCategory();
         if(!$serviceWebsiteCategory->websiteChangeCategory($oldRowWebsite['website_categoryId'],$rowWebsite['website_categoryId'],1,$rowWebsite['website_click_in'],$rowWebsite['website_click_out'])){
+            $this->setMsgs("网站类别保存失败");
             $this->setMsgs($serviceWebsiteCategory->getMsgs());
             return false;
         }
         //如果网站国家已经变更了
-        $serviceWebsiteCountry = new Diana_Service_WebsiteCountry();
-        if(!$serviceWebsiteCountry->websiteChangeCountry($oldRowWebsite['website_country'],$rowWebsite['website_country'],1,$rowWebsite['website_click_in'],$rowsWebsite['website_click_out'])){
-            $this->setMsgs($serviceWebsiteCategory->getMsgs());
+        $serviceWebsiteArea = new Diana_Service_WebsiteArea();
+        if(!$serviceWebsiteArea->websiteChangeArea($oldRowWebsite['website_areaId'],$rowWebsite['website_areaId'],1,$rowWebsite['website_click_in'],$rowsWebsite['website_click_out'])){
+            $this->setMsgs("网站区域信息保存失败");
+            $this->setMsgs($serviceWebsiteArea->getMsgs());
             return false;
         }
         return $rowWebsite;

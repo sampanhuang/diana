@@ -13,6 +13,8 @@ class Diana_Service_WebsiteCategory extends Diana_Service_Abstract
         parent::__construct();
     }
 
+
+
     /**
      * 网站变更类型，需要更新这个类型的网站数，点击流入和点击流出
      * @param $oldCategoryId 旧的类别ID
@@ -49,13 +51,51 @@ class Diana_Service_WebsiteCategory extends Diana_Service_Abstract
         return true;
     }
 
-    function getAll()
+    /**
+     * 生成树数据
+     *
+     * @return unknown
+     */
+    function makeTreegrid()
     {
+        $treeGrid = array();
         $modelWebsiteCategory = new Diana_Model_WebsiteCategory();
         if(!$rows = $modelWebsiteCategory->getRowsByCondition()){
             return false;
         }
-        return $rows;
+        foreach($rows as $row){
+            if(empty($row['category_fatherId'])){
+                $treeGrid[] = $row;
+            }
+        }
+        foreach($treeGrid as &$rowFather){
+            foreach($rows as $row){
+                if(!empty($row['category_fatherId'])){
+                    if( $rowFather['category_id'] == $row['category_fatherId'] ){
+                        $rowFather['children'][] = $row;
+                    }
+                }
+            }
+        }
+        return $treeGrid;
+    }
+
+    /**
+     * 获取所有分类数据
+     *
+     * @return unknown
+     */
+    function getAll($condition = null,$seq = null)
+    {
+        $all = array();
+        $modelWebsiteCategory = new Diana_Model_WebsiteCategory();
+        if(!$rows = $modelWebsiteCategory->getRowsByCondition(null,$condition,$seq)){
+            return false;
+        }
+        foreach($rows as $row){
+            $all[$row['category_id']] = $row;
+        }
+        return $all;
     }
 
     /**

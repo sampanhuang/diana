@@ -1,8 +1,8 @@
 <?php
 return array(	
-	"website_label" => "海华门",
-	"website_welcome" => "欢迎来到海华门",
-	"website_slogan" => "海华门！海外华人同出一门",
+	"website_label" => "东直门",
+	"website_welcome" => "欢迎来到东直门",
+	"website_slogan" => "东直门！海外华人同出一门",
 	"member_register" => "注册",
 	"member_login" => "登录",
 	"member_forgetPasswd" => "取回密码",

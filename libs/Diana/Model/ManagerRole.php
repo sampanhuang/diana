@@ -14,6 +14,14 @@ class Diana_Model_ManagerRole extends Diana_Model_Abstract
         $this->dt = new Diana_Model_DbTable_ManagerRole();
     }
 
+    function getRowsByName($refresh = null,$name)
+    {
+        $condition = array("role_name" => $name);
+        if(!$rows = $this->getRowsByCondition($refresh,$condition)){
+            return false;
+        }
+        return $rows;
+    }
 
     /**
      * 通过流水号ID获取多条纪录
@@ -24,7 +32,16 @@ class Diana_Model_ManagerRole extends Diana_Model_Abstract
     function getRowsById($refresh = null,$id)
     {
         $condition = array("role_id" => $id);
-        return $this->getRowsByCondition($refresh,$condition);
+        if(!$rows = $this->getRowsByCondition($refresh,$condition)){
+            return false;
+        }
+        $modelManagerRoleMenu = new Diana_Model_ManagerRoleMenu();
+        if($rowsMenu = $modelManagerRoleMenu->getMenuByRole($refresh,$id)){
+            foreach($rows as &$row){
+                $row['role_menuId'] = $rowsMenu[$row['role_id']];
+            }
+        }
+        return $rows;
     }
 
 }

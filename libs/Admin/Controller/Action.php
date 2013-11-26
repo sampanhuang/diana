@@ -16,6 +16,8 @@ class Admin_Controller_Action extends Diana_Controller_Action
     function init()
     {
         parent::init();
+        //设置jquery
+        $this->setJqueryLang();
         //判断是否为已登录用户，且达到条件进入这个功能模块模块
         $serviceDoorkeeper = new Admin_Service_Doorkeeper();
         if (!$sessionManagerId = $serviceDoorkeeper->checkSession()) {
@@ -23,7 +25,16 @@ class Admin_Controller_Action extends Diana_Controller_Action
             exit();
         }
         if (!$detailManager = $serviceDoorkeeper->checkPower($this->currentModuleName,$this->currentControllerName,$this->currentActionName,$sessionManagerId)) {
-            throw new Exception(implode('<br>',$serviceDoorkeeper->getMsgs()));
+            $dataget = $this->getRequest()->getParams();
+            if ((!empty($dataget['data_ajax']))&&(!empty($dataget['show_ajax']))){
+                $tmpJsonPower = array(
+                    'stat' => 0,
+                    'msgs' => '很可惜啊，你没有权限进行当前操作!<br>如果有需要，请联系管理员吧<br>或许可以帮上点忙',
+                );
+                echo json_encode($tmpJsonPower);
+            }else{
+                $this->redirect('/default/guest/warning/content/'.implode('<br>',$serviceDoorkeeper->getMsgs()));
+            }
             exit();
         }
         $this->view->currentManagerDetail = $this->currentManagerDetail = $detailManager;//用户详细资料
@@ -33,7 +44,6 @@ class Admin_Controller_Action extends Diana_Controller_Action
         $this->view->currentManagerRoleId = $this->currentManagerRoleId = $detailManager['rold_id'];//角色ID
         $this->view->currentManagerRoleMenu = $this->currentManagerRoleMenu = $detailManager['role_menu'];//角色资源范围
         $this->view->currentManagerRoleMenuTree = $this->currentManagerRoleMenuTree = $detailManager['role_menuTree'];//角色资源范围
-
         //print_r($detailManager['breadcrumb']);
         //获取当前位置
         $currentModuleLabel = $this->view->currentModuleLabel = $this->currentManagerRoleMenuTree[$this->currentModuleName]["menu_label"];
@@ -51,6 +61,17 @@ class Admin_Controller_Action extends Diana_Controller_Action
         $this->breadcrumbActions = $this->currentManagerRoleResourceTrees[$this->currentModuleName]["controller"][$this->currentControllerName]["action"];
 
 
+    }
+
+    function setJqueryLang()
+    {
+        $suffixJqueryLang = 'en';
+        if(DIANA_TRANSLATE_CURRENT == 'zh-cn'){
+            $suffixJqueryLang = 'zh_CN';
+        }elseif(DIANA_TRANSLATE_CURRENT == 'zh-tw'){
+            $suffixJqueryLang = 'zh_TW';
+        }
+        $this->view->suffixJqueryLang = $suffixJqueryLang;
     }
 
     /**

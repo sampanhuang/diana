@@ -46,7 +46,7 @@ class Diana_Model_Website extends Diana_Model_Abstract
      * @param $data
      * @return array
      */
-    function updateMainById($websiteId,$data)
+    function updateMainById($websiteId,$data,$man)
     {
         $columns = array(
             "website_name",//网站名称
@@ -55,15 +55,16 @@ class Diana_Model_Website extends Diana_Model_Abstract
             "website_cover",//网站封面
             "website_tag",//网站标签
             "website_categoryId",//网站分类
-            "website_continent",//网站大陆
-            "website_country",//网站国家
+            "website_areaId",//网站大陆
         );
         foreach($columns as $column){
-            if(!empty($data)){
+            if(!empty($data[$column])){
                 $tmpUpdateData[$column] = $data[$column];
             }
         }
         $tmpUpdateData["website_update_time"] = time();
+        $tmpUpdateData["website_update_man"] = $man;
+        $tmpUpdateData["website_update_ip"] = $_SERVER['REMOTE_ADDR'];
         $condition = array( 'website_id' => $websiteId);
         return $this->saveData(2,$tmpUpdateData,$condition);
     }

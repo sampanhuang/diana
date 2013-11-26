@@ -9,6 +9,8 @@
  */
 class WebsiteController extends Www_Controller_Action
 {
+
+
     function init()
     {
         parent::init();
@@ -20,25 +22,47 @@ class WebsiteController extends Www_Controller_Action
      */
     function indexAction()
     {
+    	//获取国际化数据
         $translate = Zend_Registry::get('Zend_Translate');
         $this->setHeadTitle($translate->_('www_menu_website_index'));
         $this->setHeadMetaKeywords($translate->_('www_seo_keyword'));
         $this->setHeadMetaDescription($translate->_('www_seo_description'));
+        //定义输出数组
         $indexContent = array();
-        $serviceCountry = new Diana_Service_Country();
-        if($continents = $serviceCountry->getContinentsKey()){
-            $serviceWebsite = new Diana_Service_Website();
-            $serviceWebsiteCountry = new Diana_Service_WebsiteCountry();
-            foreach($continents as $continent){
-                $condition = array('website_continent' => $continent);
-                if($rowsWebsiteNew = $serviceWebsite->listByCondition(15,$condition,'new')){
-                    $indexContent[$continent]['website']['new'] = $rowsWebsiteNew;
-                }
-                if($countries = $serviceWebsiteCountry->getCountriesByContinent($continent)){
-                    $indexContent[$continent]['countries'] = $countries;
-                }
+        $serviceWebsite = new Diana_Service_Website();
+        //获取全部分类信息
+        $serviceWebsiteCategory = new Diana_Service_WebsiteCategory();
+        $this->view->allWebsiteCategory = $allWebsiteCategory = $serviceWebsiteCategory->getAll(null,'website');
+        //获取全部地区信息
+        $serviceWebsiteArea = new Diana_Service_WebsiteArea();
+        $this->view->allWebsiteArea = $allWebsiteArea = $serviceWebsiteArea->getAll(null,'website');
+        //分类或是地区数据需要事先定义
+        if(empty($allWebsiteArea) || empty($allWebsiteCategory)){
+        	$this->setMsgs('分类或是地区数据需要事先定义');
+        	return false;
+        }
+        //父级地区,array(id=>array(...))
+        $rowsWebsiteAreaFather = array();
+        //子级地区,array(father_id => array( id => array(..) ))
+        $rowsWebsiteAreaSon = array();
+        //从$allWebsiteArea中循环得到$rowsWebsiteAreaFather与$rowsWebsiteAreaSon
+        foreach ($allWebsiteArea as $rowWebsiteArea){
+        	$tmpAreaId = $rowWebsiteArea['area_id'];
+        	$tmpAreaFatherId = $rowWebsiteArea['area_fatherId'];
+        	if(empty($tmpAreaFatherId)){
+        		$rowsWebsiteAreaFather[$tmpAreaId] = $rowWebsiteArea;
+        	}else{
+        		$rowsWebsiteAreaSon[$tmpAreaFatherId][$tmpAreaId] = $rowWebsiteArea;
+        	}
+        }
+        foreach($rowsWebsiteAreaFather as $websiteAreaFatherId => $rowWebsiteAreaFather){
+            $condition = array('website_areaId' => array_keys($rowsWebsiteAreaSon[$websiteAreaFatherId]));
+            if($rowsWebsiteNew = $serviceWebsite->listByCondition(15,$condition,'new')){
+                $indexContent[$websiteAreaFatherId]['website']['new'] = $rowsWebsiteNew;
             }
         }
+        $this->view->rowsWebsiteAreaFather = $rowsWebsiteAreaFather;
+        $this->view->rowsWebsiteAreaSon = $rowsWebsiteAreaSon;
         $this->view->indexContent = $indexContent;
     }
 
@@ -63,6 +87,12 @@ class WebsiteController extends Www_Controller_Action
         if(empty($keyword)){
             $this->setMsgs('请输入搜索关键字');
         }else{
+            //获取全部分类信息
+            $serviceWebsiteCategory = new Diana_Service_WebsiteCategory();
+            $this->view->allWebsiteCategory = $allWebsiteCategory = $serviceWebsiteCategory->getAll(null,'website');
+            //获取全部地区信息
+            $serviceWebsiteArea = new Diana_Service_WebsiteArea();
+            $this->view->allWebsiteArea = $allWebsiteArea = $serviceWebsiteArea->getAll(null,'website');
             //获取网站数据
             $serviceWebsite = new Www_Service_Website();
             if(!$this->view->paginator = $paginator = $serviceWebsite->search($keyword,$page,$pagesize,$order)){
@@ -81,49 +111,69 @@ class WebsiteController extends Www_Controller_Action
      */
     function listAction()
     {
+    	//获取外部数据
         $this->view->page = $page = $this->getRequest()->getParam('page',1);//排序
         $this->view->pagesize = $pagesize = $this->getRequest()->getParam('pagesize',10);//每页多少条
         $this->view->order = $order = $this->getRequest()->getParam('order','new');//排序
         $this->view->category = $category = $this->getRequest()->getParam('category',0);//分类
-        $this->view->continent = $continent = $this->getRequest()->getParam('continent','as');//大陆
-        $this->view->country = $country = $this->getRequest()->getParam('country','');//国家
+        $this->view->areaFather = $areaFather = $this->getRequest()->getParam('area_father');//大陆
+        $this->view->area = $area = $this->getRequest()->getParam('area',0);//国家
+        //取得多国语言
         $translate = Zend_Registry::get('Zend_Translate');
-        $this->setHeadMetaDescription($translate->_('www_seo_description'));
+        $arrSuffixHeadKeyWork = explode(",",$translate->_('www_seo_keyword'));
+        //获取分类信息
+        $serviceWebsiteCategory = new Diana_Service_WebsiteCategory();
+        $this->view->allWebsiteCategory = $allWebsiteCategory = $serviceWebsiteCategory->getAll();
+        //获取地区信息
+        $serviceWebsiteArea = new Diana_Service_WebsiteArea();
+        $this->view->allWebsiteArea = $allWebsiteArea = $serviceWebsiteArea->getAll();
         $condition = array();
-        //如果大陆ID不为空
-        if(!empty($continent)){
-            //开始SEO
-            $this->setHeadTitle($translate->_('continent_code_'.$continent));
-            $this->setHeadMetaDescription($translate->_('continent_code_'.$continent));
-            $arrSuffixHeadKeywork = explode(",",$translate->_('www_seo_keyword'));
-            foreach($arrSuffixHeadKeywork as $valSuffixHeadKeywork){
-                $this->setHeadMetaKeywords($translate->_('continent_code_'.$continent).$valSuffixHeadKeywork);
+        //搜索条件
+        $condition = array();
+        //如果二级区域ID不为空
+        if(!empty($area)){
+        	//开始SEO
+        	$this->setHeadTitle($allWebsiteArea[$area]['area_name_'.DIANA_TRANSLATE_CURRENT]);
+            $this->setHeadMetaDescription($allWebsiteArea[$area]['area_name_'.DIANA_TRANSLATE_CURRENT]);
+            foreach($arrSuffixHeadKeyWork as $valSuffixHeadKeyWork){
+                $this->setHeadMetaKeywords($allWebsiteArea[$area]['area_name_'.DIANA_TRANSLATE_CURRENT].$valSuffixHeadKeyWork);
             }
-            $condition['website_continent'] = $continent;
-            $serviceWebsiteCountry = new Diana_Service_WebsiteCountry();
-            if($countries = $serviceWebsiteCountry->getCountriesByContinent($continent)){
-                $this->view->countries = $countries;
-                //如果国家ID不为空
-                if((!empty($country))&&(!empty($countries[$country]))){
-                    $this->setHeadTitle($translate->_('country_code_'.$country));
-                    $this->setHeadMetaDescription($translate->_('country_code_'.$country));
-                    foreach($arrSuffixHeadKeywork as $valSuffixHeadKeywork){
-                        $this->setHeadMetaKeywords($translate->_('country_code_'.$country).$valSuffixHeadKeywork);
-                    }
-                    $condition['website_country'] = $country;
+            $areaFather = $allWebsiteArea[$area]['area_fatherId'];
+            $condition['website_areaId'] = $area;
+        }
+        //如果一级区域ID不为空
+        if(!empty($areaFather)){
+            //开始SEO
+            $this->setHeadTitle($allWebsiteArea[$areaFather]['area_name_'.DIANA_TRANSLATE_CURRENT]);
+            $this->setHeadMetaDescription($allWebsiteArea[$areaFather]['area_name_'.DIANA_TRANSLATE_CURRENT]);
+            foreach($arrSuffixHeadKeyWork as $valSuffixHeadKeyWork){
+                $this->setHeadMetaKeywords($allWebsiteArea[$areaFather]['area_name_'.DIANA_TRANSLATE_CURRENT].$valSuffixHeadKeyWork);
+            }
+            //获取二级地区信息
+            $rowWebsiteAreaSon = array();//二级地区信息
+            foreach($allWebsiteArea as $rowWebsiteArea){
+                //if(($rowWebsiteArea['area_fatherId'] == $areaFather)&&($rowWebsiteArea['area_count_website'] > 0)){
+                if(($rowWebsiteArea['area_fatherId'] == $areaFather)){
+                    $rowWebsiteAreaSon[$rowWebsiteArea['area_id']] = $rowWebsiteArea;
                 }
+            }
+            $this->view->rowWebsiteAreaSon = $rowWebsiteAreaSon;
+            $condition['website_areaId'] = array_keys($rowWebsiteAreaSon);
+        }
+
+        foreach($allWebsiteCategory as $rowWebsiteCategory){
+            if(($rowWebsiteCategory['category_fatherId'] == $areaFather)&&($rowWebsiteCategory['category_count_website'] > 0)){
+                $rowsAreaSon[$rowWebsiteCategory['category_id']] = $rowWebsiteCategory;
             }
         }
         //网站分类不能为空
         if(!empty($category)){
-            $this->setHeadTitle($translate->_('category_id_'.$category));
-            $this->setHeadMetaDescription($translate->_('category_id_'.$category));
+            $this->setHeadTitle($this->allWebsiteCategory[$category]['category_name_'.DIANA_TRANSLATE_CURRENT]);
+            $this->setHeadMetaDescription($this->allWebsiteCategory[$category]['category_name_'.DIANA_TRANSLATE_CURRENT]);
+            foreach($arrSuffixHeadKeyWork as $valSuffixHeadKeyWork){
+                $this->setHeadMetaKeywords($this->allWebsiteCategory[$category]['category_name_'.DIANA_TRANSLATE_CURRENT].$valSuffixHeadKeyWork);
+            }
             $condition['website_categoryId'] = $category;
-        }
-        //获取网站分类
-        $serviceWebsiteCategory = new Diana_Service_WebsiteCategory();
-        if($rowsCategory = $serviceWebsiteCategory->getAll()){
-            $this->view->rowsCategory = $rowsCategory;
         }
         //获取网站数据
         $serviceWebsite = new Diana_Service_Website();
@@ -140,19 +190,24 @@ class WebsiteController extends Www_Controller_Action
     function detailAction()
     {
         $this->view->websiteId = $websiteId = $this->getRequest()->getParam('website_id',0);
+        //获取分类信息
+        $serviceWebsiteCategory = new Diana_Service_WebsiteCategory();
+        $this->view->allWebsiteCategory = $allWebsiteCategory = $serviceWebsiteCategory->getAll();
+        //获取地区信息
+        $serviceWebsiteArea = new Diana_Service_WebsiteArea();
+        $this->view->allWebsiteArea = $allWebsiteArea = $serviceWebsiteArea->getAll();
+        //获取网站信息
         $serviceWebsite = new Diana_Service_Website();
         if($detailWebsite = $serviceWebsite->detailById($websiteId,true)){
-            $translate = Zend_Registry::get('Zend_Translate');
-            $this->setHeadTitle($translate->_('category_id_'.$detailWebsite['website_categoryId']));
-            $this->setHeadTitle($translate->_('country_code_'.$detailWebsite['website_country']));
-            $this->setHeadTitle($translate->_('continent_code_'.$detailWebsite['website_continent']));
+            $this->setHeadTitle($allWebsiteCategory[$detailWebsite['website_categoryId']]['category_name_'.DIANA_TRANSLATE_CURRENT]);
+            $this->setHeadTitle($allWebsiteArea[$detailWebsite['website_country']]['area_name_'].DIANA_TRANSLATE_CURRENT);
             $this->setHeadTitle($detailWebsite['website_name']);
             $this->setHeadMetaKeywords($detailWebsite['website_meta_keywords']);
             $this->setHeadMetaDescription($detailWebsite['website_meta_description']);
             $this->view->detailWebsite = $detailWebsite;
             //猜你喜欢
             //$conditionLike = array("website_categoryId" => $detailWebsite["website_categoryId"],"website_continent" => $detailWebsite["website_continent"]);
-            $conditionLike = array("website_continent" => $detailWebsite["website_continent"]);
+            $conditionLike = array("website_areaId" => $detailWebsite["website_areaId"],'website_id_not' => $websiteId);
             if($rowsWebsiteLike = $serviceWebsite->listByCondition(10,$conditionLike,'click_out')){
                 $this->view->rowsWebsiteLike = $rowsWebsiteLike;
             }
@@ -196,18 +251,9 @@ class WebsiteController extends Www_Controller_Action
         $serviceWebsiteCategory = new Diana_Service_WebsiteCategory();
         $this->view->websiteCategoryIds = $serviceWebsiteCategory->getIds();
         //获取洲与国家代码
-        $serviceCountry = new Diana_Service_Country();
-        $this->view->websiteContinents = $continents =  $serviceCountry->getContinentsKey();
-        if($countries = $serviceCountry->getCountriesKey()){
-            $optionsCountry = array();
-            $translate = Zend_Registry::get('Zend_Translate');
-            foreach($countries as $continentKey => $countries){
-                foreach($countries as $countryKey => $countryValue){
-                    $optionsCountry[$continentKey][$countryKey] = $translate->_('country_code_'.$countryKey);
-                }
-            }
-            $this->view->optionsCountry = $optionsCountry;
-        }
+        $serviceWebsiteArea = new Diana_Service_WebsiteArea();
+        $this->view->optionsFather = $optionsFather =  $serviceWebsiteArea->getOptionsWithFather();
+        $this->view->optionsSon = $optionsSon =  $serviceWebsiteArea->getOptionsWithSon();
         //处理提交请求
         $request = $this->_request;
         if($request->isPost()) {

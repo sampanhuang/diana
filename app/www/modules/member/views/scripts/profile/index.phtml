@@ -1,11 +1,13 @@
-<br>
 <table width="100%" border="0" cellspacing="0" cellpadding="0" class="table">
+    <thead>
     <tr>
         <th>流水号</th>
         <td><?php echo $this->currentMemberDetail['member_id'];?></td>
         <th>&nbsp;</th>
         <td></td>
     </tr>
+    </thead>
+    <tbody>
     <tr>
         <th width="10%">邮箱：</th>
         <td width="40%"><?php echo $this->currentMemberDetail['member_email'];?></td>
@@ -54,4 +56,5 @@
         <th>帐号注册IP</th>
         <td><?php echo $this->currentMemberDetail['member_register_ip'];?></td>
     </tr>
+    </tbody>
 </table>

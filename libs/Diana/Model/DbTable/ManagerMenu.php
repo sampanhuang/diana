@@ -24,7 +24,7 @@ class Diana_Model_DbTable_ManagerMenu extends Diana_Model_DbTable_Abstract
     function setOrders()
     {
         $this->_orders = array(
-            "order" => array("menu_order"),
+            "order" => array("menu_order desc"),
         );
     }
 

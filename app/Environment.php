@@ -14,8 +14,29 @@ foreach (get_defined_constants() as $constantName => $constantValue){
 		}
 	}
 }
+//微秒开始值
 define('DIANA_MICROTIME_START',microtime_float());
 
+//设置当前语言
+if(in_array($_SERVER["HTTP_HOST"],array(DIANA_DOMAIN_ADMIN_US,DIANA_DOMAIN_CLIENT_US,DIANA_DOMAIN_WWW_US))){
+    $tmpTranslateCurrent = 'en-us';
+}elseif(in_array($_SERVER["HTTP_HOST"],array(DIANA_DOMAIN_ADMIN_TW,DIANA_DOMAIN_CLIENT_TW,DIANA_DOMAIN_WWW_TW))){
+    $tmpTranslateCurrent = 'zh-tw';
+}elseif(in_array($_SERVER["HTTP_HOST"],array(DIANA_DOMAIN_ADMIN_CN,DIANA_DOMAIN_CLIENT_CN,DIANA_DOMAIN_WWW_CN))){
+    $tmpTranslateCurrent = 'zh-cn';
+}else{
+    if (strtolower($_SERVER['HTTP_ACCEPT_LANGUAGE']) == 'zh-tw') {
+        $tmpTranslateCurrent = 'zh-tw';
+    }elseif(strtolower($_SERVER['HTTP_ACCEPT_LANGUAGE']) == 'zh-cn'){
+        $tmpTranslateCurrent = 'zh-cn';
+    }else{
+        $tmpTranslateCurrent = 'en-us';
+    }
+}
+define('DIANA_TRANSLATE_CURRENT',$tmpTranslateCurrent);//zh-cn 简体中文件 zh-tw 繁体中文 en-us 英文
+define('DIANA_DIR_DATA_TRANSLATE_CURRENT', DIANA_DIR_DATA_TRANSLATE."/".DIANA_TRANSLATE_CURRENT);//语言包目录
+
+//获取秒数
 function microtime_float()
 {
     list($usec, $sec) = explode(" ", microtime());
