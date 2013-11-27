@@ -114,29 +114,33 @@ $(function(){
                 foreach ($this->treeMenu as $module){
                     $moduleHtmlCheckboxId = implode('_',array($htmlcheckName,$module['menu_id']));
                     $countController = $counterController = count($module['son']);
-                    foreach ($module['son'] as $controller){
-                        $controllerHtmlCheckboxId = implode('_',array($htmlcheckName,$module['menu_id'],$controller['menu_id']));
-                        $htmlCheckbox = array();
-                        foreach ($controller['son'] as $action){
-                            $actionHtmlCheckboxId = implode('_',array($htmlcheckName,$module['menu_id'],$controller['menu_id'],$action['menu_id']));
-                            $htmlChecked = ' ';
-                            $actionId = $action['menu_id'];
-                            $actionsLabel = $action['menu_label_'.DIANA_TRANSLATE_CURRENT];
-                            if (is_array($this->detail['role_menuId']) && (!empty($this->detail['role_menuId']))) {
-                                if (in_array($actionId,$this->detail['role_menuId'])) {
-                                    $htmlChecked = ' checked="checked" ';
+                    if((!empty($module['son']))&&(is_array($module['son']))){
+                        foreach ($module['son'] as $controller){
+                            $controllerHtmlCheckboxId = implode('_',array($htmlcheckName,$module['menu_id'],$controller['menu_id']));
+                            $htmlCheckbox = array();
+                            if((!empty($controller['son']))&&(is_array($controller['son']))){
+                                foreach ($controller['son'] as $action){
+                                    $actionHtmlCheckboxId = implode('_',array($htmlcheckName,$module['menu_id'],$controller['menu_id'],$action['menu_id']));
+                                    $htmlChecked = ' ';
+                                    $actionId = $action['menu_id'];
+                                    $actionsLabel = $action['menu_label_'.DIANA_TRANSLATE_CURRENT];
+                                    if (is_array($this->detail['role_menuId']) && (!empty($this->detail['role_menuId']))) {
+                                        if (in_array($actionId,$this->detail['role_menuId'])) {
+                                            $htmlChecked = ' checked="checked" ';
+                                        }
+                                    }
+                                    $htmlCheckbox[] = '<label for="'.$actionHtmlCheckboxId.'"><input '.$htmlChecked.' type="checkbox" name="'.$htmlcheckName.'[]" value="'.$actionId.'" id="'.$actionHtmlCheckboxId.'" />'.$actionsLabel.'</label>';
                                 }
                             }
-                            $htmlCheckbox[] = '<label for="'.$actionHtmlCheckboxId.'"><input '.$htmlChecked.' type="checkbox" name="'.$htmlcheckName.'[]" value="'.$actionId.'" id="'.$actionHtmlCheckboxId.'" />'.$actionsLabel.'</label>';
+                            echo '<tr>'.chr(10).chr(13);
+                            if ($counterController == $countController) {
+                                echo '<th width="120" rowspan="'.$countController.'"  align="left" valign="top"><label for="'.$moduleHtmlCheckboxId.'"><input type="checkbox" id="'.$moduleHtmlCheckboxId.'" value = "'.$module['menu_id'].'" onclick="checkAll(this)" />'.$module['menu_label_'.DIANA_TRANSLATE_CURRENT].'</label></th>'.chr(10).chr(13);
+                            }
+                            echo '<th width="120"  align="left" valign="top"><label for="'.$controllerHtmlCheckboxId.'"><input type="checkbox" id="'.$controllerHtmlCheckboxId.'"  value = "'.$controller['menu_id'].'" onclick="checkAll(this)" />'.$controller['menu_label_'.DIANA_TRANSLATE_CURRENT].'</label></th>'
+                                .'<td>'.implode('&nbsp;&nbsp;',$htmlCheckbox).'</td>'.chr(10).chr(13);
+                            echo '</tr>'.chr(10).chr(13);
+                            $counterController--;
                         }
-                        echo '<tr>'.chr(10).chr(13);
-                        if ($counterController == $countController) {
-                            echo '<th width="120" rowspan="'.$countController.'"  align="left" valign="top"><label for="'.$moduleHtmlCheckboxId.'"><input type="checkbox" id="'.$moduleHtmlCheckboxId.'" value = "'.$module['menu_id'].'" onclick="checkAll(this)" />'.$module['menu_label_'.DIANA_TRANSLATE_CURRENT].'</label></th>'.chr(10).chr(13);
-                        }
-                        echo '<th width="120"  align="left" valign="top"><label for="'.$controllerHtmlCheckboxId.'"><input type="checkbox" id="'.$controllerHtmlCheckboxId.'"  value = "'.$controller['menu_id'].'" onclick="checkAll(this)" />'.$controller['menu_label_'.DIANA_TRANSLATE_CURRENT].'</label></th>'
-                            .'<td>'.implode('&nbsp;&nbsp;',$htmlCheckbox).'</td>'.chr(10).chr(13);
-                        echo '</tr>'.chr(10).chr(13);
-                        $counterController--;
                     }
                 }
                 echo '</table>'.chr(10).chr(13);

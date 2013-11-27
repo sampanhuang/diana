@@ -14,6 +14,27 @@ class Diana_Model_ManagerMenu extends Diana_Model_Abstract
         $this->dt = new Diana_Model_DbTable_ManagerMenu();
     }
 
+    function insert($data)
+    {
+        if(empty($data)){
+            return false;
+        }
+        $data['menu_insert_time'] = $data['menu_update_time'] = time();
+        $data['menu_insert_ip'] = $data['menu_update_ip'] = $_SERVER['REMODE_ADDR'];
+        return $this->saveData(1,$data);
+    }
+
+    function update($data,$id)
+    {
+        if(empty($data)||empty($id)){
+            return false;
+        }
+        $condition = array('menu_id' => $id);
+        $data['menu_update_time'] = time();
+        $data['menu_update_ip'] = $_SERVER['REMODE_ADDR'];
+        return $this->saveData(2,$data,$condition);
+    }
+
     /**
      * 通过父ID获取多条纪录
      * @param null $refresh 是否刷新

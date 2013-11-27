@@ -3,8 +3,8 @@
         $('#input_menu_fatherId').combotree({
             method:'GET',
             url:'<?php echo $this->url(array('show_ajax' => 'josn','data_ajax' => 'make-tree-menu-father'));?>',
-            required:true
-            /*value:<?php echo intval($this->detail['menu_fatherId']);?>*/
+            required:true,
+            value:<?php echo intval($this->detail['menu_fatherId']);?>
         });
 
         //表单内点击按钮重置
@@ -29,6 +29,7 @@
         }
     });
 </script>
+<?php //print_r($this->detail);;?>
 <div class="div_bg_fa separator_bot">
     <form id="form_manager_menu_insert" name="form_manager_menu_insert" method="post">
         <fieldset border="false"  class="fieldset_border separator_bot" >
@@ -93,12 +94,13 @@
                 <tr>
                     <th width="10%">菜单排序</th>
                     <td width="90%">
-                        <input  id="input_menu_order" name="menu_order"  class="easyui-numberbox" requiredvalue="<?php echo $this->detail['menu_link'];?>">
+                        <input  id="input_menu_order" name="menu_order"  class="easyui-numberbox" required value="<?php echo $this->detail['menu_order'];?>">
                         <span id="span_notice_menu_order" class="span_notice">菜单从大到小排序</span>
                     </td>
                 </tr>
             </table>
         </fieldset>
+        <input id="input_handle" name="handle" type="hidden" value="insert">
         <div border="false" class="div_btn">
             <a id="linkbtn_submit" class="easyui-linkbutton" iconCls="icon-apply" style="margin-right:20px;">提交</a>
             <a id="linkbtn_reset" class="easyui-linkbutton" iconCls="icon-cancel" style="margin-right:20px;">重置</a>

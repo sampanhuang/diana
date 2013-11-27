@@ -49,6 +49,31 @@ class Diana_Model_DbTable_SafeFilterWord extends Diana_Model_DbTable_Abstract
             $tmpWheres = $this->getWhereByCondition("word_val",$condition["word_val"],2);
             $wheres = array_merge($wheres,$tmpWheres);
         }
+        if (!empty($condition["word_val_like"])) {//标签名
+            $tmpWheres = array();
+            $tmpWheres = $this->getWhereByCondition("word_val",$condition["word_val_like"],5);
+            $wheres = array_merge($wheres,$tmpWheres);
+        }
+        if (!empty($condition["word_count_min"])) {//最小拦截量
+            $tmpWheres = array();
+            $tmpWheres = $this->getWhereByCondition("word_count",$condition["word_count_min"],4);
+            $wheres = array_merge($wheres,$tmpWheres);
+        }
+        if (!empty($condition["word_count_max"])) {//最大拦截量
+            $tmpWheres = array();
+            $tmpWheres = $this->getWhereByCondition("word_count",$condition["word_count_max"],3);
+            $wheres = array_merge($wheres,$tmpWheres);
+        }
+        if (!empty($condition["word_insert_time_min"])) {//开始导入时间
+            $tmpWheres = array();
+            $tmpWheres = $this->getWhereByCondition("word_insert_time",$condition["word_insert_time_min"],4);
+            $wheres = array_merge($wheres,$tmpWheres);
+        }
+        if (!empty($condition["word_insert_time_max"])) {//结束导入时间
+            $tmpWheres = array();
+            $tmpWheres = $this->getWhereByCondition("word_insert_time",$condition["word_insert_time_max"],3);
+            $wheres = array_merge($wheres,$tmpWheres);
+        }
         return $wheres;
     }
 }

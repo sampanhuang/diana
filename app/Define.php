@@ -54,7 +54,7 @@ define('DIANA_DIR_DATA_TEMPLATE', DIANA_DIR_DATA."/template");//模板目录
 define('DIANA_DIR_DATA_TRANSLATE', DIANA_DIR_DATA."/translate");//语言包目录
 define('DIANA_DIR_DATA_FONT', DIANA_DIR_DATA."/font");//字体目录
 define('DIANA_DIR_DATA_IPLIBS', DIANA_DIR_DATA."/iplibs");//IP数据库目录
-define('DIANA_PATH_DATA_IPLIBS', DIANA_DIR_DATA_IPLIBS."/qqwry_".rand(1,5).".dat");//IP数据库路径，防文件锁定排队，所以有多个
+define('DIANA_PATH_DATA_IPLIBS', DIANA_DIR_DATA_IPLIBS."/qqwry_".rand(1,1).".dat");//IP数据库路径，防文件锁定排队，所以有多个
 define('DIANA_DIR_UPLOAD', DIANA_DIR_ROOT."/www/public/upload");//文件上传路径
 
 define('DIANA_DIR_TEMP', DIANA_DIR_ROOT."/../temp");//临时目录

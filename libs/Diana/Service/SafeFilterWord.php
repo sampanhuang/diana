@@ -22,6 +22,75 @@ class Diana_Service_SafeFilterWord extends Diana_Service_Abstract
     }
 
     /**
+     * 生成datatrid数据
+     * @param int $page 当前页
+     * @param int $pagesize 每页数
+     * @param $condition 查询条件
+     */
+    function makeDataGridWithWord($page = 1,$pagesize = 20,$condition)
+    {
+        $dataGrid = array('total' => 0 , 'rows' => array());
+        $modelSafeFilterWord = new Diana_Model_SafeFilterWord();
+        $dataGrid['total']  = $modelSafeFilterWord->getCountByCondition(null,$condition);
+        if($dataGrid['total'] > 0){
+            $offset = ($page - 1)*$pagesize;
+            if($offset < 0){$offset = 0;}
+            if($tmpRows = $modelSafeFilterWord->getRowsByCondition(null,$condition,null,$pagesize,$offset)){
+                $dataGrid['rows'] = $tmpRows;
+            }
+        }
+        return $dataGrid;
+    }
+
+    /**
+     * 过滤查询条件
+     */
+    function filterFormSearchAboutWord($input)
+    {
+        $exp = array(
+            'word_insert_date_min' => 1,
+            'word_insert_date_max' => 1,
+            'word_count_min' => 1,
+            'word_count_max' => 2,
+            'word_val_like' => 1,
+        );
+        $input = array_filter(array_intersect_key($input,$exp));
+        if (!empty($input['word_insert_date_min'])) {
+            $input['word_insert_time_min'] = strtotime($input['word_insert_date_min']);
+            unset($input['word_insert_date_min']);
+        }
+        if (!empty($input['word_insert_date_max'])) {
+            $input['word_insert_time_max'] = strtotime($input['word_insert_date_max']);
+            unset($input['word_insert_date_max']);
+        }
+        return $input;
+    }
+
+
+    /**
+     * 删除关键字
+     * @param $wordId 关键字ID
+     */
+    function deleteWithWord($wordId)
+    {
+        if(empty($wordId)){
+            $this->setMsgs('参数不能为空');
+            return false;
+        }
+        $modelSafeFilterWord = new Diana_Model_SafeFilterWord();
+        $condition = array('word_id' => $wordId);
+        if(!$rowsAffected = $modelSafeFilterWord->delData($condition)){
+            $this->setMsgs('你要删除的纪录不存在');
+            return false;
+        }
+        //生成删除名单
+        if(!$this->generateData()){
+            return false;
+        }
+        return $rowsAffected;
+    }
+
+    /**
      * 概述
      * array('total' => 数量,'time_frist' => 最开始导入的时间,'time_last' => 最后导入时间)
      */
@@ -59,18 +128,9 @@ class Diana_Service_SafeFilterWord extends Diana_Service_Abstract
         return $summarize;
     }
 
-    function getHot($count)
-    {
-        $modelSafeFilterWord = new Diana_Model_SafeFilterWord();
-        if(!$rows = $modelSafeFilterWord->getRowsByCondition(null,null,'hot',$count)){
-            $this->setMsgs("暂无敏感词数据!");
-            return false;
-        }
-        return $rows;
-    }
 
     /**
-     *
+     * 导入敏感词
      * @param $word
      * @return bool|int
      */

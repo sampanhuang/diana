@@ -536,7 +536,7 @@ class Admin_Service_ManagerMsg extends Admin_Service_Abstract
      * @param $condition 查询条件
      * @return array
      */
-    function makeDataGridWIthInbox($page = 1,$pagesize = 20,$condition)
+    function makeDataGridWithInbox($page = 1,$pagesize = 20,$condition)
     {
         $dataGrid = array('total' => 0 , 'rows' => array());
         $modelManagerMsgInbox = new Diana_Model_ManagerMsgInbox();

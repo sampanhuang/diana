@@ -123,7 +123,7 @@ function sendReqWithAjax(doit_code,ids,lock_time)
           dataType: "json",
           contentType:"utf-8",
           cache:false,
-          url:"/system/role/" + doit_code + "/show_ajax/json/data_ajax/manager-role-delete-lock-unlock",
+          url:"/system/manager-role/" + doit_code + "/show_ajax/json/data_ajax/manager-role-delete-lock-unlock",
           data: {role_id:ids,role_lock_time:lock_time},
           success: function(json) {
               if (json.stat == 1) {
@@ -151,8 +151,8 @@ function sendReqWithAjax(doit_code,ids,lock_time)
 */
 function formatAction(val,row)
 {
-    var detailLink = '<a href="javascript:addTabWithParent(\'系统管理/权限角色/明细详情\',\'/system/role/detail/role_id/'+row.role_id+'\',true)" >明细</a>';
-    var modifyLink = '<a href="javascript:addTabWithParent(\'系统管理/权限角色/编辑角色\',\'/system/role/update/role_id/'+row.role_id+'\',true)" >编辑</a>'
+    var detailLink = '<a href="javascript:addTabWithParent(\'系统管理/权限角色/明细详情\',\'/system/manager-role/detail/role_id/'+row.role_id+'\',true)" >明细</a>';
+    var modifyLink = '<a href="javascript:addTabWithParent(\'系统管理/权限角色/编辑角色\',\'/system/manager-role/update/role_id/'+row.role_id+'\',true)" >编辑</a>'
     return detailLink + '&nbsp;' +  modifyLink ;
 }
 function formatLockStat(val,row){
@@ -213,7 +213,7 @@ function formatAdmin(val,row){
         </table>
         <div border="false" class="div_btn">
             <a id="linkbtn_submit" class="easyui-linkbutton" iconCls="icon-search">确定</a>
-            <a id="linkbtn_reset" href="/system/role/index" iconCls="icon-cut" class="easyui-linkbutton" >清空查询条件</a>
+            <a id="linkbtn_reset" href="/system/manager-role/index" iconCls="icon-cut" class="easyui-linkbutton" >清空查询条件</a>
             <a id="linkbtn_help" class="easyui-linkbutton" iconCls="icon-help">查看查询提示</a>
         </div>
         <!---帮助内容-->

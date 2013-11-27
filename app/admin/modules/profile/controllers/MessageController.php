@@ -156,7 +156,7 @@ class Profile_MessageController extends Admin_Controller_Action
         if ($dataGet['data_ajax'] == 'datagrid_msg') {
             $dataGet['outbox_managerId'] = $this->currentManagerId;
             $dataGet['outbox_send_stat'] = 2;//1是已发送，2是草稿
-            if($dataGrid = $serviceManagerMsg->makeDataGridWIthOutbox($dataGet['page'],$dataGet['rows'],$dataGet)){
+            if($dataGrid = $serviceManagerMsg->makeDataGridWithOutbox($dataGet['page'],$dataGet['rows'],$dataGet)){
                 echo json_encode($dataGrid);
             }
         }

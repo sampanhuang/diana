@@ -19,16 +19,17 @@ class Admin_Service_ManagerMenu extends Admin_Service_Abstract
      */
     function insert($input)
     {
-
-    }
-
-    /**
-     * 确认外部参数是否正确
-     * @param $data 外部参数
-     */
-    function checkInputWithInsert($data)
-    {
-
+        //确认外部参数是否正确
+        if(!$input = $this->checkInputWithMenu($input)){
+            return false;
+        }
+        $input['menu_insert_man'] = $input['menu_update_man'] = $this->sessionManager['id'];
+        $modelManagerMenu = new Diana_Model_ManagerMenu();
+        if(!$rowsManagerMenu = $modelManagerMenu->insert($input)){
+            $this->setMsgs('保存失败');
+            return false;
+        }
+        return $rowsManagerMenu[0];
     }
 
     /**
@@ -38,8 +39,83 @@ class Admin_Service_ManagerMenu extends Admin_Service_Abstract
      */
     function update($input,$menuId)
     {
-
+        if(empty($menuId)||empty($input)){
+            $this->setMsgs('参数menuId不能为空');
+            return false;
+        }
+        //确认外部参数是否正确
+        if(!$input = $this->checkInputWithMenu($input)){
+            return false;
+        }
+        $input['menu_update_man'] = $this->sessionManager['id'];
+        $modelManagerMenu = new Diana_Model_ManagerMenu();
+        if(!$rowsManagerMenu = $modelManagerMenu->update($input,$menuId)){
+            $this->setMsgs('保存失败');
+            return false;
+        }
+        return $rowsManagerMenu[0];
     }
+
+    /**
+     * 通过ID删除菜单
+     * @param $menuId 菜单ID
+     */
+    function deleteById($menuId)
+    {
+        if(empty($menuId)){
+            $this->setMsgs("参数不能为空！");
+            return false;
+        }
+        //包含有下级菜单的不能删除，只允许一级一级删除
+        $modelManagerMenu = new Diana_Model_ManagerMenu();
+        if($rowsMenuSon = $modelManagerMenu->getRowsByFather(null,$menuId)){
+            $this->setMsgs('无法删除包含有下级的菜单！请先删除他的下级！');
+            return false;
+        }
+        if(!$rowsAffected = $modelManagerMenu->delData(array('menu_id' => $menuId))){
+            $this->setMsgs('无法删除指定的菜单，也许他们已被删除');
+            return false;
+        }
+        return $rowsAffected;
+    }
+
+    /**
+     * 确认外部参数是否正确
+     * @param $data 外部参数
+     */
+    function checkInputWithMenu($data)
+    {
+        $filters = array(
+            'menu_label_zh-cn'   => array(new Zend_Filter_StringTrim()),
+            'menu_label_zh-tw'   => array(new Zend_Filter_StringTrim()),
+            'menu_label_en-us'   => array(new Zend_Filter_StringTrim()),
+            'menu_fatherId'   => array(new Zend_Filter_Int()),
+            'menu_link'   => array(new Zend_Filter_StringToLower()),
+            'menu_show'   => array(new Zend_Filter_Int()),
+            'menu_order'   => array(new Zend_Filter_Int()),
+        );
+        $validators = array(
+            'menu_label_zh-cn'   => array(new Zend_Validate_StringLength(4,64)),
+            'menu_label_zh-tw'   => array(new Zend_Validate_StringLength(4,64),'allowEmpty' => true),
+            'menu_label_en-us'   => array(new Zend_Validate_StringLength(4,64),'allowEmpty' => true),
+            'menu_fatherId'   => array(new Zend_Validate_Int()),
+            'menu_link'   => array(new Zend_Validate_StringLength(8,256),'allowEmpty' => true),
+            'menu_show'   => array(new Zend_Validate_Int()),
+            'menu_order'   => array(new Zend_Validate_Int()),
+        );
+        $input = new Zend_Filter_Input($filters, $validators, $data);
+        if ($input->isValid()) {
+            return $input->getEscaped();
+        }else{
+            $messageInput = $input->getMessages();
+            foreach($messageInput as $valMsg){
+                $this->setMsgs($valMsg);
+            }
+            return false;
+        }
+    }
+
+
 
     /**
      * 为combo tree提供数据
@@ -52,20 +128,16 @@ class Admin_Service_ManagerMenu extends Admin_Service_Abstract
         }
         $treeGird = array();
         foreach($tree as $moduleId => $rowModule){
+            $treeGird[$moduleId]['id'] = $rowModule['menu_id'];
+            $treeGird[$moduleId]['text'] = $rowModule['menu_label_'.DIANA_TRANSLATE_CURRENT];
             if((!empty($rowModule['son']))&&(is_array($rowModule['son']))){
-                $treeGird[$moduleId]['id'] = $rowModule['menu_id'];
-                $treeGird[$moduleId]['text'] = $rowModule['menu_label_'.DIANA_TRANSLATE_CURRENT];
                 $treeGird[$moduleId]['state'] = 'closed';
                 foreach($rowModule['son'] as $controllerId => $rowController){
-                    if((!empty($rowController['son']))&&(is_array($rowController['son']))){
-                        $treeGird[$moduleId]['children'][$controllerId]['id'] = $rowController['menu_id'];
-                        $treeGird[$moduleId]['children'][$controllerId]['text'] = $rowController['menu_label_'.DIANA_TRANSLATE_CURRENT];
-                    }
+                    $treeGird[$moduleId]['children'][$controllerId]['id'] = $rowController['menu_id'];
+                    $treeGird[$moduleId]['children'][$controllerId]['text'] = $rowController['menu_label_'.DIANA_TRANSLATE_CURRENT];
                 }
             }
-            if(count($treeGird[$moduleId]['children']) ==  0){
-                unset($treeGird[$moduleId]['state']);
-            }else{
+            if(count($treeGird[$moduleId]['children']) >  0){
                 $treeGird[$moduleId]['children'] = array_values($treeGird[$moduleId]['children']);
             }
         }
@@ -83,30 +155,26 @@ class Admin_Service_ManagerMenu extends Admin_Service_Abstract
         }
         $treeGird = array();
         foreach($tree as $moduleId => $rowModule){
+            $treeGird[$moduleId] = $rowModule;
+            $treeGird[$moduleId]['menu_label'] = $rowModule['menu_label_'.DIANA_TRANSLATE_CURRENT];
             if((!empty($rowModule['son']))&&(is_array($rowModule['son']))){
-                $treeGird[$moduleId] = $rowModule;
-                $treeGird[$moduleId]['menu_label'] = $rowModule['menu_label_'.DIANA_TRANSLATE_CURRENT];
                 $treeGird[$moduleId]['state'] = 'closed';
                 foreach($rowModule['son'] as $controllerId => $rowController){
+                    $treeGird[$moduleId]['children'][$controllerId] = $rowController;
+                    $treeGird[$moduleId]['children'][$controllerId]['menu_label'] = $rowController['menu_label_'.DIANA_TRANSLATE_CURRENT];
                     if((!empty($rowController['son']))&&(is_array($rowController['son']))){
-                        $treeGird[$moduleId]['children'][$controllerId] = $rowController;
-                        $treeGird[$moduleId]['children'][$controllerId]['menu_label'] = $rowController['menu_label_'.DIANA_TRANSLATE_CURRENT];
                         $treeGird[$moduleId]['children'][$controllerId]['state'] = 'closed';
                         foreach($rowController['son'] as $actionId => $rowAction){
                             $treeGird[$moduleId]['children'][$controllerId]['children'][$actionId] = $rowAction;
                             $treeGird[$moduleId]['children'][$controllerId]['children'][$actionId]['menu_label'] = $rowAction['menu_label_'.DIANA_TRANSLATE_CURRENT];
                         }
                     }
-                    if(count($treeGird[$moduleId]['children'][$controllerId]['children']) ==  0){
-                        unset($treeGird[$moduleId]['children'][$controllerId]['state']);
-                    }else{
+                    if(count($treeGird[$moduleId]['children'][$controllerId]['children']) >  0){
                         $treeGird[$moduleId]['children'][$controllerId]['children'] = array_values($treeGird[$moduleId]['children'][$controllerId]['children']);
                     }
                 }
             }
-            if(count($treeGird[$moduleId]['children']) ==  0){
-                unset($treeGird[$moduleId]['state']);
-            }else{
+            if(count($treeGird[$moduleId]['children']) >  0){
                 $treeGird[$moduleId]['children'] = array_values($treeGird[$moduleId]['children']);
             }
         }
@@ -125,11 +193,15 @@ class Admin_Service_ManagerMenu extends Admin_Service_Abstract
     function check($tree,$module,$controller,$action)
     {
         foreach($tree as $moduleId => $rowMoudle){
-            foreach($rowMoudle['son'] as $controllerId => $rowController){
-                foreach($rowController['son'] as $actionId => $rowActon){
-                    $tmpUrl = parse_url($rowActon['menu_link']);
-                    if(strtolower(trim($tmpUrl['path'])) == strtolower(trim(implode('/',array($module,$controller,$action))))){
-                        return true;
+            if(!empty($rowMoudle['son'])){
+                foreach($rowMoudle['son'] as $controllerId => $rowController){
+                    if(!empty($rowController['son'])){
+                        foreach($rowController['son'] as $actionId => $rowActon){
+                            $tmpUrl = parse_url($rowActon['menu_link']);
+                            if(strtolower(trim($tmpUrl['path'])) == strtolower(trim(implode('/',array($module,$controller,$action))))){
+                                return true;
+                            }
+                        }
                     }
                 }
             }
@@ -353,8 +425,13 @@ class Admin_Service_ManagerMenu extends Admin_Service_Abstract
      */
     function getDetailById($id)
     {
+        if(empty($id)){
+            $this->setMsgs('参数不能为空');
+            return false;
+        }
         $modelManagerMenu = new Diana_Model_ManagerMenu();
         if(!$rows = $modelManagerMenu->getRowsById(null,$id)){
+            $this->setMsgs('无效的参数');
             return false;
         }
         $row = $rows[0];

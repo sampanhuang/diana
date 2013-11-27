@@ -85,7 +85,13 @@
 <div id="layout_center" region="center" style="overflow-y:hidden">
     <div id="tabs" class="easyui-tabs"  fit="true" border="false" ></div>
 </div>
-<!--<div data-options="region:'south',split:true,border:false" style="height:0px;"></div>-->
+<!--
+<div data-options="region:'south',split:true,border:false" style="height:25px;background:#E6EEF8;">
+    登录时间：<?php echo $this->formatDate('Y-m-d H:i',$this->currentManagerDetail['manager_login_last_time']);?>
+    登录IP：<?php echo $this->currentManagerDetail['manager_login_last_ip'];?>
+    会话ID：<?php echo session_id();?>
+</div>
+-->
 <!--加载load-->
 <div id="loading-mask" style="position:absolute;top:0px; left:0px; width:100%; height:100%; background:#D2E0F2; z-index:20000">
     <div id="pageloading" style="position:absolute; top:50%; left:50%; margin:-120px 0px 0px -120px; text-align:center;  border:2px solid #8DB2E3; width:200px; height:40px;  font-size:14px;padding:10px; font-weight:bold; background:#fff; color:#15428B;">

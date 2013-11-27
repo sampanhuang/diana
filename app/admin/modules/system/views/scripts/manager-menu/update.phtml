@@ -1,1 +1,111 @@
-1
+<script type="text/javascript">
+    $(function(){
+        $('#input_menu_fatherId').combotree({
+            method:'GET',
+            url:'<?php echo $this->url(array('show_ajax' => 'josn','data_ajax' => 'make-tree-menu-father'));?>',
+            required:true,
+            value:<?php echo intval($this->detail['menu_fatherId']);?>
+        });
+
+        //表单内点击按钮重置
+        $('#linkbtn_reset').click(function(){
+            formReset();
+        });
+        //表单内点击按钮提交
+        $('#linkbtn_submit').click(function(){
+            formSubmit();
+        });
+        //表单内回车提交
+        $("#form_manager_menu_insert").keydown(function(event){
+            if(event.keyCode==13){formSubmit();}
+        });
+        //表单提交
+        function formSubmit() {
+            $("#form_manager_menu_insert").submit();
+        }
+        //表单重置
+        function formReset(){
+            $('#form_manager_menu_insert').get(0).reset();
+        }
+    });
+</script>
+<?php //print_r($this->detail);;?>
+<div class="div_bg_fa separator_bot">
+    <form id="form_manager_menu_insert" name="form_manager_menu_insert" method="post">
+        <fieldset border="false"  class="fieldset_border separator_bot" >
+            <legend>菜单名称</legend>
+            <table width="100%" border="0" cellspacing="1" cellpadding="5"  class="table_border separator_top separator_bot">
+                <tr>
+                    <th width="10%">简体中文</th>
+                    <td width="90%">
+                        <input id="input_menu_label_zh-cn" name="menu_label_zh-cn" class="easyui-validatebox" data-options="required:true"  style="width:200px;" value="<?php echo $this->detail['menu_label_zh-cn'];?>">
+                        <span id="span_notice_menu_label_zh-cn" class="span_notice">将会出现于简体中文版</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th width="10%">繁体中文</th>
+                    <td width="90%">
+                        <input id="input_menu_label_zh-tw" name="menu_label_zh-tw" class="easyui-validatebox" style="width:200px;" value="<?php echo $this->detail['menu_label_zh-tw'];?>">
+                        <span id="span_notice_menu_label_zh-tw" class="span_notice">将会出现于繁体中文版</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th width="10%">英文</th>
+                    <td width="90%">
+                        <input id="input_menu_label_en-us" name="menu_label_en-us" class="easyui-validatebox"  style="width:200px;" value="<?php echo $this->detail['menu_label_en-us'];?>">
+                        <span id="span_notice_menu_label_en-us" class="span_notice">将会出现于英文版</span>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+        <fieldset border="false"  class="fieldset_border separator_bot" >
+            <legend>菜单属性</legend>
+            <table width="100%" border="0" cellspacing="1" cellpadding="5"  class="table_border separator_top separator_bot">
+                <tr>
+                    <th width="10%">上级菜单</th>
+                    <td width="90%">
+                        <input id="input_menu_fatherId" name="menu_fatherId" class="easyui-combotree" style="width:200px;">
+                        <span id="span_notice_menu_fatherId" class="span_notice">上级菜单，一级菜单的上级菜单为roo</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th width="10%">菜单链接</th>
+                    <td width="90%">
+                        <input id="input_menu_link" name="menu_link" class="easyui-validatebox" data-options="required:true"  style="width:40%;" value="<?php echo $this->detail['menu_link'];?>">
+                        <span id="span_notice_menu_link" class="span_notice">菜单点击链接</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th width="10%">是否显示</th>
+                    <td width="90%">
+                        <?php
+                        $htmlRadioCheckedYes = '';
+                        $htmlRadioCheckedNo = ' checked="checked" ';
+                        if ($this->detail['menu_show'] == 1) {
+                            $htmlRadioCheckedYes = ' checked="checked" ';
+                            $htmlRadioCheckedNo = '';
+                        }
+                        ?>
+                        <label for="menu_show_1"><input type="radio" name="menu_show" id="menu_show_1" value="1" <?php echo $htmlRadioCheckedYes;?> />显示</label>
+                        <label for="menu_show_0"><input type="radio" name="menu_show" id="menu_show_0" value="0" <?php echo $htmlRadioCheckedNo;?> />隐藏</label>
+                        <span id="span_notice_menu_show" class="span_notice">是否在左侧菜单栏显示</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th width="10%">菜单排序</th>
+                    <td width="90%">
+                        <input  id="input_menu_order" name="menu_order"  class="easyui-numberbox" required value="<?php echo $this->detail['menu_order'];?>">
+                        <span id="span_notice_menu_order" class="span_notice">菜单从大到小排序</span>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+        <input id="input_menu_id" name="menu_id" type="hidden" value="<?php echo $this->detail['menu_id'];?>">
+        <input id="input_handle" name="handle" type="hidden" value="update">
+        <div border="false" class="div_btn">
+            <a id="linkbtn_submit" class="easyui-linkbutton" iconCls="icon-apply" style="margin-right:20px;">提交</a>
+            <a id="linkbtn_reset" class="easyui-linkbutton" iconCls="icon-cancel" style="margin-right:20px;">重置</a>
+            <a id="linkbtn_search" class="easyui-linkbutton" iconCls="icon-search" href="<?php echo $this->url(array('action' => 'index'));?>">返回</a>
+        </div>
+    </form>
+</div>
