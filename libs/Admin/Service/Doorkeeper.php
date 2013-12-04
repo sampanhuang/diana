@@ -4,7 +4,7 @@
  * 负责迎接（登录），关门（注销），找钥匙（取回密码）
  *
  */
-class Admin_Service_Doorkeeper extends Diana_Service_Abstract
+class Admin_Service_Doorkeeper extends Admin_Service_Abstract
 {
     var $focus = 0;
     function __construct()
@@ -55,6 +55,9 @@ class Admin_Service_Doorkeeper extends Diana_Service_Abstract
         if (!$detailManager = $this->checkManager($managerId)) {
             $this->setMsgs("无效的会话数据 - {$managerId}");
             return false;
+        }
+        if($detailManager['role_admin'] == 1){
+            return $detailManager;
         }
         //判断权限
         if($module <> 'default'){

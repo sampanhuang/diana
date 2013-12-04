@@ -29,7 +29,7 @@ class Admin_Controller_Action extends Diana_Controller_Action
             if ((!empty($dataget['data_ajax']))&&(!empty($dataget['show_ajax']))){
                 $tmpJsonPower = array(
                     'stat' => 0,
-                    'msgs' => '很可惜啊，你没有权限进行当前操作!<br>如果有需要，请联系管理员吧<br>或许可以帮上点忙',
+                    'msgs' => '很可惜啊，你没有权限进行当前操作!<br>如果有需要，请联系管理员吧<br>'.implode(';',$serviceDoorkeeper->getMsgs()),
                 );
                 echo json_encode($tmpJsonPower);
             }else{

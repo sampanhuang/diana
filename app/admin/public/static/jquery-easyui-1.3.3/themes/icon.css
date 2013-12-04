@@ -134,6 +134,12 @@
 .icon-drawings{
     background:url('icons/drawings.png') no-repeat center center;
 }
-
-
-
+.icon-refresh{
+    background:url('icons/refresh.png') no-repeat center center;
+}
+.icon-greenled{
+    background:url('icons/greenled.png') no-repeat center center;
+}
+.icon-redled{
+    background:url('icons/redled.png') no-repeat center center;
+}

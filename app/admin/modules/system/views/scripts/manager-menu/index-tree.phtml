@@ -1,8 +1,7 @@
 <?php
 $this->headScript()->appendFile("/static/custom/script/formatter.js");
-$this->headScript()->captureStart();?>
-
-<?php $this->headScript()->captureEnd();
+$this->headScript()->captureStart();
+$this->headScript()->captureEnd();
 ?>
 <script type="text/javascript">
     $(function(){
@@ -195,11 +194,11 @@ $this->headScript()->captureStart();?>
     <a id="link_buttons_ok" href="javascript:void(0)" class="easyui-linkbutton">确定</a>
     <a id="link_buttons_cancel" href="javascript:void(0)" class="easyui-linkbutton">取消</a>
 </div>
-
 <!--数据网格工具栏-->
 <div id="toolbar" style="height:auto;padding:5px;">
     <a id="linkbotton_grid_tool_select" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-drawings',plain:true" onclick="gridSelectAll(this,'treegrid_menu_index')">全选</a>
     <a id="linkbotton_grid_tool_dell" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-delete',plain:true" onclick="sendRequest('delete','删除')">删除</a>
+    <a id="linkbotton_grid_tool_refresh" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-refresh',plain:true" onclick="$('#treegrid_menu_index').treegrid('reload')">刷新</a>
     <a id="linkbotton_grid_tool_lock" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-sign-in',plain:true" onclick="expandAll()">全部展开</a>
     <a id="linkbotton_grid_tool_unlock" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-sign-out',plain:true" onclick="collapseAll()">全部关闭</a>
 </div>

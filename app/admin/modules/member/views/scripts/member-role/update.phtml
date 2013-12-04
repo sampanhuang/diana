@@ -1,0 +1,159 @@
+<?php
+if ((!empty($this->detail))&&(!empty($this->treeMenu))) {
+    $this->headScript()->appendFile('/static/custom/script/checkall.js');
+    $this->headScript()->captureStart();
+    ?>
+$(function(){
+    //$("#input_role_name").focus();
+    $("#input_role_name").blur( function () { checkRoleLabel(); } );
+    //表单日期控制
+    $('#input_role_lock_time').datetimebox({
+        value:'<?php echo date('Y-m-d H:i:s',$this->detail['role_lock_time']);?>',
+    });
+    //表单内点击按钮重置
+    $('#linkbtn_reset').click(function(){
+        formReset();
+    });
+    //表单内点击按钮提交
+    $('#linkbtn_submit').click(function(){
+        formSubmit();
+    });
+    //表单内回车提交
+    $("#form_manager_role_modify").keydown(function(event){
+        if(event.keyCode==13){formSubmit();}
+    });
+});
+<?php $this->headScript()->captureEnd();?>
+<script type="text/javascript">
+    //表单提交
+    function formSubmit(id) {
+        $("#form_manager_role_modify").submit();
+    }
+    //表单重置
+    function formReset(){
+        $('#form_manager_role_modify').get(0).reset();
+        $('#input_role_lock_time').datetimebox({
+            value:'<?php echo date('Y-m-d H:i:s',$this->detail['role_lock_time']);?>'
+        });
+    }
+    //确认角色名称
+    function checkRoleLabel(){
+        var role_name = $.trim($("#input_role_name").val());
+        if(role_name == ''){
+            $('#span_notice_role_name').text('角色名称不能为空！');
+            return false;
+        }
+        var returnAjax = false;
+        $.ajax({
+            async:false,
+            type: "GET",
+            dataType: "json",
+            contentType:"utf-8",
+            cache:false,
+            url: "<?php echo $this->url(array("show_ajax" => "json","data_ajax"=>"isexistwithname"));?>",
+            data: { role_name: role_name },
+            success: function(json) {
+                if (json.stat == 1) {
+                    $('#span_notice_role_name').text('OK');
+                    returnAjax = true;
+                }else{
+                    $('#span_notice_role_name').text(json.msgs);
+                }
+            },
+            beforeSend:function(){
+                $('#span_notice_role_name').text('请稍候...');
+            },
+            error: function() {
+                $('#span_notice_role_name').text('系统运行出错，请联系管理员!');
+            }
+        });
+        return returnAjax;
+    }
+</script>
+<div class="div_bg_fa separator_bot">
+    <form id="form_manager_role_modify" name="form_manager_role_modify" method="post">
+        <fieldset border="false" class="fieldset_border separator_bot" >
+            <legend>基本资料</legend>
+            <table width="98%" border="0" cellspacing="0" cellpadding="5">
+                <tr>
+                    <th width="100">角色名称</th>
+                    <td width="300"><input id="input_role_name" name="input_role_name" class="easyui-validatebox" data-options="required:true"  style="width:250px;" value="<?php echo $this->detail['role_name'];?>"></td>
+                    <td><span id="span_notice_role_name">角色名称不能重复，因为重复的角色名会引起误会！</span></td>
+                </tr>
+                <tr>
+                    <th>解锁时间</th>
+                    <td><input id="input_role_lock_time" name="input_role_lock_time" class="easyui-datetimebox" style="width:250px" ></td>
+                    <td>如果当前时间小于解锁时间，那么这个角色的用户，直到解锁的时间为止将会无法登录</td>
+                </tr>
+                <tr>
+                    <th>超级权限</th>
+                    <td>
+                        <?php
+                        $htmlRadioCheckedYes = '';
+                        $htmlRadioCheckedNo = ' checked="checked" ';
+                        if ($this->detail['role_admin'] == 1) {
+                            $htmlRadioCheckedYes = ' checked="checked" ';
+                            $htmlRadioCheckedNo = '';
+                        }
+                        ?>
+                        <label for="role_admin_1"><input type="radio" name="radio_role_admin" id="role_admin_1" value="1" <?php echo $htmlRadioCheckedYes;?> />是</label>
+                        <label for="role_admin_0"><input type="radio" name="radio_role_admin" id="role_admin_0" value="0" <?php echo $htmlRadioCheckedNo;?> />否</label>
+                    </td>
+                    <td>如果角色被定为超级权限，那么他的访问将不会受到任何阻碍</td>
+                </tr>
+            </table>
+        </fieldset>
+        <fieldset border="false" class="fieldset_border separator_bot" >
+            <legend>权限范围</legend>
+            <?php
+            if (empty($this->treeMenu)) {
+                echo '你当前所处的角色就没有权限，你怎么分配？';
+            }else{
+                echo '<table width="98%" border="0" cellspacing="1" cellpadding="5" class = "table_border">'.chr(10).chr(13);
+                $htmlcheckName = 'checkbox_menu_id';
+                foreach ($this->treeMenu as $module){
+                    $moduleHtmlCheckboxId = implode('_',array($htmlcheckName,$module['menu_id']));
+                    $countController = $counterController = count($module['son']);
+                    if((!empty($module['son']))&&(is_array($module['son']))){
+                        foreach ($module['son'] as $controller){
+                            $controllerHtmlCheckboxId = implode('_',array($htmlcheckName,$module['menu_id'],$controller['menu_id']));
+                            $htmlCheckbox = array();
+                            if((!empty($controller['son']))&&(is_array($controller['son']))){
+                                foreach ($controller['son'] as $action){
+                                    $actionHtmlCheckboxId = implode('_',array($htmlcheckName,$module['menu_id'],$controller['menu_id'],$action['menu_id']));
+                                    $htmlChecked = ' ';
+                                    $actionId = $action['menu_id'];
+                                    $actionsLabel = $action['menu_label_'.DIANA_TRANSLATE_CURRENT];
+                                    if (is_array($this->detail['role_menuId']) && (!empty($this->detail['role_menuId']))) {
+                                        if (in_array($actionId,$this->detail['role_menuId'])) {
+                                            $htmlChecked = ' checked="checked" ';
+                                        }
+                                    }
+                                    $htmlCheckbox[] = '<label for="'.$actionHtmlCheckboxId.'"><input '.$htmlChecked.' type="checkbox" name="'.$htmlcheckName.'[]" value="'.$actionId.'" id="'.$actionHtmlCheckboxId.'" />'.$actionsLabel.'</label>';
+                                }
+                            }
+                            echo '<tr>'.chr(10).chr(13);
+                            if ($counterController == $countController) {
+                                echo '<th width="120" rowspan="'.$countController.'"  align="left" valign="top"><label for="'.$moduleHtmlCheckboxId.'"><input type="checkbox" id="'.$moduleHtmlCheckboxId.'" value = "'.$module['menu_id'].'" onclick="checkAll(this)" />'.$module['menu_label_'.DIANA_TRANSLATE_CURRENT].'</label></th>'.chr(10).chr(13);
+                            }
+                            echo '<th width="120"  align="left" valign="top"><label for="'.$controllerHtmlCheckboxId.'"><input type="checkbox" id="'.$controllerHtmlCheckboxId.'"  value = "'.$controller['menu_id'].'" onclick="checkAll(this)" />'.$controller['menu_label_'.DIANA_TRANSLATE_CURRENT].'</label></th>'
+                                .'<td>'.implode('&nbsp;&nbsp;',$htmlCheckbox).'</td>'.chr(10).chr(13);
+                            echo '</tr>'.chr(10).chr(13);
+                            $counterController--;
+                        }
+                    }
+                }
+                echo '</table>'.chr(10).chr(13);
+            }
+            ?>
+        </fieldset>
+        <div border="false" class="div_btn">
+            <a id="linkbtn_submit" class="easyui-linkbutton" iconCls="icon-apply" style="margin-right:20px;">提交</a>
+            <a id="linkbtn_reset" class="easyui-linkbutton" iconCls="icon-cancel" style="margin-right:20px;">重置</a>
+            <a id="linkbtn_search" class="easyui-linkbutton" iconCls="icon-search" href="/system/manager-role/search">返回</a>
+        </div>
+    </form>
+</div>
+<?php
+}
+?>

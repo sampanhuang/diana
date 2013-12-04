@@ -64,9 +64,9 @@ class Admin_Service_ManagerRole extends Admin_Service_Abstract
      * @param array $data
      * @param string $email 管理员邮箱
      */
-    function create($data,$email)
+    function create($data)
     {
-        if(empty($data)||empty($email)){
+        if(empty($data)){
             $this->setMsgs('各项参数不能为空！');
             return false;
         }
@@ -87,8 +87,15 @@ class Admin_Service_ManagerRole extends Admin_Service_Abstract
             'role_admin' => $data['radio_role_admin'],
             'role_lock_time' => intval($data['input_role_lock_time']),
             'role_insert_time' => time(),
-            'role_insert_man' => $email,
+            'role_insert_manId' => $this->sessionManager['id'],
+            'role_insert_manName' => $this->sessionManager['name'],
+            'role_insert_manEmail' => $this->sessionManager['email'],
             'role_insert_ip' => $_SERVER['REMOTE_ADDR'],
+            'role_update_time' => time(),
+            'role_update_manId' => $this->sessionManager['id'],
+            'role_update_manName' => $this->sessionManager['name'],
+            'role_update_manEmail' => $this->sessionManager['email'],
+            'role_update_ip' => $_SERVER['REMOTE_ADDR'],
         );
         $modelManagerRole = new Diana_Model_ManagerRole();
         if (!$rowsManagerRole = $modelManagerRole->saveData(1,$tmpData)) {
@@ -113,9 +120,8 @@ class Admin_Service_ManagerRole extends Admin_Service_Abstract
      *
      * @param array $data 保存内容
      * @param int $roleId 权限组ID
-     * @param array $email 操作人
      */
-    function modify($data,$roleId,$email)
+    function modify($data,$roleId)
     {
         if (!$this->isExistsWithName($data['input_role_name'],$roleId)) {
             $this->setMsgs('角色名重复，请更换其他角色名！');
@@ -130,7 +136,9 @@ class Admin_Service_ManagerRole extends Admin_Service_Abstract
             'role_admin' => $data['radio_role_admin'],
             'role_lock_time' => intval($data['input_role_lock_time']),
             'role_update_time' => time(),
-            'role_update_man' => $email,
+            'role_update_manId' => $this->sessionManager['id'],
+            'role_update_manName' => $this->sessionManager['name'],
+            'role_update_manEmail' => $this->sessionManager['email'],
             'role_update_ip' => $_SERVER['REMOTE_ADDR'],
         );
         $condition = array("role_id" => $roleId);

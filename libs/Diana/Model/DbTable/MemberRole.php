@@ -47,9 +47,27 @@ class Diana_Model_DbTable_MemberRole extends Diana_Model_DbTable_Abstract
             $tmpWheres = $this->getWhereByCondition("role_name",$condition["role_name"],2);
             $wheres = array_merge($wheres,$tmpWheres);
         }
-        if (!empty($condition["like_role_name"])) {//用户邮箱
+        if (!empty($condition["role_admin_state"])) {//是否为超级管理员
             $tmpWheres = array();
-            $tmpWheres = $this->getWhereByCondition("like_role_name",$condition["like_role_name"],5);
+            if($condition["role_admin_state"] == 1){
+                $tmpWheres = $this->getWhereByCondition("role_admin",1,4);
+            }else{
+                $tmpWheres = $this->getWhereByCondition("role_admin",0,3);
+            }
+            $wheres = array_merge($wheres,$tmpWheres);
+        }
+        if (!empty($condition["role_lock_state"])) {//封锁状态
+            $tmpWheres = array();
+            if($condition["role_lock_state"] == 1){
+                $tmpWheres = $this->getWhereByCondition("role_lock_time",1,4);
+            }else{
+                $tmpWheres = $this->getWhereByCondition("role_lock_time",0,3);
+            }
+            $wheres = array_merge($wheres,$tmpWheres);
+        }
+        if (!empty($condition["like_role_name"])) {//用户名
+            $tmpWheres = array();
+            $tmpWheres = $this->getWhereByCondition("role_name",$condition["like_role_name"],5);
             $wheres = array_merge($wheres,$tmpWheres);
         }
         return $wheres;

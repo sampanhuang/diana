@@ -14,23 +14,29 @@ class Diana_Model_ManagerMenu extends Diana_Model_Abstract
         $this->dt = new Diana_Model_DbTable_ManagerMenu();
     }
 
-    function insert($data)
+    function insert($data,$man)
     {
         if(empty($data)){
             return false;
         }
         $data['menu_insert_time'] = $data['menu_update_time'] = time();
+        $data['menu_insert_manId'] = $data['menu_update_manId'] = $man['id'];
+        $data['menu_insert_manName'] = $data['menu_update_manName'] = $man['name'];
+        $data['menu_insert_manEmail'] = $data['menu_update_manEmail'] = $man['email'];
         $data['menu_insert_ip'] = $data['menu_update_ip'] = $_SERVER['REMODE_ADDR'];
         return $this->saveData(1,$data);
     }
 
-    function update($data,$id)
+    function update($data,$id,$man)
     {
-        if(empty($data)||empty($id)){
+        if(empty($data)||empty($id)||empty($man)){
             return false;
         }
         $condition = array('menu_id' => $id);
         $data['menu_update_time'] = time();
+        $data['menu_update_manId'] = $man['id'];
+        $data['menu_update_manName'] = $man['name'];
+        $data['menu_update_manEmail'] = $man['email'];
         $data['menu_update_ip'] = $_SERVER['REMODE_ADDR'];
         return $this->saveData(2,$data,$condition);
     }

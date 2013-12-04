@@ -52,8 +52,8 @@ class Diana_Model_Member extends Diana_Model_Abstract
             'member_email' => trim(strtolower($email)),
             'member_name' => trim(strtolower($name)),
             'member_passwd' => trim(strtolower($passwd)),
-            'member_register_time' => time(),
-            'member_register_ip' => $_SERVER['REMOTE_ADDR'],
+            'member_insert_time' => time(),
+            'member_insert_ip' => $_SERVER['REMOTE_ADDR'],
         );
         if(!$memberId = $this->saveData(1,$data)){
             return false;

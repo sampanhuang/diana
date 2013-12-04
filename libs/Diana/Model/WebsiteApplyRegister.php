@@ -25,7 +25,7 @@ class Diana_Model_WebsiteApplyRegister extends Diana_Model_Abstract
      * @param $continent 大陆
      * @param $country 国家
      */
-    function postApply($memberId,$name,$domain,$tag,$category,$continent,$country)
+    function postApply($memberId,$name,$domain,$tag,$category,$area)
     {
         $data = array(
             'website_memberId' => intval($memberId),
@@ -33,8 +33,7 @@ class Diana_Model_WebsiteApplyRegister extends Diana_Model_Abstract
             'website_domain' => trim(strtolower($domain)),
             'website_tag' => trim($tag),
             'website_categoryId' => intval($category),
-            'website_continent' => trim(strtolower($continent)),
-            'website_country' => trim(strtolower($country)),
+            'website_areaId' => trim(strtolower($area)),
             'register_insert_time' => time(),
             'register_insert_ip' => $_SERVER['REMOTE_ADDR'],
         );

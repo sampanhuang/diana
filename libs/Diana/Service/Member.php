@@ -31,31 +31,40 @@ class Diana_Service_Member extends Diana_Service_Abstract
         return array('total' => $countMember,'rows' => $rowsMember);
     }
 
-    function detailById($memberId)
+    /**
+     * 通过多种渠道获取会员详细信息
+     * @param $column 字段，id,name,email
+     * @param $key 值
+     */
+    function getDetail($column,$key)
     {
-        if(empty($memberId)){
-            $this->setMsgs('参数不能为空');
+        if ((empty($column))||(!is_scalar($column))) {
+            $this->setMsgs("Invalid Param - Column");
             return false;
         }
-        if(!is_numeric($memberId)){
-            $this->setMsgs('参数类型错误');
+        if ((empty($key))||(!is_scalar($key))) {
+            $this->setMsgs("Invalid Param - Key");
             return false;
         }
-        //获取网站信息
-        $modelMember = new Diana_Model_Member();
-        if(!$rowsMember = $modelMember->getRowsById(null,$memberId)){
+        if($column == 'id'){
+            $detailMember = $this->getMemberById($key);
+        }elseif($column == 'name'){
+            $detailMember = $this->getMemberByName($key);
+        }elseif($column == 'email'){
+            $detailMember = $this->getMemberByEmail($key);
+        }else{
+            $this->setMsgs("Invalid Param - column ".$column);
             return false;
         }
-        $rowMember = $rowsMember[0];
-        return $rowMember;
+        return $detailMember;
     }
 
     /**
- * 通过email获取管理员帐号
- *
- * @param string $email
- * @return array
- */
+     * 通过email获取管理员帐号
+     *
+     * @param string $email
+     * @return array
+     */
     function getMemberByEmail($email)
     {
         //参数问题

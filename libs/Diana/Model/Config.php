@@ -31,6 +31,21 @@ class Diana_Model_Config extends Diana_Model_Abstract
         return $value;
 	}
 
+    /**
+     * 通过key值获取多条纪录
+     * @param null $refresh 是否刷新
+     * @param sting Key值
+     * @param null $default
+     * @return bool
+     */
+    function getRowByKey($refresh = null,$key)
+    {
+        $condition = array("conf_key" => $key);
+        if (!$rows = $this->getRowsByCondition($refresh,$condition)) {
+            return false;
+        }
+        return $rows[0];
+    }
 
     /**
      * 获取这个表的最后时间（插入或是更新）

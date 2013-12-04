@@ -53,7 +53,7 @@ class System_ManagerRoleController extends Admin_Controller_Action
             $dataPost = $this->getRequest()->getPost();
             $dataPost['msg_source'] = $this->currentManagerId;
             $serviceManagerRole = new Admin_Service_ManagerRole();
-            if ($detailManagerRole = $serviceManagerRole->create($dataPost,$this->currentManagerEmail)) {
+            if ($detailManagerRole = $serviceManagerRole->create($dataPost)) {
                 $this->setMsgs('添加成功，点击<a href="javascript:addTabWithParent(\'系统管理/权限角色/明细详情\',\'/system/manager-role/detail/role_id/'.$detailManagerRole['role_id'].'\',true)" >这里</a>查看新添加的数据');
             }else{
                 $this->setMsgs($serviceManagerRole->getMsgs());
@@ -105,7 +105,7 @@ class System_ManagerRoleController extends Admin_Controller_Action
         if ($this->getRequest()->isPost()) {
             $dataPost = $this->getRequest()->getPost();
             $serviceManagerRole = new Admin_Service_ManagerRole();
-            if ($detailManagerRole = $serviceManagerRole->modify($dataPost,$roleId,$this->currentManagerEmail)) {
+            if ($detailManagerRole = $serviceManagerRole->modify($dataPost,$roleId)) {
                 $this->setMsgs('保存成功');
             }else{
                 $this->setMsgs($serviceManagerRole->getMsgs());

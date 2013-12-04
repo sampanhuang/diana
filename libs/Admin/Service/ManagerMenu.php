@@ -23,9 +23,8 @@ class Admin_Service_ManagerMenu extends Admin_Service_Abstract
         if(!$input = $this->checkInputWithMenu($input)){
             return false;
         }
-        $input['menu_insert_man'] = $input['menu_update_man'] = $this->sessionManager['id'];
         $modelManagerMenu = new Diana_Model_ManagerMenu();
-        if(!$rowsManagerMenu = $modelManagerMenu->insert($input)){
+        if(!$rowsManagerMenu = $modelManagerMenu->insert($input,$this->sessionManager)){
             $this->setMsgs('保存失败');
             return false;
         }
@@ -47,9 +46,8 @@ class Admin_Service_ManagerMenu extends Admin_Service_Abstract
         if(!$input = $this->checkInputWithMenu($input)){
             return false;
         }
-        $input['menu_update_man'] = $this->sessionManager['id'];
         $modelManagerMenu = new Diana_Model_ManagerMenu();
-        if(!$rowsManagerMenu = $modelManagerMenu->update($input,$menuId)){
+        if(!$rowsManagerMenu = $modelManagerMenu->update($input,$menuId,$this->sessionManager)){
             $this->setMsgs('保存失败');
             return false;
         }
@@ -104,15 +102,14 @@ class Admin_Service_ManagerMenu extends Admin_Service_Abstract
             'menu_order'   => array(new Zend_Validate_Int()),
         );
         $input = new Zend_Filter_Input($filters, $validators, $data);
-        if ($input->isValid()) {
-            return $input->getEscaped();
-        }else{
+        if (!$input->isValid()) {
             $messageInput = $input->getMessages();
             foreach($messageInput as $valMsg){
                 $this->setMsgs($valMsg);
             }
             return false;
         }
+        return $input->getEscaped();
     }
 
 

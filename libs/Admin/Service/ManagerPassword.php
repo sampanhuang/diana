@@ -4,7 +4,7 @@
  * 忘记密码
  *
  */
-class Admin_Service_ManagerPassword extends Diana_Service_Abstract
+class Admin_Service_ManagerPassword extends Admin_Service_Abstract
 {
     function __construct()
     {

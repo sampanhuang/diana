@@ -52,7 +52,7 @@ class Diana_Service_WebsiteApplyRegister extends Diana_Service_Abstract
         $memberName = $rowMember['member_name'];
         //写入纪录
         $modelWebsiteApplyRegister = new Diana_Model_WebsiteApplyRegister();
-        if(!$rowsWebsiteApply = $modelWebsiteApplyRegister->postApply($memberId,$data['website_name'],$data['website_domain'],$data['website_tag'],$data['website_categoryId'],$data['website_continent'],$data['website_country'])){
+        if(!$rowsWebsiteApply = $modelWebsiteApplyRegister->postApply($memberId,$data['website_name'],$data['website_domain'],$data['website_tag'],$data['website_categoryId'],$data['website_areaId'])){
             //删除会员数据
             if($rollbackMember == 1){
                 $modelMember->deleteById($memberId);
@@ -206,8 +206,7 @@ class Diana_Service_WebsiteApplyRegister extends Diana_Service_Abstract
                     'website_cover' => $rowWebsiteApply['website_cover'],
                     'website_tag' => $rowWebsiteApply['website_tag'],
                     'website_categoryId' => $rowWebsiteApply['website_categoryId'],
-                    'website_continent' => $rowWebsiteApply['website_continent'],
-                    'website_country' => $rowWebsiteApply['website_country'],
+                    'website_areaId' => $rowWebsiteApply['website_areaId'],
                     'website_apply_time' => $rowWebsiteApply['register_insert_time'],
                     'website_apply_ip' => $rowWebsiteApply['register_insert_ip'],
                     'website_applyId' => $rowWebsiteApply['register_id'],
@@ -273,10 +272,10 @@ class Diana_Service_WebsiteApplyRegister extends Diana_Service_Abstract
         }
         //更新网站类型与网站国家动态
         $modelWebsiteCategory = new Diana_Model_WebsiteCategory();
-        $modelWebsiteCountry = new Diana_Model_WebsiteCountry();
+        $modelWebsiteArea = new Diana_Model_WebsiteArea();
         foreach($rowsWebsiteApply as $rowWebsiteApply){
             $modelWebsiteCategory->updateCountWebsite(1,$rowWebsiteApply['website_categoryId']);
-            $modelWebsiteCountry->updateCountWebsite(1,$rowWebsiteApply['website_continent'],$rowWebsiteApply['website_country']);
+            $modelWebsiteArea->updateCountWebsite(1,$rowWebsiteApply['website_areaId']);
         }
         //刷新首页
         $serviceWebsite = new Diana_Service_Website();
@@ -413,6 +412,22 @@ class Diana_Service_WebsiteApplyRegister extends Diana_Service_Abstract
             }
         }
         return true;
+    }
+
+    /**
+     * 过滤查询条件
+     * @param $post 查询数据
+     * @return array 过滤后的查询数据
+     */
+    function filterFormSearch($post)
+    {
+        $exp = array(
+            'website_name' => 1,
+            'website_domain' => 1,
+            'register_id' => 1,
+        );
+        return array_filter(array_intersect_key($post,$exp));
+
     }
 
 }

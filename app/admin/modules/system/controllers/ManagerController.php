@@ -51,8 +51,6 @@ class System_ManagerController extends Admin_Controller_Action
             );
             echo json_encode($json);
         }
-
-
     }
 
     function insertAction()

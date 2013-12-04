@@ -3,7 +3,7 @@
  * 管理员登录日志
  *
  */
-class Diana_Service_MemberLog extends Diana_Service_Abstract
+class Diana_Service_MemberLog extends Admin_Service_Abstract
 {
     function __construct()
     {
@@ -27,7 +27,7 @@ class Diana_Service_MemberLog extends Diana_Service_Abstract
         $remark = $this->makeRemark($type,$remark);
         $modelMemberLog = new Diana_Model_MemberLog();
         if (!$rowsMemberLog = $modelMemberLog->write($type,$memberId,$memberEmail,$memberName)) {
-            $this->setMsgs('登录日志写入失败');
+            $this->setMsgs('日志写入失败');
             return false;
         }
         $rowMemberLog = $rowsMemberLog[0];
@@ -43,6 +43,22 @@ class Diana_Service_MemberLog extends Diana_Service_Abstract
     }
 
     /**
+     * 获取今年的统计数据
+     * @param $year
+     */
+    function getState($condition,$year = null)
+    {
+        $state = array();
+        $condition = $this->getConditionFromSearch($condition);
+        $modelMemberLog = new Diana_Model_MemberLog($year);
+        $state['total'] = $modelMemberLog->getCountByCondition(null,$condition);
+        if($state['total'] > 0){
+            $state['rows'] = $modelMemberLog->getRowsByCondition(null,$condition,null,5);
+        }
+        return $state;
+    }
+
+    /**
      * 生成日志备注
      * @param $type 日志类型
      * @param null $data 备注内容
@@ -52,23 +68,27 @@ class Diana_Service_MemberLog extends Diana_Service_Abstract
     {
         $remark = array();
         switch($type){
-            case 11://注册
+            case 110://修改个人资料
                 break;
-            case 12;//修改个人资料
+            case 120;//修改密保邮箱
                 break;
-            case 21://登录
+            case 130;//修改登录帐号
                 break;
-			case 221://发送密保邮件
-                break;                
+            case 210://管理员登录
+                break;
+            case 221://发送密保邮件
+                break;
             case 222://通过密保邮件取回密码
                 break;
             case 223://通过后台修改密码
-            	break;
-            case 31://提交网站发布申请
                 break;
-            case 32://修改网站
+            case 311://通过网站申请
                 break;
-            case 33://删除网站
+            case 312://拒绝网站申请
+                break;
+            case 320://修改网站
+                break;
+            case 330://删除网站
                 break;
             default://
                 break;
@@ -82,7 +102,29 @@ class Diana_Service_MemberLog extends Diana_Service_Abstract
      */
     function optionsLogType()
     {
-        return array(11,12,21,22,23,31,32,33);
+        return array(
+            110 => '修改个人资料',
+            120 => '修改密保邮箱',
+            130 => '修改登录帐号',
+            210 => '管理员登录',
+            221 => '发送密保邮件',
+            222 => '通过密保邮件取回密码',
+            223 => '通过后台修改密码',
+            311 => '通过网站申请',
+            312 => '拒绝网站申请',
+            320 => '修改网站',
+            330 => '删除网站',
+        );
+    }
+
+    function makeLogTypeCombobox()
+    {
+        $arrCombobox = array();
+        $optionsLogType = $this->optionsLogType();
+        foreach($optionsLogType as $typeId => $typeLabel){
+            $arrCombobox[] = array('id' => $typeId,'label'=> $typeLabel);
+        }
+        return $arrCombobox;
     }
 
     /**
@@ -93,20 +135,45 @@ class Diana_Service_MemberLog extends Diana_Service_Abstract
      * @param unknown_type $pagesize
      * @return unknown
      */
-    function pageByCondition($condition = array(),$page = 1,$pagesize = 20)
+    function makeDataGrid($page = 1,$pageSize = 20,$condition = array())
     {
-        $return = array();
+        $dataGrid = array('total' => 0,'rows'=>array());
         $condition = $this->getConditionFromSearch($condition);
         $modelMemberLog = new Diana_Model_MemberLog();
-        if ($total = $modelMemberLog->getCountByCondition(null,$condition)) {
-            $return['total'] = $total;
-            $count = $pagesize;
+        $dataGrid['total'] = $modelMemberLog->getCountByCondition(null,$condition);
+        if ($dataGrid['total'] > 0) {
+            $count = $pageSize;
             $offset = ($page-1)*$count;
-            if ($rows = $modelMemberLog->getRowsByCondition(null,$condition,null,$count,$offset)) {
-                $return['rows'] = $rows;
+            $optionsLogType = $this->optionsLogType();
+            if ($dataGrid['rows'] = $modelMemberLog->getRowsByCondition(null,$condition,null,$count,$offset)) {
+                foreach($dataGrid['rows'] as &$row){
+                    $row['log_typeLabel'] = $optionsLogType[$row['log_type']];
+                }
             }
         }
-        return $return;
+        return $dataGrid;
+    }
+
+    /**
+     * 根据ID得到详细信息
+     * @param $logId
+     * @return array|bool
+     */
+    function getDetailById($logId)
+    {
+        $modelMemberLog = new Diana_Model_MemberLog();
+        if(!$rowsMemberLog = $modelMemberLog->getRowsById(null,$logId)){
+            $this->setMsgs("无效的ID");
+            return false;
+        }
+        $detailMemberLog = $rowsMemberLog[0];
+        $optionsLogType = $this->optionsLogType();
+        $detailMemberLog['log_typeLabel'] = $optionsLogType[$detailMemberLog['log_type']];
+        $modelMemberLogRemark = new Diana_Model_MemberLogRemark();
+        if($rowsMemberLogRemark = $modelMemberLogRemark->getRowsById(null,$logId)){
+            $detailMemberLog = array_merge($detailMemberLog,$rowsMemberLogRemark[0]);
+        }
+        return $detailMemberLog;
     }
 
 
@@ -119,8 +186,11 @@ class Diana_Service_MemberLog extends Diana_Service_Abstract
     {
         $exp = array(
             'log_id' => 1,
-            'log_time_min' => 1,
-            'log_time_max' => 1,
+            'log_date_min' => 1,
+            'log_date_max' => 1,
+            'log_ip' => 1,
+            'log_type' => 1,
+            'log_sessionId' => 1,
             'log_memberId' => 1,
             'log_memberName' => 1,
             'log_memberEmail' => 1,
@@ -132,12 +202,12 @@ class Diana_Service_MemberLog extends Diana_Service_Abstract
     {
         $condition = $formData;
         //开始时间
-        if (!empty($formData['log_time_min'])) {
-            $condition['log_time_min'] = strtotime($formData['log_time_min']);
+        if (!empty($formData['log_date_min'])) {
+            $condition['log_time_min'] = strtotime($formData['log_date_min']);
         }
         //结束时间
-        if (!empty($formData['log_time_max'])) {
-            $condition['log_time_max'] = strtotime($formData['log_time_max']);
+        if (!empty($formData['log_date_max'])) {
+            $condition['log_time_max'] = strtotime($formData['log_date_max']);
         }
         return $condition;
     }

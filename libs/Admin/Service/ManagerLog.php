@@ -3,7 +3,7 @@
  * 管理员登录日志
  *
  */
-class Admin_Service_ManagerLog extends Diana_Service_Abstract
+class Admin_Service_ManagerLog extends Admin_Service_Abstract
 {
     function __construct()
     {

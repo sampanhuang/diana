@@ -106,7 +106,9 @@ class Www_Service_Doorkeeper extends Diana_Service_Abstract
             $this->setMsgs("当前邮箱【".$email."】已经存在");
             return false;
         }
-        if(!$rowsMember = $modelMember->register(1,$email,$name,$passwd)){
+        $serviceConfig = new Diana_Service_Config();
+        $configMemberRegisterDefaultRoleId = $serviceConfig->getValueByKey('member-register_default_role');
+        if(!$rowsMember = $modelMember->register($configMemberRegisterDefaultRoleId,$email,$name,$passwd)){
             $this->focus = 0;
             $this->setMsgs("会员注册失败");
             return false;

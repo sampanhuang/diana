@@ -1,6 +1,6 @@
 <?php
 /**
- * Created by JetBrains PhpStorm.
+ * 申请 - 网站注册
  * User: sampan
  * Date: 13-8-1
  * Time: 下午7:36
@@ -16,74 +16,25 @@ class Apply_WebsiteRegisterController extends Admin_Controller_Action
 
     function indexAction()
     {
-        $dataGet = $this->view->dataget = $this->getRequest()->getParams();
+        $request = $this->view->request = $this->getRequest()->getParams();
+        $queryGrid = array('show_ajax' => 'json','data_ajax' => 'datagrid-apply');
+        $serviceWebsiteApplyRegister = new Diana_Service_WebsiteApplyRegister();
+        if ($this->getRequest()->isPost()) {
+            $dataPost = $this->getRequest()->getPost();
+            $this->view->dataPost = $dataPost;
+            $queryGridPost = $serviceWebsiteApplyRegister->filterFormSearch($dataPost);
+            $queryGrid = array_merge($queryGrid,$queryGridPost);
+        }
+        $this->view->queryGrid = $queryGrid;
         $this->view->page = $page = $this->getRequest()->getParam('page',1);
         $this->view->pagesize = $pageSize = $this->getRequest()->getParam('row',DIANA_DATAGRID_PAGESIZE_ADMIN);
-        if ($dataGet['data_ajax'] == 'datagrid_role') {
-            $this->view->registerPass = $registerPass = $this->getRequest()->getParam('page',0);
+        if ($request['data_ajax'] == 'datagrid-apply') {
+            $this->view->registerPass = $registerPass = $this->getRequest()->getParam('register_pass',0);
             $condition = array("register_pass" => $registerPass);
-            $serviceWebsiteApplyRegister = new Diana_Service_WebsiteApplyRegister();
             if($paginator = $serviceWebsiteApplyRegister->pageByCondition($page,$pageSize,$condition)){
                 echo json_encode($paginator);
             }
         }
-    }
-	
-    /**
-     * 待处理的网站注册申请
-     *
-     * @return unknown
-     */
-    function pendingAction()
-    {
-        $pagesize = 15;
-        $this->view->page = $page = $this->getRequest()->getUserParam('page',1);
-        $serviceWebsiteApplyRegister = new Diana_Service_WebsiteApplyRegister();
-        $this->view->paginator = $paginator = $serviceWebsiteApplyRegister->pageByCondition($page,$pagesize,array("register_pass" => 0));
-        if(empty($paginator['total'])){
-            $this->setMsgs("没有未审核的网站注册申请纪录!");
-            return false;
-        }
-        $servicePageNum = new Diana_Service_PageNum($paginator['total'],$pagesize,$page);
-        $this->view->pagenum = $pagenum = $servicePageNum->getPageNum();
-    }
-
-    /**
-     * 通过审核的网站注册申请
-     *
-     * @return unknown
-     */
-    function succeedAction()
-    {
-        $pagesize = 15;
-        $this->view->page = $page = $this->getRequest()->getUserParam('page',1);
-        $serviceWebsiteApplyRegister = new Diana_Service_WebsiteApplyRegister();
-        $this->view->paginator = $paginator = $serviceWebsiteApplyRegister->pageByCondition($page,$pagesize,array("register_pass" => 1));
-        if($paginator['total'] == 0){
-            $this->setMsgs("没有通过的网站注册申请纪录!");
-            return false;
-        }
-        $servicePageNum = new Diana_Service_PageNum($paginator['total'],$pagesize,$page);
-        $this->view->pagenum = $pagenum = $servicePageNum->getPageNum();
-    }
-
-    /**
-     * 未通过审核的网站注册申请
-     *
-     * @return unknown
-     */
-    function failAction()
-    {
-        $pagesize = 15;
-        $this->view->page = $page = $this->getRequest()->getUserParam('page',1);
-        $serviceWebsiteApplyRegister = new Diana_Service_WebsiteApplyRegister();
-        $this->view->paginator = $paginator = $serviceWebsiteApplyRegister->pageByCondition($page,$pagesize,array("register_pass" => 2));
-        if(empty($paginator['total'])){
-            $this->setMsgs("没有被拒绝的网站注册申请纪录!");
-            return false;
-        }
-        $servicePageNum = new Diana_Service_PageNum($paginator['total'],$pagesize,$page);
-        $this->view->pagenum = $pagenum = $servicePageNum->getPageNum();
     }
 
     /**
