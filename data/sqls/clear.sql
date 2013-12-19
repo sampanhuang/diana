@@ -2,6 +2,7 @@
 DELETE FROM tb_member;
 DELETE FROM tb_member_favorite;
 DELETE FROM tb_member_log;
+DROP TABLE tb_member_log_2013;
 
 DELETE FROM tb_member_msg;
 DROP TABLE tb_member_trend_login_2013;
@@ -19,9 +20,11 @@ DELETE FROM tb_website_meta;
 DROP TABLE tb_website_trend_register_2013;
 DROP TABLE tb_website_trend_click_in_2013;
 DROP TABLE tb_website_trend_click_out_2013;
+
 /*清空网站标签*/
 DELETE FROM tb_website_tag;
 DELETE FROM tb_website_tag_relation;
+
 /*清空网站搜索*/
 DELETE FROM tb_website_keyword;
 DROP TABLE tb_website_trend_search_2013;
@@ -37,8 +40,6 @@ DELETE FROM tb_manager_log;
 DELETE FROM tb_manager_log_remark;
 DROP TABLE tb_manager_log_2013;
 DROP TABLE tb_manager_log_remark_2013;
-DELETE FROM tb_member_log;
-DROP TABLE tb_member_log_2013;
 DELETE FROM tb_manager_msg;
 DELETE FROM tb_manager_msg_content;
 DELETE FROM tb_manager_msg_dest;

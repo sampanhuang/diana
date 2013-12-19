@@ -6,7 +6,7 @@
  * Time: 下午7:36
  * To change this template use File | Settings | File Templates.
  */
-class Apply_WebsiteRegisterController extends Admin_Controller_Action
+class Apply_WebsiteRegisterController extends Admin_Controller_ActionDec
 {
     function init()
     {
@@ -17,24 +17,19 @@ class Apply_WebsiteRegisterController extends Admin_Controller_Action
     function indexAction()
     {
         $request = $this->view->request = $this->getRequest()->getParams();
-        $queryGrid = array('show_ajax' => 'json','data_ajax' => 'datagrid-apply');
+        $queryGrid = array('ajax_print' => 'json','req_handle' => 'datagrid-result');
+        $queryGrid = array_merge($queryGrid,$request);
         $serviceWebsiteApplyRegister = new Diana_Service_WebsiteApplyRegister();
-        if ($this->getRequest()->isPost()) {
-            $dataPost = $this->getRequest()->getPost();
-            $this->view->dataPost = $dataPost;
-            $queryGridPost = $serviceWebsiteApplyRegister->filterFormSearch($dataPost);
-            $queryGrid = array_merge($queryGrid,$queryGridPost);
-        }
         $this->view->queryGrid = $queryGrid;
         $this->view->page = $page = $this->getRequest()->getParam('page',1);
         $this->view->pagesize = $pageSize = $this->getRequest()->getParam('row',DIANA_DATAGRID_PAGESIZE_ADMIN);
-        if ($request['data_ajax'] == 'datagrid-apply') {
-            $this->view->registerPass = $registerPass = $this->getRequest()->getParam('register_pass',0);
-            $condition = array("register_pass" => $registerPass);
-            if($paginator = $serviceWebsiteApplyRegister->pageByCondition($page,$pageSize,$condition)){
-                echo json_encode($paginator);
-            }
-        }
+        $configHandle = array(
+            'datagrid-result' => array(
+                'object' => $serviceWebsiteApplyRegister,
+                'method' => 'makeDataGrid',
+            ),
+        );
+        $this->handleAjax($configHandle);
     }
 
     /**
@@ -44,46 +39,49 @@ class Apply_WebsiteRegisterController extends Admin_Controller_Action
      */
     function detailAction()
     {
-        $this->view->websiteId = $websiteId = $this->getRequest()->getUserParam('register_id',0);
-        if(empty($registerId)){
-        	$this->setMsgs("缺少参数，无法进行处理!");
-        	return false;
-        }
+        $request = $this->getRequest()->getParams();
         $serviceWebsiteApplyRegister = new Diana_Service_WebsiteApplyRegister();
-        if($detailWebsiteApply = $serviceWebsiteApplyRegister->detailById($websiteId)){
-            $this->view->detailWebsiteApply = $detailWebsiteApply;
+        if ($this->getRequest()->isPost()) {
+            if($request['handle'] = 'query'){
+                if(!$detailMember = $serviceWebsiteApplyRegister->getDetail($request['query_column'],$request['query_key'])){
+                    $this->setMsgs('查询失败');
+                    $this->setMsgs($serviceWebsiteApplyRegister->getMsgs());
+                }
+            }
         }
+        if((empty($detailMember))&&(!empty($request['register_id']))){
+            if(!$detailMember = $serviceWebsiteApplyRegister->getDetail('id',$request['register_id'])){
+                $this->setMsgs('查询失败');
+                $this->setMsgs($serviceWebsiteApplyRegister->getMsgs());
+            }
+        }
+        $this->view->queryColumns = array('id');
+        $this->view->detail = $detailMember;
+        $this->view->request = $request;
+
     }
 
     /**
      * 审核处理
      *
      */
-    function judgeAction()
+    function handleAction()
     {
-        $this->view->registerId = $registerId = $this->getRequest()->getParam('register_id',0);
-        $this->view->pass = $pass = $this->getRequest()->getParam('pass',0);
         $serviceWebsiteApplyRegister = new Diana_Service_WebsiteApplyRegister();
-        if(empty($registerId)){
-        	$this->setMsgs("缺少参数，无法进行处理!");
-        	return false;
-        }
-        if($pass == 1){
-            if($rowsWebsite = $serviceWebsiteApplyRegister->accedeApply($registerId)){
-                $this->view->rows = $rowsWebsite;
-                $this->setMsgs('同意申请成功！');
-            }else{
-                $this->setMsgs('同意申请失败！');
-                $this->setMsgs($serviceWebsiteApplyRegister->getMsgs());
-            }
-        }elseif($pass == 2){
-            if($rowsWebsiteApply = $serviceWebsiteApplyRegister->demurApply($registerId)){
-                $this->setMsgs('拒绝申请成功！');
-                $this->view->rows = $rowsWebsiteApply;
-            }else{
-                $this->setMsgs('拒绝申请失败！');
-                $this->setMsgs($serviceWebsiteApplyRegister->getMsgs());
-            }
-        }
+        $configHandle = array(
+            'delete' => array(
+                'object' => $serviceWebsiteApplyRegister,
+                'method' => 'deleteWithAjax',
+            ),
+            'accept' => array(
+                'object' => $serviceWebsiteApplyRegister,
+                'method' => 'acceptApply',
+            ),
+            'reject' => array(
+                'object' => $serviceWebsiteApplyRegister,
+                'method' => 'rejectApply',
+            ),
+        );
+        $this->handleAjax($configHandle);
     }
 }

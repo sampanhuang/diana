@@ -6,4 +6,5 @@ return array(
     'admin_message_notie' => '提示',
     'admin_resetpwd' => '修改密码',
     'admin_logout' => '注销登录',
+    'admin_'
     );

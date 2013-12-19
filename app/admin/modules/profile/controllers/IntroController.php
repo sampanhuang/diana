@@ -6,7 +6,7 @@
  * Time: 下午11:35
  * To change this template use File | Settings | File Templates.
  */
-class Profile_IntroController extends Admin_Controller_Action
+class Profile_IntroController extends Admin_Controller_ActionDec
 {
     function init()
     {
@@ -27,6 +27,38 @@ class Profile_IntroController extends Admin_Controller_Action
      */
     function logAction()
     {
+        $serviceManagerLog = new Admin_Service_ManagerLog();
+        $resultDataGridColumns = array(
+
+        );
+        //DataGridColumns
+        $configDataGridColumns = array(
+            'frozen' => array(
+
+            ),
+            'mobile' => array(
+
+            ),
+        );
+        $this->setDataGridColumns($configDataGridColumns);
+        //ajax处理配置
+        $configHandle = array(
+            'datagrid_result' => array(//查询
+                'object' => $serviceManagerLog,
+                'method' => 'makeDataGrid',
+            ),
+            'combobox_log-type' => array(
+                'object' => $serviceManagerLog,
+                'method' => 'makeLogTypeCombobox',
+            ),
+            'detail' => array(//明细
+                'object' => $serviceManagerLog,
+                'method' => 'getDetailById',
+            ),
+        );
+        //ajax处理
+        $this->handleAjax($configHandle);
+        /*
         $dataGet = $this->getRequest()->getParams();
         $queryGrid = array('show_ajax' => 'json','data_ajax' => 'manager-log-datagrid');
         $serviceManagerLog = new Admin_Service_ManagerLog();
@@ -56,6 +88,7 @@ class Profile_IntroController extends Admin_Controller_Action
             $logTypeComboBox = $serviceManagerLog->makeLogTypeCombobox();
             echo json_encode($logTypeComboBox);
         }
+        */
     }
 
 }

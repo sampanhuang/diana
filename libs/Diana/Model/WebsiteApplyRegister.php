@@ -36,6 +36,9 @@ class Diana_Model_WebsiteApplyRegister extends Diana_Model_Abstract
             'website_areaId' => trim(strtolower($area)),
             'register_insert_time' => time(),
             'register_insert_ip' => $_SERVER['REMOTE_ADDR'],
+            'register_update_time' => time(),
+            'register_update_ip' => $_SERVER['REMOTE_ADDR'],
+            'register_pass' => 3,
         );
         return $this->saveData(1,$data);
     }
@@ -58,6 +61,7 @@ class Diana_Model_WebsiteApplyRegister extends Diana_Model_Abstract
         return $this->getRowsByCondition($refresh,$condition);
     }
 
+
     /**
      * @param $websiteId
      * @param int $pass
@@ -67,8 +71,8 @@ class Diana_Model_WebsiteApplyRegister extends Diana_Model_Abstract
     {
         $data = array(
             'register_pass' => $pass,
-            'register_update_time' => time(),
-            'register_update_ip' => $_SERVER['REMOTE_ADDR'],
+            'register_pass_time' => time(),
+            'register_pass_ip' => $_SERVER['REMOTE_ADDR'],
         );
         $condition = array('register_id' => $id);
         return $this->saveData(2,$data,$condition);

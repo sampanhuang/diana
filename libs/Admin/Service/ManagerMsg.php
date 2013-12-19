@@ -159,7 +159,7 @@ class Admin_Service_ManagerMsg extends Admin_Service_Abstract
         $delMsgId = array();//要删除的
         $msgId = array();
         foreach($rowsManagerMsgOutbox as $rowManagerMsgOutbox){
-            if($rowManagerMsgOutbox['outbox_managerId'] == $managerId){
+            if($rowManagerMsgOutbox['outbox_manId'] == $managerId){
                 $delOutboxId[] = $rowManagerMsgOutbox['outbox_id'];
                 $msgId[] = $rowManagerMsgOutbox['outbox_msgId'];
             }
@@ -197,7 +197,7 @@ class Admin_Service_ManagerMsg extends Admin_Service_Abstract
         }
         $markReadInboxId = array();//要删除的收件消息ID
         foreach($rowsManagerMsgInbox as $rowManagerMsgInbox){
-            if(($rowManagerMsgInbox['inbox_managerId'] == $managerId) && ($rowManagerMsgInbox['inbox_msg_read_time'] == 0)){
+            if(($rowManagerMsgInbox['inbox_manId'] == $managerId) && ($rowManagerMsgInbox['inbox_msg_read_time'] == 0)){
                 $markReadInboxId[] = $rowManagerMsgInbox['inbox_id'];
             }
         }
@@ -230,7 +230,7 @@ class Admin_Service_ManagerMsg extends Admin_Service_Abstract
         $delMsgId = array();//要删除的
         $msgId = array();
         foreach($rowsManagerMsgInbox as $rowManagerMsgInbox){
-            if($rowManagerMsgInbox['inbox_managerId'] == $managerId){
+            if($rowManagerMsgInbox['inbox_manId'] == $managerId){
                 $delInboxId[] = $rowManagerMsgInbox['inbox_id'];
                 $msgId[] = $rowManagerMsgInbox['inbox_msgId'];
             }
@@ -424,7 +424,7 @@ class Admin_Service_ManagerMsg extends Admin_Service_Abstract
             if($rowsManagerMsgInbox = $modelManagerMsgInbox->getRowsByMsgManager(null,$rowManagerMsgOutbox['outbox_msgId'])){
                 $rowManagerMsgOutbox['outbox_read_receipt'] = array();
                 foreach($rowsManagerMsgInbox as $rowManagerMsgInbox){
-                    $tmpInboxManagerId = $rowManagerMsgInbox['inbox_managerId'];
+                    $tmpInboxManagerId = $rowManagerMsgInbox['inbox_manId'];
                     $rowManagerMsgOutbox['outbox_read_receipt'][$tmpInboxManagerId] = $rowManagerMsgInbox;
                 }
             }

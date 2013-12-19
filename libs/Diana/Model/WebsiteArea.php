@@ -105,7 +105,7 @@ class Diana_Model_WebsiteArea extends Diana_Model_Abstract
      */
     function getRowsById($refresh = null,$id)
     {
-        $condition = array("website_id" => $id);
+        $condition = array("area_id" => $id);
         return $this->getRowsByCondition($refresh,$condition);
     }
 

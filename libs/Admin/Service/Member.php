@@ -53,13 +53,14 @@ class Admin_Service_Member extends Admin_Service_Abstract
 
     /**
      * 生成datagrid所需数据
-     * @param int $page 当前页
-     * @param int $pagesize 每页纪录数
-     * @param $condition 条件
+     * @param $params 条件
      * @return array
      */
-    function makeDataGrid($page = 1,$pagesize = 1,$condition)
+    function makeDataGrid($params)
     {
+        $page = $params['page'];
+        $pagesize = $params['rows'];
+        $condition = $this->filterFormSearch($params);
         $dataGrid = array('total' => 0 , 'rows' => array());
         $modelMember = new Diana_Model_Member();
         $dataGrid['total'] = $modelMember->getCountByCondition(null,$condition);
@@ -72,10 +73,10 @@ class Admin_Service_Member extends Admin_Service_Abstract
                 if($optionsRole = $serviceMemberRole->makeOptions()){
                     foreach($dataGrid['rows'] as &$rowMember){
                         if ($rowMember['member_lock_time'] < DIANA_TIMESTAMP_START) {//未锁定
-                            $rowMember['member_lock_stat'] = 0;
+                            $rowMember['member_lock_stat'] = 1;
                             $rowMember['member_lock_second'] = DIANA_TIMESTAMP_START - $rowMember['role_lock_time'];
                         }else{//已经锁定
-                            $rowMember['member_lock_stat'] = 1;
+                            $rowMember['member_lock_stat'] = 2;
                             $rowMember['member_lock_second'] = $rowMember['member_lock_time'] - VI_TIMESTAMP_START;
                         }
                         $rowMember['member_roleName'] = $optionsRole[$rowMember['member_roleId']];
@@ -101,6 +102,98 @@ class Admin_Service_Member extends Admin_Service_Abstract
         );
         return array_filter(array_intersect_key($post,$exp));
 
+    }
+
+    /**
+     * 删除
+     * @param $params
+     */
+    function delete($params)
+    {
+        $memberId = $params['member_id'];
+        return $this->deleteById($memberId);
+    }
+
+    /**
+     * 锁定
+     * @param $params
+     */
+    function lock($params)
+    {
+        $memberId = $params['member_id'];
+        $lockTime = strtotime($params['member_lock_time']);
+        return $this->setLockTimeById($memberId,$lockTime);
+
+    }
+
+    /**
+     * 解锁
+     * @param $params
+     */
+    function unlock($params)
+    {
+        $memberId = $params['member_id'];
+        $lockTime = 0;
+        return $this->setLockTimeById($memberId,$lockTime);
+    }
+
+    /**
+     * 通过会员ID删除
+     * @param $memberId 会员ID
+     */
+    function deleteById($memberId)
+    {
+        //确认会员ID正常
+        if(!$rowsMember = $this->checkMemberId($memberId)){
+            return false;
+        }
+        $modelMember = new Diana_Model_Member();
+        $rowsAffected =  $modelMember->deleteById($memberId);
+        if( $rowsAffected > 0){
+            $this->setMsgs('成功删除'.$rowsAffected.'条纪录');
+        }
+        return $rowsAffected;
+    }
+
+    /**
+     * 设置锁定时间
+     * @param $memberId 会员ID
+     * @param int $lockTime 锁定时间
+     * @return array|bool 受影响的纪录
+     */
+    function setLockTimeById($memberId,$lockTime = 0)
+    {
+        //确认会员ID正常
+        if(!$rowsMember = $this->checkMemberId($memberId)){
+            return false;
+        }
+        $modelMember = new Diana_Model_Member();
+        if(!$rowsMember = $modelMember->updateWithLock($memberId,$lockTime)){
+            $this->setMsgs('更新失败');
+            return false;
+        }
+        $this->setMsgs('成功更新'.count($rowsMember).'条纪录');
+        return $rowsMember;
+    }
+
+
+    /**
+     * 确认会员ID是否正确
+     * @param $memberId 会员ID
+     * @return array|bool 返回这些会员ID的纪录
+     */
+    function checkMemberId($memberId)
+    {
+        if(empty($memberId)){
+            $this->setMsgs('会员ID不能为空');
+            return false;
+        }
+        $modelMember = new Diana_Model_Member();
+        if (!$rowsMember = $modelMember->getRowsById(null,$memberId)) {
+            $this->setMsgs('无效的会员ID');
+            return false;
+        }
+        return $rowsMember;
     }
 
 

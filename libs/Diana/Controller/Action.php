@@ -20,11 +20,11 @@ class Diana_Controller_Action extends Zend_Controller_Action
 		$this->view->currentActionName = $this->currentActionName = $this->getRequest()->getActionName();//获取当前选项
 
         //打印JSON
-        $dataget = $this->getRequest()->getParams();
-        if ($dataget['show_ajax']) {//打印ajax
+        $request = $this->getRequest()->getParams();
+        if ((!empty($request['show_ajax']))||(!empty($request['ajax_show']))) {//打印ajax
             $this->getHelper("layout")->disableLayout();//关闭布局
             $this->getHelper("viewRenderer")->setNoRender();//关闭视图
-            if ($dataget['show_ajax'] == 'json') {
+            if ($request['show_ajax'] == 'json' || $request['ajax_show'] == 'json') {
                 ob_clean();
                 header('content-type: application/json; charset=utf-8');
             }

@@ -16,17 +16,17 @@ $(function(){
         $("#div_help").toggle();
     });
     //数据列表
-    $('#datagrid-manager-log').datagrid({
+    $('#datagrid_result').datagrid({
         singleSelect:true,//允许多行选择
         rownumbers:true,
         cache:false,
         pagination:true,
         pageList:[<?php echo DIANA_DATAGRID_PAGELIST_ADMIN;?>],
         pageSize:<?php echo $this->pagesize;?>,
-        url:'<?php echo $this->url($this->queryGrid);?>'
+        url:'<?php echo $this->url(array('ajax_print' => 'json','req_handle' => 'datagrid_result'));?>'
     });
     $('#input_log_typeLabel').combobox({
-        url:'<?php echo $this->url(array('show_ajax' => 'json','data_ajax' => 'log-type-combobox'));?>',
+        url:'<?php echo $this->url(array('ajax_print' => 'json','req_handle' => 'combobox_log-type'));?>',
         valueField:'id',
         textField:'label',
         multiple:true,
@@ -121,7 +121,7 @@ $(function(){
 </div>
 <?php //echo '<a href="'.$this->url($this->queryGrid).'"  target="_blank">'.$this->url($this->queryGrid).'</a><br><br>';?>
 <!---数据网格内容-->
-<table id="datagrid-manager-log" width="100%" height="100%" class="easyui-datagrid" title="查询结果">
+<table id="datagrid_result" width="100%" height="100%" title="查询结果">
     <thead data-options="frozen:true">
     <tr>
         <!--<th data-options="field:'ck',checkbox:true"></th>

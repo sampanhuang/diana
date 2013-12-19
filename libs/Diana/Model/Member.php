@@ -32,12 +32,24 @@ class Diana_Model_Member extends Diana_Model_Abstract
         return $this->getRowsByCondition($refresh,$condition);
     }
 
+    /**
+     * 通过邮箱得到纪录
+     * @param null $refresh 是否刷新
+     * @param $email 邮箱
+     * @return array
+     */
     function getRowsByEmail($refresh = null,$email)
     {
         $condition = array("member_email" => $email);
         return $this->getRowsByCondition($refresh,$condition);
     }
 
+    /**
+     * 通过帐号得到纪录
+     * @param null $refresh 是否刷新
+     * @param $name
+     * @return array
+     */
     function getRowsByName($refresh = null,$name)
     {
         $condition = array("member_name" => $name);
@@ -45,6 +57,14 @@ class Diana_Model_Member extends Diana_Model_Abstract
     }
 
 
+    /**
+     * 用户注册
+     * @param int $roleId 角色
+     * @param $email 邮箱
+     * @param $name 帐号
+     * @param $passwd 密码
+     * @return array|bool 纪录
+     */
     function register($roleId = 0,$email,$name,$passwd)
     {
         $data = array(
@@ -54,11 +74,27 @@ class Diana_Model_Member extends Diana_Model_Abstract
             'member_passwd' => trim(strtolower($passwd)),
             'member_insert_time' => time(),
             'member_insert_ip' => $_SERVER['REMOTE_ADDR'],
+            'member_state' => 3,
         );
         if(!$memberId = $this->saveData(1,$data)){
             return false;
         }
         return $memberId;
+    }
+
+    /**
+     * 更新锁定
+     * @param $id
+     * @param $lockTime
+     * @return array
+     */
+    function updateWithLock($id,$lockTime)
+    {
+        $data = array(
+            "member_lock_time" => intval($lockTime),
+        );
+        $condition = array("member_id" => $id);
+        return $this->saveData(2,$data,$condition);
     }
 
 

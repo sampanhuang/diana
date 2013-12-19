@@ -47,9 +47,9 @@ class Diana_Model_DbTable_ManagerMsgOutbox extends Diana_Model_DbTable_Abstract
             $tmpWheres = $this->getWhereByCondition("outbox_msgId",$condition["outbox_msgId"],1);
             $wheres = array_merge($wheres,$tmpWheres);
         }
-        if (!empty($condition["outbox_managerId"])) {//根据发件人来查询
+        if (!empty($condition["outbox_manId"])) {//根据发件人来查询
             $tmpWheres = array();
-            $tmpWheres = $this->getWhereByCondition("outbox_managerId",$condition["outbox_managerId"],1);
+            $tmpWheres = $this->getWhereByCondition("outbox_manId",$condition["outbox_manId"],1);
             $wheres = array_merge($wheres,$tmpWheres);
         }
         if (!empty($condition["outbox_msg_send_time_min"])) {//最小发送时间

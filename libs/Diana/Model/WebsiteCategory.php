@@ -103,7 +103,7 @@ class Diana_Model_WebsiteCategory extends Diana_Model_Abstract
      */
     function getRowsById($refresh = null,$id)
     {
-        $condition = array("website_id" => $id);
+        $condition = array("category_id" => $id);
         return $this->getRowsByCondition($refresh,$condition);
     }
 

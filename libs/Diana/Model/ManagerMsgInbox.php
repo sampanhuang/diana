@@ -36,17 +36,17 @@ class Diana_Model_ManagerMsgInbox extends Diana_Model_Abstract
     /**
      * 给收件人的收件箱里添加东西
      * @param $msgId 消息ID
-     * @param $managerId 管理员ID
+     * @param $manId 管理员ID
      */
-    function addMsg($msgId,$managerId)
+    function addMsg($msgId,$manId)
     {
-        if(empty($msgId)||empty($managerId)){
+        if(empty($msgId)||empty($manId)){
             return false;
         }
-        if(!is_array($managerId)){
-            $managerId = explode(',',$managerId);
+        if(!is_array($manId)){
+            $manId = explode(',',$manId);
         }
-        foreach($managerId as $val){
+        foreach($manId as $val){
             $tmpData = array(
                 'inbox_msgId' => $msgId,
                 'inbox_managerId' => $val,
@@ -61,20 +61,20 @@ class Diana_Model_ManagerMsgInbox extends Diana_Model_Abstract
      * 通过msgid和managerid获取
      * @param null $refresh
      * @param null $msgId
-     * @param null $managerId
+     * @param null $manId
      * @return array|bool
      */
-    function getRowsByMsgManager($refresh = null,$msgId = null,$managerId = null)
+    function getRowsByMsgManager($refresh = null,$msgId = null,$manId = null)
     {
-        if(empty($msgId)&&empty($managerId)){
+        if(empty($msgId)&&empty($manId)){
             return false;
         }
         $condition = array();
         if(!empty($msgId)){
             $condition['inbox_msgId'] = $msgId;
         }
-        if(!empty($managerId)){
-            $condition['inbox_managerId'] = $managerId;
+        if(!empty($manId)){
+            $condition['inbox_manId'] = $manId;
         }
         return $this->getRowsByCondition($refresh,$condition);
     }

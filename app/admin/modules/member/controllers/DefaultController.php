@@ -6,7 +6,7 @@
  * Time: 下午5:51
  * To change this template use File | Settings | File Templates.
  */
-class Member_DefaultController extends Admin_Controller_Action
+class Member_DefaultController extends Admin_Controller_ActionDec
 {
     function init()
     {
@@ -18,8 +18,9 @@ class Member_DefaultController extends Admin_Controller_Action
      * 查询模块
      */
     function indexAction(){
-        $dataGet = $this->getRequest()->getParams();
-        $queryGrid = array('show_ajax' => 'json','data_ajax' => 'member-user-datagrid');
+        $request = $this->getRequest()->getParams();
+        $queryGrid = array('ajax_print' => 'json','req_handle' => 'datagrid-result');
+        $queryGrid = array_merge($queryGrid,$request);
         //获取角色数据
         $serviceMemberRole = new Admin_Service_MemberRole();
         if (!$optionsRole = $serviceMemberRole->makeOptions()) {
@@ -27,49 +28,44 @@ class Member_DefaultController extends Admin_Controller_Action
             return false;
         }
         $serviceMember = new Admin_Service_Member();
-        if ($this->getRequest()->isPost()) {
-            $dataPost = $this->getRequest()->getPost();
-            $this->view->datapost = $dataPost;
-            $queryGridPost = $serviceMember->filterFormSearch($dataPost);
-            $queryGrid = array_merge($queryGrid,$queryGridPost);
-        }
         $this->view->optionsRole = $optionsRole;
-        $this->view->dataget = $dataGet;
+        $this->view->dataget = $request;
         $this->view->queryGrid = $queryGrid;
-        //默认是20纪录一页
-        if (empty($dataget['rows'])) {
-            $this->view->pagesize = DIANA_DATAGRID_PAGESIZE_ADMIN;
-        }
-        if ($dataGet['data_ajax'] == 'member-user-datagrid') {
-            $grid = $serviceMember->makeDataGrid($dataGet['page'],$dataGet['rows'],$dataGet);
-            echo json_encode($grid);
-        }elseif ($dataGet['data_ajax'] == 'member-user-delete-lock-unlock') {
-            $json = array(
-                'stat' => 0,
-                'msgs' => '',
-                'item' => array(),
-            );
-            echo json_encode($json);
-        }
-    }
-
-    function insertAction()
-    {
-
-    }
-
-    function updateAction()
-    {
-
-    }
-
-    function deleteAction()
-    {
-
+        $this->view->pagesize = $this->getRequest()->getParam('rows',DIANA_DATAGRID_PAGESIZE_ADMIN) ;
+        $configHandle = array(
+            'datagrid-result' => array(
+                'object' => $serviceMember,
+                'method' => 'makeDataGrid',
+            ),
+        );
+        $this->handleAjax($configHandle);
     }
 
     /**
-     * 详情
+     * 处理
+     */
+    function handleAction()
+    {
+        $serviceMember = new Admin_Service_Member();
+        $configHandle = array(
+            'delete' => array(
+                'object' => $serviceMember,
+                'method' => 'delete',
+            ),
+            'lock' => array(
+                'object' => $serviceMember,
+                'method' => 'lock',
+            ),
+            'unlock' => array(
+                'object' => $serviceMember,
+                'method' => 'unlock',
+            ),
+        );
+        $this->handleAjax($configHandle);
+    }
+
+    /**
+     * 会员明细
      */
     function detailAction()
     {
@@ -94,6 +90,9 @@ class Member_DefaultController extends Admin_Controller_Action
         $this->view->request = $request;
     }
 
+    /**
+     * 会员日志
+     */
     function logAction()
     {
         $dataGet = $this->getRequest()->getParams();

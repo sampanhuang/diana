@@ -117,7 +117,7 @@ class Admin_Service_ManagerLog extends Admin_Service_Abstract
         );
     }
 
-    function makeLogTypeCombobox()
+    function makeLogTypeCombobox($request = null)
     {
         $arrCombobox = array();
         $optionsLogType = $this->optionsLogType();
@@ -130,15 +130,15 @@ class Admin_Service_ManagerLog extends Admin_Service_Abstract
     /**
      * 查询
      *
-     * @param unknown_type $data
-     * @param unknown_type $page
-     * @param unknown_type $pagesize
+     * @param array $input
      * @return unknown
      */
-    function makeDataGrid($page = 1,$pageSize = 20,$condition = array())
+    function makeDataGrid($input)
     {
         $dataGrid = array('total' => 0,'rows'=>array());
-        $condition = $this->getConditionFromSearch($condition);
+        $page = $input['page'];
+        $pageSize = $input['rows'];
+        $condition = $this->getConditionFromSearch($input);
         $modelManagerLog = new Diana_Model_ManagerLog();
         $dataGrid['total'] = $modelManagerLog->getCountByCondition(null,$condition);
         if ($dataGrid['total'] > 0) {
@@ -156,11 +156,12 @@ class Admin_Service_ManagerLog extends Admin_Service_Abstract
 
     /**
      * 根据ID得到详细信息
-     * @param $logId
+     * @param $input
      * @return array|bool
      */
-    function getDetailById($logId)
+    function getDetailById($input)
     {
+        $logId = $input['log_id'];
         $modelManagerLog = new Diana_Model_ManagerLog();
         if(!$rowsManagerLog = $modelManagerLog->getRowsById(null,$logId)){
             $this->setMsgs("无效的ID");

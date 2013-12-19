@@ -35,5 +35,8 @@ return array(
     'global_id' => 'ID',
     'global_email' => '邮箱',
     'global_name' => '帐号',
+    'global_website_id' => '网站ID',
+    'global_website_name' => '网站名',
+    'global_website_domain' => '域名',
 
 );

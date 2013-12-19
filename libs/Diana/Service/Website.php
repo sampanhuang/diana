@@ -128,8 +128,8 @@ class Diana_Service_Website extends Diana_Service_Abstract
         $rowWebsite = $rowsWebsite[0];
         //获取地区父级
         $modelWebsiteArea = new Diana_Model_WebsiteArea();
-        if($rowsWebsiteAreaFather = $modelWebsiteArea->getRowsById(null,$rowWebsite['website_areaId'])){
-            $rowWebsite['website_areaFatherId'] =  $rowsWebsiteAreaFather[0]['area_fatherId'];
+        if($rowsWebsiteArea = $modelWebsiteArea->getRowsById(null,$rowWebsite['website_areaId'])){
+            $rowWebsite['website_areaFatherId'] =  $rowsWebsiteArea[0]['area_fatherId'];
         }
         //获取网站描述
         $modelWebsiteIntro = new Diana_Model_WebsiteIntro();

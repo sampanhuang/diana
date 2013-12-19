@@ -6,7 +6,7 @@
  * Time: 下午5:51
  * To change this template use File | Settings | File Templates.
  */
-class Website_RegisterController extends Admin_Controller_Action
+class Website_DefaultController extends Admin_Controller_ActionDec
 {
     var $yearStart = 2013;
     var $yearEnd = 0;
@@ -22,14 +22,20 @@ class Website_RegisterController extends Admin_Controller_Action
      * 查询模块
      */
     function indexAction(){
-        $pagesize = 15;
-        $this->view->page = $page = $this->getRequest()->getUserParam('page',1);
-        $serviceWebsite = new Diana_Service_Website();
-        $this->view->paginator = $paginator = $serviceWebsite->pageByCondition($page,$pagesize);
-        if($paginator['total'] > 0){
-            $servicePageNum = new Diana_Service_PageNum($paginator['total'],$pagesize,$page);
-            $this->view->pagenum = $pagenum = $servicePageNum->getPageNum();
-        }
+        $request = $this->getRequest()->getParams();
+        $queryGrid = array('ajax_print' => 'json','req_handle' => 'datagrid-result');
+        $queryGrid = array_merge($queryGrid,$request);
+        $serviceWebsite = new Admin_Service_Website();
+        $this->view->dataget = $request;
+        $this->view->queryGrid = $queryGrid;
+        $this->view->pagesize = $this->getRequest()->getParam('rows',DIANA_DATAGRID_PAGESIZE_ADMIN) ;
+        $configHandle = array(
+            'datagrid-result' => array(
+                'object' => $serviceWebsite,
+                'method' => 'makeDataGrid',
+            ),
+        );
+        $this->handleAjax($configHandle);
     }
 
     function updateAction()

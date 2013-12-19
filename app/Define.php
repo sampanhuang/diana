@@ -63,7 +63,7 @@ define('DIANA_DIR_TEMP_LOG', DIANA_DIR_TEMP."/logs");//临时目录日志
 define('DIANA_DIR_TEMP_CACHE', DIANA_DIR_TEMP."/cache");//临时缓存文件
 define('DIANA_DIR_TEMP_CAPTCHA', DIANA_DIR_TEMP."/captcha");//临时验证码图片
 define('DIANA_DIR_TEMP_DOWN', DIANA_DIR_TEMP."/down");//下载目录
-
+define('DIANA_DIR_TEMP_CLI', DIANA_DIR_TEMP."/cli");//cli执行日志
 
 //定义当前环境
 define('DIANA_DEBUG_ENABLE',true);

@@ -49,7 +49,7 @@ class Diana_Model_DbTable_ManagerMsgInbox extends Diana_Model_DbTable_Abstract
         }
         if (!empty($condition["inbox_managerId"])) {//根据收件人来查询
             $tmpWheres = array();
-            $tmpWheres = $this->getWhereByCondition("inbox_managerId",$condition["inbox_managerId"],1);
+            $tmpWheres = $this->getWhereByCondition("inbox_manId",$condition["inbox_manId"],1);
             $wheres = array_merge($wheres,$tmpWheres);
         }
         if (!empty($condition["inbox_msg_accept_time_min"])) {//查看时间查询
