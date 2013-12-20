@@ -9,21 +9,21 @@
             formSubmit();
         });
         //表单内回车提交
-        $("#form_member_search").keydown(function(event){
+        $("#form_query").keydown(function(event){
             if(event.keyCode==13){formSubmit();}
         });
         //表单提交
         function formSubmit() {
-            $("#form_member_search").submit();
+            $("#form_query").submit();
         }
         //表单重置
         function formReset(){
-            $('#form_member_search').get(0).reset();
+            $('#form_query').get(0).reset();
         }
     });
 </script>
 <div class="div_bg_fa separator_bot">
-    <form id="form_member_search" name="form_member_search" method="post">
+    <form id="form_query" name="form_query" method="post">
         <fieldset border="false"  class="fieldset_border separator_bot" >
             <legend>会员明细查询</legend>
             <table width="100%" border="0" cellspacing="1" cellpadding="5"  class="table_border separator_top separator_bot">

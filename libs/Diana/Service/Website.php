@@ -42,6 +42,18 @@ class Diana_Service_Website extends Diana_Service_Abstract
         return $rowsWebsite;
     }
 
+    function makeDataGird($request)
+    {
+        print_r($request);
+        exit();
+        $page = $request['page'];
+        $pagesize = $request['rows'];
+        $format = array('website_id','website_name','website_domain');
+        $condition = $this->filterColumns($request,$format);
+        return $this->pageByCondition($page,$pagesize,$condition);
+
+    }
+
     /**
      * 分页
      * @param $key 关键字
@@ -105,12 +117,39 @@ class Diana_Service_Website extends Diana_Service_Abstract
     }
 
     /**
-     * 通过ID获取网站详细信息
-     * @param $websiteId 网站ID
-     * @param bool $trend 是否添加统计
-     * @return array|bool 网站详细信息
+     * 通过多种渠道获取会员详细信息
+     * @param $column 字段，id,name,email
+     * @param $key 值
      */
-    function detailById($websiteId,$trend = false)
+    function getDetail($column,$key)
+    {
+        if ((empty($column))||(!is_scalar($column))) {
+            $this->setMsgs("Invalid Param - Column");
+            return false;
+        }
+        if ((empty($key))||(!is_scalar($key))) {
+            $this->setMsgs("Invalid Param - Key");
+            return false;
+        }
+
+        if($column == 'id'){
+            $methodName = 'getRowsById';
+        }elseif($column == 'name'){
+            $methodName = 'getRowsByName';
+        }elseif($column == 'domain'){
+            $methodName = 'getRowsByDomain';
+        }else{
+            $this->setMsgs("Invalid Param - column ".$column);
+            return false;
+        }
+        $modelWebsite = new Diana_Model_Website();
+        if(!$rowsWebsite = $modelWebsite->$methodName(null,$key)){
+            return false;
+        }
+        return $this->getWebsiteByRow($rowsWebsite[0]);
+    }
+
+    function getWebsiteById($websiteId,$trend = false)
     {
         if(empty($websiteId)){
             $this->setMsgs('参数不能为空');
@@ -126,10 +165,46 @@ class Diana_Service_Website extends Diana_Service_Abstract
             return false;
         }
         $rowWebsite = $rowsWebsite[0];
-        //获取地区父级
+        return $this->getWebsiteByRow($rowWebsite,$trend = false);
+    }
+    /**
+     * 通过获取网站详细信息
+     * @param $websiteId 网站ID
+     * @param bool $trend 是否添加统计
+     * @return array|bool 网站详细信息
+     */
+    function getWebsiteByRow($rowWebsite,$trend = false)
+    {
+        if(empty($rowWebsite)){
+            $this->setMsgs('参数不能为空');
+            return false;
+        }
+        if(!is_array($rowWebsite)){
+            $this->setMsgs('参数类型错误');
+            return false;
+        }
+        $websiteId = $rowWebsite['website_id'];
+        //获取地区级
         $modelWebsiteArea = new Diana_Model_WebsiteArea();
         if($rowsWebsiteArea = $modelWebsiteArea->getRowsById(null,$rowWebsite['website_areaId'])){
+            $rowWebsite['website_areaName'] = $rowsWebsiteArea[0]['area_name_'.DIANA_TRANSLATE_CURRENT];
             $rowWebsite['website_areaFatherId'] =  $rowsWebsiteArea[0]['area_fatherId'];
+            if($rowWebsite['website_areaFatherId']){
+                if($rowsWebsiteAreaFather = $modelWebsiteArea->getRowsById(null,$rowWebsite['website_areaFatherId'])){
+                    $rowWebsite['website_areaFatherName'] = $rowsWebsiteAreaFather[0]['area_name_'.DIANA_TRANSLATE_CURRENT];
+                }
+            }
+        }
+        //获取分类
+        $modelWebsiteCategory = new Diana_Model_WebsiteCategory();
+        if($rowsWebsiteCategory = $modelWebsiteCategory->getRowsById(null,$rowWebsite['website_categoryId'])){
+            $rowWebsite['website_categoryName'] = $rowsWebsiteCategory[0]['category_name_'.DIANA_TRANSLATE_CURRENT];
+            $rowWebsite['website_categoryFatherId'] =  $rowsWebsiteCategory[0]['category_fatherId'];
+            if($rowWebsite['website_categoryFatherId']){
+                if($rowsWebsiteCategoryFather = $modelWebsiteCategory->getRowsById(null,$rowWebsite['website_categoryFatherId'])){
+                    $rowWebsite['website_categoryFatherName'] = $rowsWebsiteCategoryFather[0]['category_name_'.DIANA_TRANSLATE_CURRENT];
+                }
+            }
         }
         //获取网站描述
         $modelWebsiteIntro = new Diana_Model_WebsiteIntro();
@@ -155,6 +230,7 @@ class Diana_Service_Website extends Diana_Service_Abstract
         if($trend)
         {
             //更新点击
+            $modelWebsite = new Diana_Model_Website();
             $modelWebsite->updateClickIn($websiteId);
             $modelWebsiteTrendClickIn = new Diana_Model_WebsiteTrendClickIn();
             $modelWebsiteTrendClickIn->update(1,$rowWebsite['website_id']);

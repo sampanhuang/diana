@@ -80,12 +80,14 @@ class Member_DefaultController extends Admin_Controller_ActionDec
             }
         }
         if((empty($detailMember))&&(!empty($request['member_id']))){
+            $request['query_column'] = 'id';
+            $request['query_key'] = $request['member_id'];
             if(!$detailMember = $serviceMember->getDetail('id',$request['member_id'])){
                 $this->setMsgs('查询失败');
                 $this->setMsgs($serviceMember->getMsgs());
             }
         }
-        $this->view->queryColumns = array('email','name','id');
+        $this->view->queryColumns = array('id','name','email');
         $this->view->detail = $detailMember;
         $this->view->request = $request;
     }

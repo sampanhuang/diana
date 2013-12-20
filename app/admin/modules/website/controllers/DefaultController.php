@@ -32,7 +32,7 @@ class Website_DefaultController extends Admin_Controller_ActionDec
         $configHandle = array(
             'datagrid-result' => array(
                 'object' => $serviceWebsite,
-                'method' => 'makeDataGrid',
+                'method' => 'makeDataGird',
             ),
         );
         $this->handleAjax($configHandle);
@@ -51,12 +51,34 @@ class Website_DefaultController extends Admin_Controller_ActionDec
     function detailAction()
     {
         $this->view->websiteId = $websiteId = $this->getRequest()->getUserParam('website_id',0);
+
         if(!empty($websiteId)){
             $serviceWebsite = new Diana_Service_Website();
             if($detailWebsite = $serviceWebsite->detailById($websiteId)){
                 $this->view->detailWebsite = $this->view->detailMember = $detailWebsite;
             }
         }
+
+        $request = $this->getRequest()->getParams();
+        $serviceWebsite = new Diana_Service_Website();
+        if ($this->getRequest()->isPost()) {
+            if($request['handle'] = 'query'){
+                if(!$detailMember = $serviceWebsite->getDetail($request['query_column'],$request['query_key'])){
+                    $this->setMsgs('查询失败');
+                    $this->setMsgs($serviceWebsite->getMsgs());
+                }
+            }
+        }
+        if((empty($detailMember))&&(!empty($request['member_id']))){
+            if(!$detailMember = $serviceWebsite->getDetail('id',$request['member_id'])){
+                $this->setMsgs('查询失败');
+                $this->setMsgs($serviceWebsite->getMsgs());
+            }
+        }
+        $this->view->queryColumns = array('id' , 'name' , 'domain');
+        $this->view->detail = $detailMember;
+        $this->view->request = $request;
+
     }
 
     function clickInAction()

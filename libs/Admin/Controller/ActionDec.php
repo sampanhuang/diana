@@ -78,6 +78,7 @@ class Admin_Controller_ActionDec extends Admin_Controller_Action
         if(empty($reqHandle)){
             return false;
         }
+
         //检查是否有这项配置
         if(empty($configHandle[$reqHandle])){
             $this->setMsgs('你需要确认是否配置成功 - '.$reqHandle);
@@ -88,10 +89,12 @@ class Admin_Controller_ActionDec extends Admin_Controller_Action
         //负责处理的类的方法
         $method = $configHandle[$reqHandle]['method'];
         //判断这个类中是否有这个方法
+
         if(!method_exists($object,$method)){
             $this->setMsgs('无效的方法 - '.$method);
             return false;
         }
+
         //执行查询
         $result = $object->$method($request);
         $this->setMsgs($object->getMsgs());

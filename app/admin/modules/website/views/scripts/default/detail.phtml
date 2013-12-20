@@ -1,10 +1,153 @@
-<div class="row" style="margin-bottom: 5px;">
-    <div class="span5">
-        <button id="button_checkall" name="button_checkall" class="btn  btn-small" onclick="history.go(-1)">返回上一页</button>
-    </div>
-    <div class="span5"></div>
-</div>
-<?php 
-echo $this->render('detail_website.phtml'); 
-echo $this->render('detail_member.phtml'); 
+<script type="text/javascript">
+    $(function(){
+        //表单内点击按钮重置
+        $('#linkbtn_reset').click(function(){
+            formReset();
+        });
+        //表单内点击按钮提交
+        $('#linkbtn_submit').click(function(){
+            formSubmit();
+        });
+        //表单内回车提交
+        $("#form_query").keydown(function(event){
+            if(event.keyCode==13){formSubmit();}
+        });
+        //表单提交
+        function formSubmit() {
+            $("#form_query").submit();
+        }
+        //表单重置
+        function formReset(){
+            $('#form_query').get(0).reset();
+        }
+    });
+</script>
+<div class="div_bg_fa separator_bot">
+<form id="form_query" name="form_query" method="post">
+    <fieldset border="false"  class="fieldset_border separator_bot" >
+        <legend>会员明细查询</legend>
+        <table width="100%" border="0" cellspacing="1" cellpadding="5"  class="table_border separator_top separator_bot">
+            <tr>
+                <th width="10%">关键字</th>
+                <td width="90%">
+                    <input id="input_search_query_key" name="query_key" class="easyui-validatebox" data-options="required:true"  style="width:230px;" value="<?php echo $this->request['query_key'];?>">
+                    <span id="span_notice_query_key" class="span_notice">不支持模糊查询，不支持多变量名查询</span>
+                </td>
+            </tr>
+            <tr>
+                <th width="10%">类型</th>
+                <td width="90%">
+                    <?
+                    foreach($this->queryColumns as $tmpQueryColumn){
+                        $tmpHtmlTagChecked = '';
+                        if($tmpQueryColumn == $this->request['query_column']){
+                            $tmpHtmlTagChecked = 'checked="checked"';
+                        }
+                        echo '<label><input type="radio" name="query_column" value="'.$tmpQueryColumn.'" id="query_column_'.$tmpQueryColumn.'" '.$tmpHtmlTagChecked.'  />'.$this->translate('global_website_'.$tmpQueryColumn).'</label>';
+                    }
+                    ?>
+                </td>
+            </tr>
+        </table>
+        <input id="input_handle" name="handle" type="hidden" value="query">
+        <div border="false" class="div_btn">
+            <a id="linkbtn_submit" class="easyui-linkbutton" iconCls="icon-ok" style="margin-right:20px;">确定</a>
+            <a id="linkbtn_reset" class="easyui-linkbutton" iconCls="icon-cancel" style="margin-right:20px;">取消</a>
+        </div>
+    </fieldset>
+</form>
+<?php
+if(!empty($this->detail)){
 ?>
+<fieldset border="false"  class="fieldset_border separator_bot" >
+    <legend>网站明细</legend>
+    <table width="100%" border="0" cellspacing="1" cellpadding="5"  class="table_border separator_top separator_bot">
+        <tr>
+            <th width="10%">ID</th>
+            <td width="23%"><?php echo $this->detail['website_id'];?></td>
+            <th width="10%">名称</th>
+            <td width="23%"><?php echo $this->detail['website_name'];?></td>
+            <th width="10%">域名</th>
+            <td width="23%"><?php echo $this->detail['website_domain'];?></td>
+        </tr>
+        <tr>
+            <th width="10%">状态</th>
+            <td  width="23%">
+                <?php
+                if($this->detail['website_pass_time'] > 0){
+                    $tmpMemberStateColor = 'green';
+                    $tmpMemberStateLabel = '已审核';
+                }else{
+                    $tmpMemberStateColor = 'red';
+                    $tmpMemberStateLabel = '待审核';
+                }
+                echo '<span style="color:'.$tmpMemberStateColor.' ">'.$tmpMemberStateLabel.'</span>'?>
+            </td>
+            <th width="10%">锁定状态</th>
+            <td width="23%">
+                <?php
+                if( $this->detail['website_lock_time'] > time()){
+                    echo '<span style="color: red">锁定</span>';
+                }else{
+                    echo '<span style="color: green">正常</span>';
+                }
+                ?></td>
+            <th width="10%">解锁时间</th>
+            <td width="23%"><?php echo $this->formatDate('Y-m-d H:i',$this->detail['website_lock_time']);?></td>
+        </tr>
+        <tr>
+            <th width="10%">地区</th>
+            <td width="23%"><?php echo $this->detail['website_areaFatherName'].'/'.$this->detail['website_areaName'];?></td>
+            <th width="10%">分类</th>
+            <td width="23%"><?php echo $this->detail['website_categoryFatherName'].'/'.$this->detail['website_categoryName'];?></td>
+            <th width="10%">会员</th>
+            <td width="23%"><a href="javascript:addTabWithParent('会员管理/注册会员/会员明细','member/default/detail/member_id/<?php echo $this->detail['website_memberId'];?>',true);"><?php echo $this->detail['member_name'];?></a><span style="margin-left:5px;color: #999999">&lt;<?php echo $this->detail['member_email'];?>&gt;</span></td>
+        </tr>
+        <tr>
+            <th width="10%">点击流入</th>
+            <td width="23%"><?php echo $this->detail['website_click_in'];?></td>
+            <th width="10%">点击流出</th>
+            <td width="23%"><?php echo $this->detail['website_click_out'];?></td>
+            <th width="10%"></th>
+            <td width="23%"></td>
+        </tr>
+        <tr>
+            <th width="10%">标签</th>
+            <td width="90%" colspan="5"><?php echo $this->detail['website_tag'];?></td>
+        </tr>
+        <tr>
+            <th width="10%">简介</th>
+            <td width="90%" colspan="5"><?php echo $this->detail['website_intro'];?></td>
+        </tr>
+    </table>
+    <table width="100%" border="0" cellspacing="1" cellpadding="5"  class="table_border separator_top separator_bot">
+        <tr>
+            <th width="10%">申请时间</th>
+            <td width="23%"><?php echo $this->formatDate('Y-m-d H:i',$this->detail['website_apply_time']);?></td>
+            <th width="10%">申请IP</th>
+            <td  width="23%"><?php echo $this->detail['website_apply_ip'];?></td>
+            <th width="10%">申请单ID</th>
+            <td width="23%"><?php echo $this->detail['website_applyId'].'&nbsp;'.$this->detail['website_applyId'];?></td>
+        </tr>
+        <tr>
+            <th width="10%">添加时间</th>
+            <td width="23%"><?php echo $this->formatDate('Y-m-d H:i',$this->detail['website_insert_time']);?></td>
+            <th width="10%">添加人</th>
+            <td  width="23%"><?php echo $this->detail['website_insert_manName'];?></td>
+            <th width="10%">添加IP</th>
+            <td width="3%"><?php echo $this->detail['website_insert_ip'].'&nbsp;'.$this->detail['website_insert_addr'];?></td>
+        </tr>
+        <tr>
+            <th width="10%">修改时间</th>
+            <td width="23%"><?php echo $this->formatDate('Y-m-d H:i',$this->detail['website_update_time']);?></td>
+            <th width="10%">修改人</th>
+            <td  width="23%"><?php echo $this->detail['website_update_manName'];?></td>
+            <th width="10%">修改IP</th>
+            <td width="23%"><?php echo $this->detail['website_update_ip'].'&nbsp;'.$this->detail['website_update_addr'];?></td>
+        </tr>
+    </table>
+</fieldset>
+    <?php
+}
+?>
+</div>

@@ -7,10 +7,12 @@ foreach (get_defined_constants() as $constantName => $constantValue){
 	if ($prefixConstantName == 'DIANA'){
 		$prefixSecondConstantName = $tmpConstantName[1];//常量名第二前缀
 		$suffixConstantName = $tmpConstantName[($countConstantName - 1)];//常量名后缀
-		if ($prefixSecondConstantName == 'DIR'){//生成程序运行必须带有的目录			
-			if (!file_exists($constantValue)){				
-				mkdir($constantValue,0777,true);
-			}
+		if ($prefixSecondConstantName == 'DIR'){//生成程序运行必须带有的目录
+            if(!empty($constantValue)){
+                if (!file_exists($constantValue)){
+                    mkdir($constantValue,0777,true);
+                }
+            }
 		}
 	}
 }
