@@ -51,6 +51,12 @@ class Admin_Controller_ActionDec extends Admin_Controller_Action
                     $response['msgs'] = implode(';',$this->getMsgs());
                 }
                 echo json_encode($response);
+            }elseif($ajaxPrint == 'json_2'){
+                if($result){
+                    echo json_encode($result);
+                }else{
+                    echo json_encode(array('total' => 0,'rows' => array(),));
+                }
             }else{
                 echo json_encode($result);
             }

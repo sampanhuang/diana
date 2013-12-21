@@ -2,7 +2,7 @@
     $(function(){
         //提交查询表单
         $('#linkbtn_submit').click(function(){
-            $("#form_apply_website_register_search").submit();
+            $("#form_query").submit();
         });
         //隐藏提示
         $("#div_help").hide();
@@ -13,7 +13,7 @@
     });
 </script>
 <div class="div_bg_fa separator_bot">
-    <form id="form_member_search" name="form_member_search" method="post">
+    <form id="form_query" name="form_query" method="post">
         <fieldset border="false"  class="fieldset_border separator_bot" >
             <legend>网站注册申请查询</legend>
             <table width="100%" border="0" cellspacing="1" cellpadding="5"  class="table_border separator_top separator_bot">
@@ -33,7 +33,7 @@
                             if($tmpQueryColumn == $this->request['query_column']){
                                 $tmpHtmlTagChecked = 'checked="checked"';
                             }
-                            echo '<label><input type="radio" name="query_column" value="'.$tmpQueryColumn.'" id="query_column_'.$tmpQueryColumn.'" '.$tmpHtmlTagChecked.'  />'.$this->translate('global_website_'.$tmpQueryColumn).'</label>';
+                            echo '<label><input type="radio" name="query_column" value="'.$tmpQueryColumn.'" id="query_column_'.$tmpQueryColumn.'" '.$tmpHtmlTagChecked.'  />'.$this->translate('model_'.$tmpQueryColumn).'</label>';
                         }
                         ?>
                     </td>
@@ -56,9 +56,9 @@
                 <th width="10%">申请单ID</th>
                 <td width="23%"><?php echo $this->detail['register_id'];?></td>
                 <th width="10%">申请人</th>
-                <td width="23%"><?php echo $this->detail['website_memberName'];?>&nbsp;<span style="color:#999999">&lt;<?php echo $this->detail['website_memberEmail'];?>&gt;</span></td>
-                <th width="10%">申请单状态</th>
-                <td width="23%"><?php echo $this->translate('model_apply_website_register_pass_'.$this->detail['register_pass']);?></td>
+                <td width="23%"><?php echo $this->utf8Substr($this->detail['website_memberName'],8);?>&nbsp;<span style="color:#999999">&lt;<?php echo $this->detail['website_memberEmail'];?>&gt;</span></td>
+                <th width="10%"><?php echo $this->translate('model_register_pass');?></th>
+                <td width="23%"><?php echo $this->translate('model_register_pass_'.$this->detail['register_pass']);?></td>
             </tr>
             <tr>
                 <th width="10%">申请时间</th>

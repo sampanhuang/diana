@@ -17,7 +17,7 @@ class Apply_WebsiteRegisterController extends Admin_Controller_ActionDec
     function indexAction()
     {
         $request = $this->view->request = $this->getRequest()->getParams();
-        $queryGrid = array('ajax_print' => 'json','req_handle' => 'datagrid-result');
+        $queryGrid = array('ajax_print' => 'json_2','req_handle' => 'datagrid-result');
         $queryGrid = array_merge($queryGrid,$request);
         $serviceWebsiteApplyRegister = new Diana_Service_WebsiteApplyRegister();
         $this->view->queryGrid = $queryGrid;
@@ -55,7 +55,7 @@ class Apply_WebsiteRegisterController extends Admin_Controller_ActionDec
                 $this->setMsgs($serviceWebsiteApplyRegister->getMsgs());
             }
         }
-        $this->view->queryColumns = array('id');
+        $this->view->queryColumns = array('register_id' ,'website_id');
         $this->view->detail = $detailMember;
         $this->view->request = $request;
 

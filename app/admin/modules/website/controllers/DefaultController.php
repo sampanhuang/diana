@@ -23,9 +23,9 @@ class Website_DefaultController extends Admin_Controller_ActionDec
      */
     function indexAction(){
         $request = $this->getRequest()->getParams();
-        $queryGrid = array('ajax_print' => 'json','req_handle' => 'datagrid-result');
+        $queryGrid = array('ajax_print' => 'json_2','req_handle' => 'datagrid-result');
         $queryGrid = array_merge($queryGrid,$request);
-        $serviceWebsite = new Admin_Service_Website();
+        $serviceWebsite = new Diana_Service_Website();
         $this->view->dataget = $request;
         $this->view->queryGrid = $queryGrid;
         $this->view->pagesize = $this->getRequest()->getParam('rows',DIANA_DATAGRID_PAGESIZE_ADMIN) ;
@@ -50,15 +50,6 @@ class Website_DefaultController extends Admin_Controller_ActionDec
 
     function detailAction()
     {
-        $this->view->websiteId = $websiteId = $this->getRequest()->getUserParam('website_id',0);
-
-        if(!empty($websiteId)){
-            $serviceWebsite = new Diana_Service_Website();
-            if($detailWebsite = $serviceWebsite->detailById($websiteId)){
-                $this->view->detailWebsite = $this->view->detailMember = $detailWebsite;
-            }
-        }
-
         $request = $this->getRequest()->getParams();
         $serviceWebsite = new Diana_Service_Website();
         if ($this->getRequest()->isPost()) {
@@ -69,8 +60,8 @@ class Website_DefaultController extends Admin_Controller_ActionDec
                 }
             }
         }
-        if((empty($detailMember))&&(!empty($request['member_id']))){
-            if(!$detailMember = $serviceWebsite->getDetail('id',$request['member_id'])){
+        if((empty($detailMember))&&(!empty($request['website_id']))){
+            if(!$detailMember = $serviceWebsite->getDetail('id',$request['website_id'])){
                 $this->setMsgs('查询失败');
                 $this->setMsgs($serviceWebsite->getMsgs());
             }

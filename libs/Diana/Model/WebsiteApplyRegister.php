@@ -61,6 +61,18 @@ class Diana_Model_WebsiteApplyRegister extends Diana_Model_Abstract
         return $this->getRowsByCondition($refresh,$condition);
     }
 
+    /**
+     * 通过websiteid获取
+     * @param $refresh
+     * @param $websiteId
+     * @return array
+     */
+    function getRowsByWebsiteId($refresh,$websiteId)
+    {
+        $condition = array("website_id" => $websiteId);
+        return $this->getRowsByCondition($refresh,$condition);
+    }
+
 
     /**
      * @param $websiteId

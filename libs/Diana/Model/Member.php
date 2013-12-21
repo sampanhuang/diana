@@ -75,10 +75,10 @@ class Diana_Model_Member extends Diana_Model_Abstract
             'member_insert_time' => time(),
             'member_insert_ip' => $_SERVER['REMOTE_ADDR'],
         );
-        if(!$memberId = $this->saveData(1,$data)){
+        if(!$rows = $this->saveData(1,$data)){
             return false;
         }
-        return $memberId;
+        return $rows;
     }
 
     /**

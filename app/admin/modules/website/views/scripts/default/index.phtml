@@ -164,8 +164,8 @@ function sendReqWithAjax(handle,ids,lock_time)
  */
 function formatAction(val,row)
 {
-    var detailLink = '<a href="javascript:addTabWithParent(\'会员管理/注册会员/会员明细\',\'/member/default/detail/member_id/'+row.member_id+'\',true)" >明细</a>';
-    var modifyLink = '<a href="/member/member/update/member_id/'+row.member_id +'">编辑</a>'
+    var detailLink = '<a href="javascript:addTabWithParent(\'网站导航/注册网站/网站明细\',\'/website/default/detail/website_id/'+ row.website_id +'\',true)" >明细</a>';
+    //var modifyLink = '<a href="/member/member/update/member_id/'+row.member_id +'">编辑</a>'
     //return detailLink + '&nbsp;' +  modifyLink ;
     return detailLink;
 }
@@ -215,40 +215,45 @@ function formatLockTime(val,row)
         return '<span style="color:' + color + ';">' + date('Y-m-d H:i',row.member_lock_time) + '</span>';
     }
 }
-
 /**
- * 审核是否通过
+ * 会员字段格式化
  * @param val
  * @param row
  * @return {String}
  */
-function formatPassTime(val,row)
+function formatMember(val,row)
 {
-    if( val > 0 ){
-        return date('Y-m-d H:i',val);
-    }else{
-        return '<span style="color:red;">未审核</span>';
-    }
+    return  '<a href="javascript:addTabWithParent(\'会员管理/注册会员/会员明细\',\'/member/default/detail/member_id/'+row.website_memberId+'\',true)" >' + row.website_memberName + '</a>';
 }
 
-function formatActiveEmailTime(val,row)
+function formatWebsiteArea(val,row)
 {
-    if( val > 0 ){
-        return date('Y-m-d H:i',val);
+    if(row.website_areaFatherName == undefined || row.website_areaFatherName == ''  || row.website_areaFatherName == null ){
+        return row.website_areaName;
     }else{
-        return '<span style="color:red;">未验证</span>';
+        return row.website_areaFatherName + ' / ' + row.website_areaName;
+    }
+
+}
+
+function formatWebsiteCategory(val,row)
+{
+    if(row.website_categoryFatherName == undefined || row.website_categoryFatherName == ''  || row.website_categoryFatherName == null ){
+        return row.website_categoryName;
+    }else{
+        return row.website_categoryFatherName + ' / ' + row.website_categoryName;
     }
 }
 
 /**
- * 格式化权限状态
+ * 格式化操作选项
  */
-function formatAdmin(val,row){
-    if (val == 1){
-        return '<span style="color:red;">超级权限</span>';
-    }else{
-        return '<span style="color:green;">普通权限</span>';
-    }
+function formatWebsiteName(val,row)
+{
+    var detailLink = '<a href="javascript:addTabWithParent(\'网站导航/注册网站/网站明细\',\'/website/default/detail/website_id/' + row.website_id + '\',true)" >' + row.website_name + '</a>';
+    //var modifyLink = '<a href="javascript:addTabWithParent(\'会员管理/注册会员/会员明细\',\'/apply/website-register/detail/register_id/'+row.register_id+'\',true)" >编辑</a>'
+    //return detailLink + '&nbsp;' +  modifyLink ;
+    return detailLink;
 }
 </script>
 <div class="div_bg_fa separator_bot">
@@ -311,28 +316,20 @@ function formatAdmin(val,row){
     <thead data-options="frozen:true">
     <tr>
         <th data-options="field:'ck',checkbox:true"></th>
-        <th data-options="field:'member_id',width:60">流水号</th>
-        <th data-options="field:'member_email',width:200">网站域名</th>
-        <th data-options="field:'member_name',width:120,align:'left'" >网站名称</th>
-        <th data-options="field:'member_roleName',width:120,align:'left'" >帐号角色</th>
-        <th data-options="field:'member_action',width:100,align:'left'" formatter="formatAction">选项</th>
+        <th data-options="field:'website_id',width:60">流水号</th>
+        <th data-options="field:'website_name',width:120" formatter="formatWebsiteName">网站名称</th>
+        <th data-options="field:'website_domain',width:200,align:'left'" >网站域名</th>
+        <th data-options="field:'website_areaId',width:120,align:'left'"  formatter="formatWebsiteArea">地区</th>
+        <th data-options="field:'website_categoryId',width:120,align:'left'"  formatter="formatWebsiteCategory">类别</th>
+        <th data-options="field:'website_memberId',width:120,align:'left'" formatter="formatMember">网站所有人</th>
+        <th data-options="field:'website_click_in',width:80,align:'left'">进站流量</th>
+        <th data-options="field:'website_click_out',width:80,align:'left'">出站流量</th>
     </tr>
     </thead>
     <thead>
     <tr>
-        <th data-options="field:'member_login_count',width:60,align:'left'" >登录次数</th>
-        <th data-options="field:'member_login_last_time',width:120,align:'left'" formatter="formatTimeStamp">最后登录时间</th>
-        <th data-options="field:'member_login_last_ip',width:120,align:'left'" >最后登录IP</th>
-        <th data-options="field:'member_login_count',width:60,align:'left'" >密码变更次数</th>
-        <th data-options="field:'member_login_last_time',width:120,align:'left'" formatter="formatTimeStamp">密码变更时间</th>
-        <th data-options="field:'member_login_last_ip',width:120,align:'left'" >密码变更IP</th>
-        <th data-options="field:'member_insert_time',width:120,align:'left'" formatter="formatTimeStamp">注册时间</th>
-        <th data-options="field:'member_insert_ip',width:120,align:'left'">注册IP</th>
-        <th data-options="field:'member_insert_addr',width:120,align:'left'">注册地点</th>
-        <th data-options="field:'member_pass_time',width:120,align:'left'"  formatter="formatPassTime">审核通过</th>
-        <th data-options="field:'member_activeEmail_time',width:120,align:'left'"  formatter="formatActiveEmailTime">邮箱验证时间</th>
-        <th data-options="field:'member_lock_stat',width:60,align:'left'" formatter="formatLockStat">锁定状态</th>
-        <th data-options="field:'member_lock_time',width:120,align:'left'" formatter="formatLockTime">解锁时间</th>
+        <th data-options="field:'website_apply_time',width:180,align:'left'"  formatter="formatTimeStamp">网站注册时间</th>
+        <th data-options="field:'website_insert_time',width:180,align:'left'" formatter="formatTimeStamp">网站审核时间</th>
     </tr>
     </thead>
 </table>

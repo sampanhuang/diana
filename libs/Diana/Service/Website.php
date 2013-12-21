@@ -44,8 +44,6 @@ class Diana_Service_Website extends Diana_Service_Abstract
 
     function makeDataGird($request)
     {
-        print_r($request);
-        exit();
         $page = $request['page'];
         $pagesize = $request['rows'];
         $format = array('website_id','website_name','website_domain');
@@ -89,6 +87,37 @@ class Diana_Service_Website extends Diana_Service_Abstract
                     $websiteIds[] = $rowWebsite['website_id'];
                     if(!empty($rowWebsite['website_memberId'])){
                         $memberIds[$rowWebsite['website_memberId']] = $rowWebsite['website_memberId'];
+                    }
+                }
+                //获取地区名字
+                $serviceWebsiteArea = new Diana_Service_WebsiteArea();
+                if($allWebsiteArea = $serviceWebsiteArea->getAll()){
+                    foreach($rowsWebsite as &$rowWebsite){
+                        $tmpWebsiteAreaId = $rowWebsite['website_areaId'];
+                        if(!empty($tmpWebsiteAreaId)){
+                            $rowWebsite['website_areaName'] = $allWebsiteArea[$tmpWebsiteAreaId]['area_name_'.DIANA_TRANSLATE_CURRENT];
+                            $tmpWebsiteAreaFatherId = $allWebsiteArea[$tmpWebsiteAreaId]['area_fatherId'];
+                            if(!empty($tmpWebsiteAreaFatherId)){
+                                $rowWebsite['website_areaFatherId'] = $tmpWebsiteAreaFatherId;
+                                $rowWebsite['website_areaFatherName'] = $allWebsiteArea[$tmpWebsiteAreaFatherId]['area_name_'.DIANA_TRANSLATE_CURRENT];
+                            }
+                        }
+                    }
+                }
+
+                //获取分类名字
+                $serviceWebsiteCategory = new Diana_Service_WebsiteCategory();
+                if($allWebsiteCategory = $serviceWebsiteCategory->getAll()){
+                    foreach($rowsWebsite as &$rowWebsite){
+                        $tmpWebsiteCategoryId = $rowWebsite['website_categoryId'];
+                        if(!empty($tmpWebsiteCategoryId)){
+                            $rowWebsite['website_categoryName'] = $allWebsiteCategory[$tmpWebsiteCategoryId]['category_name_'.DIANA_TRANSLATE_CURRENT];
+                            $tmpWebsiteCategoryFatherId = $allWebsiteCategory[$tmpWebsiteCategoryId]['category_fatherId'];
+                            if(!empty($tmpWebsiteCategoryFatherId)){
+                                $rowWebsite['website_categoryFatherId'] = $tmpWebsiteCategoryFatherId;
+                                $rowWebsite['website_categoryFatherName'] = $allWebsiteCategory[$tmpWebsiteCategoryId]['category_name_'.DIANA_TRANSLATE_CURRENT];
+                            }
+                        }
                     }
                 }
                 //获取会员信息

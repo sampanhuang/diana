@@ -463,8 +463,10 @@ class Diana_Service_WebsiteApplyRegister extends Diana_Service_Abstract
             $this->setMsgs("Invalid Param - Key");
             return false;
         }
-        if($column == 'id'){
+        if($column == 'register_id'){
             $detailMember = $this->getApplyById($key);
+        }elseif($column == 'website_id'){
+            $detailMember = $this->getApplyByWebsiteId($key);
         }else{
             $this->setMsgs("Invalid Param - column ".$column);
             return false;
@@ -491,6 +493,29 @@ class Diana_Service_WebsiteApplyRegister extends Diana_Service_Abstract
         //获取网站信息
         $modelWebsiteApplyRegister = new Diana_Model_WebsiteApplyRegister();
         if(!$rowsWebsiteApply = $modelWebsiteApplyRegister->getRowsById(null,$registerId)){
+            return false;
+        }
+        return $this->getApplyByRow($rowsWebsiteApply[0]);
+    }
+
+    /**
+     * 通过ID查看
+     * @param $id
+     * @return array|bool
+     */
+    function getApplyByWebsiteId($websiteId)
+    {
+        if(empty($websiteId)){
+            $this->setMsgs('参数不能为空');
+            return false;
+        }
+        if(!is_numeric($websiteId)){
+            $this->setMsgs('参数类型错误');
+            return false;
+        }
+        //获取网站信息
+        $modelWebsiteApplyRegister = new Diana_Model_WebsiteApplyRegister();
+        if(!$rowsWebsiteApply = $modelWebsiteApplyRegister->getRowsByWebsiteId(null,$websiteId)){
             return false;
         }
         return $this->getApplyByRow($rowsWebsiteApply[0]);
