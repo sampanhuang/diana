@@ -63,6 +63,9 @@ class Admin_Controller_Action extends Diana_Controller_Action
 
     }
 
+    /**
+     * 设置调用哪个JQUERY
+     */
     function setJqueryLang()
     {
         $suffixJqueryLang = 'en';
@@ -73,6 +76,8 @@ class Admin_Controller_Action extends Diana_Controller_Action
         }
         $this->view->suffixJqueryLang = $suffixJqueryLang;
     }
+
+
 
     /**
      * 设置是否显示导航条

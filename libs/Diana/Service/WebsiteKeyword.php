@@ -30,6 +30,46 @@ class Diana_Service_WebsiteKeyword extends Diana_Service_Abstract
     }
 
     /**
+     * 获取查询过滤字段
+     * @return array
+     */
+    function getFilterColumnsForQuery()
+    {
+        return array(
+            'keyword_id',
+            'keyword_label',
+            'keyword_count_enter_min',
+            'keyword_count_enter_max',
+        );
+    }
+
+    /**
+     * 获取排序字段
+     * @return array 排序字段
+     */
+    function getFilterColumnsForOrder()
+    {
+        return array(
+            'keyword_update_time',
+            'keyword_insert_time',
+            'keyword_count_enter',
+        );
+    }
+    /**
+     * 生成数据
+     * @param $params
+     * @return array
+     */
+    function makeDataGird($params)
+    {
+        $page = $params['page']?$params['page']:1;
+        $pageSize = $params['rows']?$params['rows']:DIANA_DATAGRID_PAGESIZE_ADMIN;
+        $tmpCondition = $this->filterColumns(array($params),$this->getFilterColumnsForQuery());
+        $order = implode('_',array($params['order_by_1'],$params['order_by_2']));
+        return $this->pageByCondition($page,$pageSize,$tmpCondition[0],$order);
+    }
+
+    /**
      * @param $key 关键字
      * @param $page 当前页
      * @param $pagesize 每页的纪录数

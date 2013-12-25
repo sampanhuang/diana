@@ -13,6 +13,8 @@ abstract class Diana_Service_Abstract
 	{
 		
 	}
+
+
 	
 	/**
 	 * 获取语言包消息
@@ -89,14 +91,16 @@ abstract class Diana_Service_Abstract
     {
         $data = array();
         foreach($rows as $row){
+            $tmpData = array();
             foreach($row as $key => $value){
-                $tmpData = array();
                 if(in_array($key,$formatColumns)){
                     $tmpData[$key] = $value;
                 }
-                $data[] = $tmpData;
             }
+            $data[] = $tmpData;
         }
+        $data = array_values(array_filter($data));
+
         return $data;
     }
 

@@ -24,7 +24,12 @@ class Diana_Model_DbTable_WebsiteKeyword extends Diana_Model_DbTable_Abstract
     function setOrders()
     {
         $this->_orders = array(
-            "new" => array("keyword_id desc"),
+            "keyword_update_time_desc" => array("keyword_update_time desc"),
+            "keyword_insert_time_desc" => array("keyword_insert_time desc"),
+            "keyword_count_enter_desc" => array("keyword_count_enter desc"),
+            "keyword_update_time_asc" => array("keyword_update_time asc"),
+            "keyword_insert_time_asc" => array("keyword_insert_time asc"),
+            "keyword_count_enter_asc" => array("keyword_count_enter asc"),
         );
     }
 
@@ -45,6 +50,16 @@ class Diana_Model_DbTable_WebsiteKeyword extends Diana_Model_DbTable_Abstract
         if (!empty($condition["keyword_label"])) {//标签名
             $tmpWheres = array();
             $tmpWheres = $this->getWhereByCondition("keyword_label",$condition["keyword_label"],2);
+            $wheres = array_merge($wheres,$tmpWheres);
+        }
+        if (!empty($condition["keyword_count_enter_min"])) {//标签名
+            $tmpWheres = array();
+            $tmpWheres = $this->getWhereByCondition("keyword_count_enter",$condition["keyword_count_enter_min"],4);
+            $wheres = array_merge($wheres,$tmpWheres);
+        }
+        if (!empty($condition["keyword_count_enter_max"])) {//标签名
+            $tmpWheres = array();
+            $tmpWheres = $this->getWhereByCondition("keyword_count_enter",$condition["keyword_count_enter_max"],3);
             $wheres = array_merge($wheres,$tmpWheres);
         }
         if (!empty($condition["keyword_label_like"])) {//标签名，模糊查询

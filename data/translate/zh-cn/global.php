@@ -38,5 +38,7 @@ return array(
     'global_website_id' => '网站ID',
     'global_website_name' => '网站名',
     'global_website_domain' => '域名',
+    'global_orderby_desc' => '降序',
+    'global_orderby_asc' => '升序',
 
 );

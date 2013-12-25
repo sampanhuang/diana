@@ -6,7 +6,7 @@
  * Time: 下午7:54
  * To change this template use File | Settings | File Templates.
  */
-class Website_KeyworkController extends Admin_Controller_Action
+class Website_KeyworkController extends Admin_Controller_ActionDec
 {
     var $yearStart = 2013;
     var $yearEnd = 0;
@@ -20,6 +20,23 @@ class Website_KeyworkController extends Admin_Controller_Action
 
     function indexAction()
     {
+        $request = array_filter($this->getRequest()->getParams());
+        $queryGrid = array('ajax_print' => 'json_2','req_handle' => 'datagrid-result');
+        $queryGrid = array_merge($queryGrid,$request);
+        $serviceWebsiteKeyword = new Diana_Service_WebsiteKeyword();
+        $this->view->request = $request;
+        $this->view->queryGrid = $queryGrid;
+        $this->view->pagesize = $this->getRequest()->getParam('rows',DIANA_DATAGRID_PAGESIZE_ADMIN) ;
+        $this->view->queryOrderSc = array('desc','asc');
+        $this->view->queryOrderColumns = $serviceWebsiteKeyword->getFilterColumnsForOrder();
+        $configHandle = array(
+            'datagrid-result' => array(
+                'object' => $serviceWebsiteKeyword,
+                'method' => 'makeDataGird',
+            ),
+        );
+        $this->handleAjax($configHandle);
+        /*
         $pagesize = 15;
         $this->view->page = $page = $this->getRequest()->getUserParam('page',1);
         $serviceWebsiteKeyword = new Diana_Service_WebsiteKeyword();
@@ -27,15 +44,11 @@ class Website_KeyworkController extends Admin_Controller_Action
         if($paginator['total'] > 0){
             $servicePageNum = new Diana_Service_PageNum($paginator['total'],$pagesize,$page);
             $this->view->pagenum = $pagenum = $servicePageNum->getPageNum();
-        }
+        }*/
     }
 
-    function hotAction()
-    {
 
-    }
-
-    function searchAction()
+    function trendAction()
     {
         $this->view->event = $eventId = $this->getRequest()->getUserParam('event');
         $this->view->year = $year = $this->getRequest()->getUserParam('year',date('Y'));

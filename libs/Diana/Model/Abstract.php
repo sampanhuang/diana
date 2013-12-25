@@ -40,12 +40,14 @@ abstract class Diana_Model_Abstract
 	 */
 	function getRowsByCondition($refresh = null ,$condition = null,$seq = null,$count = null,$offset = null)
 	{
+        //echo '$seq'.$seq;
 		if (!empty($seq)) {
 			$ordersKey = array_keys($this->dt->_orders);
 			if (!in_array($seq,$ordersKey)) {
 				unset($seq);
 			}
 		}
+        //echo '$seq'.$seq;
 		$func = "getRowsByConditionFromDb";
 		return $this->getDataByConditionFromCache($refresh,$this->preCachekey,$func,$condition,$seq,$count,$offset);
 	}
