@@ -1,10 +1,9 @@
 <?php
 if(!empty($this->trendYear)){
 ?>
-
 <form id="form_choose_year" name="form_choose_year" method="get">
     <fieldset border="false"  class="fieldset_border separator_bot" >
-        <legend>会员明细查询</legend>
+        <legend>查询</legend>
                 <select id="year" name="year" class="span2">
                     <?php
                     for($year = $this->yearStart ; $year <= $this->yearEnd ;$year++){
@@ -12,6 +11,8 @@ if(!empty($this->trendYear)){
                     }
                     ?>
                 </select>
+                <label><input type="radio" name="num_column" value="2" id="2" />两列显示</label>
+                <label><input type="radio" name="num_column" value="3" id="3" />三列显示</label>
                 <button type = "submit" class="btn">提交</button></td>
     </fieldset>
 </form>

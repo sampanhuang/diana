@@ -14,6 +14,17 @@ class Diana_Service_Trend extends Diana_Service_Abstract
         parent::__construct();
     }
 
+    function formatYear($rows)
+    {
+        $resources = array();
+        foreach($rows as $row){
+            $tmpMonth = $row['trend_month'];
+            $tmpDay = $row['trend_day'];
+            $resources[$tmpMonth][$tmpDay] += $row['trend_hour_total'];
+        }
+        return $resources;
+    }
+
     /**搜索动态
      * @param null $year 年
      * @param $keywordId 关键字ID
@@ -25,7 +36,7 @@ class Diana_Service_Trend extends Diana_Service_Abstract
         if(!$all = $modelWebsiteTrendSearch->getRowsByCondition(null,array("trend_eventId" => $keywordId))){
             return $all;
         }
-        return $this->formatRows($all);
+        return $all;
     }
 
     /**

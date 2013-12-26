@@ -36,15 +36,6 @@ class Website_KeyworkController extends Admin_Controller_ActionDec
             ),
         );
         $this->handleAjax($configHandle);
-        /*
-        $pagesize = 15;
-        $this->view->page = $page = $this->getRequest()->getUserParam('page',1);
-        $serviceWebsiteKeyword = new Diana_Service_WebsiteKeyword();
-        $this->view->paginator = $paginator = $serviceWebsiteKeyword->pageByCondition($page,$pagesize);
-        if($paginator['total'] > 0){
-            $servicePageNum = new Diana_Service_PageNum($paginator['total'],$pagesize,$page);
-            $this->view->pagenum = $pagenum = $servicePageNum->getPageNum();
-        }*/
     }
 
 
@@ -53,8 +44,8 @@ class Website_KeyworkController extends Admin_Controller_ActionDec
         $this->view->event = $eventId = $this->getRequest()->getUserParam('event');
         $this->view->year = $year = $this->getRequest()->getUserParam('year',date('Y'));
         $serviceTrend = new Diana_Service_Trend();
-        if($trendYear = $serviceTrend->getWebsiteSearch($year,$eventId)){
-            $this->view->trendYear = $trendYear;
+        if($rowsTrend = $serviceTrend->getWebsiteSearch($year,$eventId)){
+            $this->view->trendYear = $serviceTrend->formatYear($rowsTrend);
         }else{
             $this->setMsgs($serviceTrend->getMsgs());
         }
