@@ -11,4 +11,7 @@ return array(
         'model_bulletin_insert_time' => '发布时间',
         'model_bulletin_update_time' => '更新时间',
         'model_bulletin_click' => '点击数',
+        'model_bulletin_access_4' => 'WWW',
+        'model_bulletin_access_2' => 'CLIENT',
+        'model_bulletin_access_1' => 'ADMIN',
     );

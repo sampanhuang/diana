@@ -44,9 +44,9 @@ class Diana_Model_DbTable_Bulletin extends Diana_Model_DbTable_Abstract
             $tmpWheres = $this->getWhereByCondition("bulletin_channel",$condition["bulletin_channel"],1);
             $wheres = array_merge($wheres,$tmpWheres);
         }
-        if (isset($condition["bulletin_type"])) {//显示范围，1是www公告,2是client公告,3是admin公告
+        if (isset($condition["bulletin_access"])) {//显示范围，1是www公告,2是client公告,3是admin公告
             $tmpWheres = array();
-            $tmpWheres = $this->getWhereByCondition("bulletin_type",$condition["bulletin_type"],1);
+            $tmpWheres = $this->getWhereByCondition("bulletin_access",$condition["bulletin_access"],1);
             $wheres = array_merge($wheres,$tmpWheres);
         }
         if (!empty($condition["bulletin_click_min"])) {//点击查询

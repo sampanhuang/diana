@@ -95,6 +95,40 @@ class Admin_Service_BulletinChannel extends Admin_Service_Abstract
         return $input->getEscaped();
     }
 
+
+    function makeOptionsOfFather()
+    {
+        $modelBulletinChannel = new Diana_Model_BulletinChannel();
+        if(!$rows = $modelBulletinChannel->getRowsByCondition()){
+            return false;
+        }
+        $options = array();
+        foreach($rows  as $row){
+            if(empty($row['channel_fatherId'])){
+                $options[$row['channel_id']] = $row['channel_label_'.DIANA_TRANSLATE_CURRENT];
+            }
+        }
+        return $options;
+    }
+
+    /**
+     * @return array|bool
+     */
+    function makeOptionsOfSon()
+    {
+        $modelBulletinChannel = new Diana_Model_BulletinChannel();
+        if(!$rows = $modelBulletinChannel->getRowsByCondition()){
+            return false;
+        }
+        $options = array();
+        foreach($rows  as $row){
+            if(!empty($row['channel_fatherId'])){
+                $options[$row['channel_fatherId']][$row['channel_id']] = $row['channel_label_'.DIANA_TRANSLATE_CURRENT];
+            }
+        }
+        return $options;
+    }
+
     /**
      * 生成数据
      * @param $params

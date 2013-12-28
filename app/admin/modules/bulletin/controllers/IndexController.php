@@ -20,6 +20,7 @@ class Bulletin_IndexController extends Admin_Controller_ActionDec
     {
         $serviceBulletin = new Admin_Service_Bulletin();
         $request = array_filter($this->getRequest()->getParams());
+
         $queryGrid = array('ajax_print' => 'json_2','req_handle' => 'datagrid-result');
         $queryGrid = $serviceBulletin->filterRequestQuery(array_merge($queryGrid,$request)) ;
         $this->view->request = $request;
@@ -43,6 +44,14 @@ class Bulletin_IndexController extends Admin_Controller_ActionDec
 
     function insertAction()
     {
+        $request = array_filter($this->getRequest()->getParams());
+        if(empty($request['bulletin_author'])){
+            $request['bulletin_author'] = $this->currentManagerName.'&lt;'.$this->currentManagerEmail.'&gt;';
+        }
+        $this->view->request = $request;
+        $serviceBulletinChannel = new Admin_Service_BulletinChannel();
+        $this->view->optionsBulletinChannelOfFather = $serviceBulletinChannel->makeOptionsOfFather();
+        $this->view->optionsBulletinChannelOfSon = $serviceBulletinChannel->makeOptionsOfSon();
 
     }
 

@@ -1,0 +1,138 @@
+<?php
+$this->headLink()->appendStylesheet('/static/kindeditor-4.1.7/themes/default/default.css');
+$this->headScript()->appendFile("/static/kindeditor-4.1.7/kindeditor.js");
+$this->headScript()->appendFile("/static/kindeditor-4.1.7/lang/zh_CN.js");
+$this->headScript()->captureStart();?>
+$(function(){
+$('#select_msg_dest').combotree({
+onlyLeafCheck:true,
+method:'get',
+url:'<?php echo $this->url(array('show_ajax' => 'json' ,'data_ajax' => 'msg_dest' ));?>'
+});
+<?php
+if(!empty($this->request['msg_dest'])){
+    echo '$(\'#select_msg_dest\').combotree(\'setValues\',\''.implode(',',$this->request['msg_dest']).'\'.split(\',\'));';
+    //echo '$(\'#input_log_typeLabel\').combobox(\'setText\',\''.$this->datapost['log_typeLabel'].'\');';
+}
+?>
+var editor;
+KindEditor.ready(function(K) {
+editor = K.create('#msg_content', {
+
+resizeType : 1,
+allowPreviewEmoticons : false,
+allowImageUpload : false,
+items : [
+'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+'insertunorderedlist', '|', 'emoticons', 'image', 'link'],
+afterBlur: function(){this.sync();}
+});
+});
+//表单内点击按钮提交
+$('#linkbtn_send').click(function(){
+formSubmit();
+});
+$('#linkbtn_save').click(function(){
+$('#input_handle_type').val('save');
+formSubmit();
+});
+//表单内回车提交
+$("#form_manager_msg_send").keydown(function(event){
+if(event.keyCode==13){formSubmit();}
+});
+
+});
+<?php $this->headScript()->captureEnd();?>
+<script type="text/javascript">
+    //表单提交
+    function formSubmit() {
+        $("#form_manager_msg_send").submit();
+    }
+    function onchangeShow(oneId){
+        var arrOptionsCountry = <?php echo json_encode($this->optionsBulletinChannelOfSon)?>;
+        onchangecallback(arrOptionsCountry[oneId]);
+    }
+    function onchangecallback(data){
+        $("#select_bulletin_channel").html("");  //清空原有的option
+        var str="<option value=''>请选择</option>";
+        for(var key in data){
+            str+="<option value='"+key+"'>"+data[key]+"</option>"
+        }
+        $("#select_bulletin_channel").html(str);
+    }
+
+</script>
+<div class="div_bg_fa separator_bot">
+    <form id="form_manager_msg_send" name="form_manager_msg_send" method="post">
+        <fieldset border="false"  class="fieldset_border separator_bot" >
+            <legend>公告发布</legend>
+            <table width="100%" border="0" cellspacing="1" cellpadding="5"  class="table_border separator_top separator_bot">
+                <tr>
+                    <th width="10%">作用域</th>
+                    <td>
+                        <?php
+                        if($this->request['bulletin_access'] == 7){
+                            $this->request['v'] = array(1,2,4);
+                        }elseif($this->request['bulletin_access'] == 6){
+                            $this->request['bulletin_access'] = array(2,4);
+                        }elseif($this->request['bulletin_access'] == 5){
+                            $this->request['bulletin_access'] = array(1,4);
+                        }elseif($this->request['bulletin_access'] == 3){
+                            $this->request['bulletin_access'] = array(1,2);
+                        }else{
+                            $this->request['bulletin_access'] = array($this->request['bulletin_access']);
+                        }
+                        foreach(array(4,2,1) as $tmpV){
+                            $tmpChecked = '';
+                            if(in_array($tmpV,$this->request['bulletin_access'])){
+                                $tmpChecked = 'checked="checked"';
+                            }
+                            echo '<label><input type="checkbox" name="bulletin_access" value="'.$tmpV.'" id="bulletin_access_'.$tmpV.'" '.$tmpChecked.' />'.$this->translate('model_bulletin_access_'.$tmpV).'</label>&nbsp;&nbsp;';
+                        }
+                        ?>
+                        <span id="span_notice_msg_dest"></span></td>
+                </tr>
+                <tr>
+                    <th width="10%">作者</th>
+                    <td><input id="input_bulletin_author" name="bulletin_author" class="easyui-validatebox" data-options="required:true"  style="width:30%;" value="<?php echo $this->request['bulletin_author'];?>"><span id="span_bulletin_author"></span></td>
+                </tr>
+                <tr>
+                    <th width="10%">类别</th>
+                    <td>
+                        <select id="select_bulletin_channel_father" name="bulletin_channel_father" onchange="onchangeShow(this.value)" style="width:20%;">
+                            <option value="0">请选择</option>
+                            <?php
+                            if(!empty($this->optionsBulletinChannelOfFather)){
+                                foreach($this->optionsBulletinChannelOfFather as $tmpChannelId => $tmpChannelLabel){
+                                    echo '<option value="'.$tmpChannelId.'">'.$tmpChannelLabel.'</option>';
+                                }
+                            }
+                            ?>
+                        </select>
+                        <select id="select_bulletin_channel" name="bulletin_channel" style="width:20%;">
+                            <option value="0">请选择</option>
+
+                        </select>
+                        <span id="span_bulletin_channel"></span></td>
+                </tr>
+                <tr>
+                    <th width="10%">标题</th>
+                    <td><input id="input_msg_subject" name="msg_subject" class="easyui-validatebox" data-options="required:true"  style="width:80%;" value="<?php echo $this->request['msg_subject'];?>"><span id="span_notice_msg_subject"></span></td>
+                </tr>
+            </table>
+        </fieldset>
+        <fieldset border="false"  class="fieldset_border separator_bot" >
+            <legend>内容</legend>
+            <textarea id="msg_content" name="msg_content" style="width:100%;height:300px;"><?php echo $this->request['msg_content'];?></textarea>
+        </fieldset>
+        <div border="false" class="div_btn">
+            <input type="hidden" id="input_outbox_id" name="outbox_id" value="<?php echo $this->request['outbox_id'];?>">
+            <input type="hidden" id="input_outbox_msgId" name="outbox_msgId" value="<?php echo $this->request['outbox_msgId'];?>">
+            <input type="hidden" id="input_handle_type" name="handle_type" value="send">
+            <a id="linkbtn_send" class="easyui-linkbutton" iconCls="icon-apply" style="margin-right:20px;">发送消息</a>
+            <a id="linkbtn_save" class="easyui-linkbutton" iconCls="icon-pencil" style="margin-right:20px;">保存草稿</a>
+            <a id="linkbtn_reset" class="easyui-linkbutton" iconCls="icon-cancel" href="<?php echo $this->url(array('outbox_id' => $this->outboxId));?>" >清空内容</a>
+        </div>
+    </form>
+</div>

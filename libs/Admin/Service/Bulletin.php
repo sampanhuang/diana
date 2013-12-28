@@ -106,14 +106,14 @@ class Admin_Service_Bulletin extends Admin_Service_Abstract
     {
         $filters = array(
             'bulletin_channel' => array(new Zend_Filter_Int(),new Zend_Filter_Digits(),new Zend_Filter_StringTrim()),
-            'bulletin_type' => array(new Zend_Filter_Int(),new Zend_Filter_Digits(),new Zend_Filter_StringTrim()),
+            'bulletin_access' => array(new Zend_Filter_Int(),new Zend_Filter_Digits(),new Zend_Filter_StringTrim()),
             'bulletin_title' => array(new Zend_Filter_StripNewlines(),new Zend_Filter_HtmlEntities(),new Zend_Filter_StringTrim()),
             'bulletin_author' => array(new Zend_Filter_StripNewlines(),new Zend_Filter_HtmlEntities(),new Zend_Filter_StringTrim()),
             'bulletin_content' => array(new Zend_Filter_StripNewlines(),new Zend_Filter_HtmlEntities(),new Zend_Filter_StringTrim()),
         );
         $validators = array(
             'bulletin_channel' => array(new Zend_Validate_Int()),
-            'bulletin_type' => array(new Zend_Validate_Int()),
+            'bulletin_access' => array(new Zend_Validate_Int()),
             'bulletin_title' => array(new Zend_Validate_StringLength(array('max' => '64','encoding' => 'utf-8'))),
             'bulletin_author' => array(new Zend_Validate_StringLength(array('max' => '64','encoding' => 'utf-8'))),
             'bulletin_content' => array(new Zend_Validate_StringLength(array('max' => '512','encoding' => 'utf-8'))),
@@ -192,7 +192,7 @@ class Admin_Service_Bulletin extends Admin_Service_Abstract
             $this->setMsgs('错误的ID');
             return false;
         }
-        if($rowBulletin['bulletin_type'] !== $type){
+        if($rowBulletin['bulletin_access'] !== $type){
             $this->setMsgs('错误的应用场景');
             return false;
         }
@@ -238,7 +238,7 @@ class Admin_Service_Bulletin extends Admin_Service_Abstract
         return array(
             'bulletin_id',
             'bulletin_channel',
-            'bulletin_type',
+            'bulletin_access',
             'bulletin_click_min',
             'bulletin_click_max',
             'bulletin_top',
