@@ -15,43 +15,61 @@ CREATE DATABASE /*!32312 IF NOT EXISTS*/`utf8_diana` /*!40100 DEFAULT CHARACTER 
 
 USE `utf8_diana`;
 
-/*Table structure for table `operation_blockusers` */
-
-DROP TABLE IF EXISTS `operation_blockusers`;
-
-CREATE TABLE `operation_blockusers` (
-  `entry` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '流水号',
-  `intime` int(11) unsigned NOT NULL DEFAULT '0',
-  `block_username` varchar(20) NOT NULL COMMENT '用户名',
-  PRIMARY KEY (`entry`),
-  UNIQUE KEY `Block_UserName` (`block_username`)
-) ENGINE=MyISAM AUTO_INCREMENT=67 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='显示假卡用户';
-
-/*Data for the table `operation_blockusers` */
-
 /*Table structure for table `tb_bulletin` */
 
 DROP TABLE IF EXISTS `tb_bulletin`;
 
 CREATE TABLE `tb_bulletin` (
   `bulletin_id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '流水号',
+  `bulletin_channel` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '公告频道',
   `bulletin_type` int(11) unsigned NOT NULL DEFAULT '1' COMMENT '1是www公告,2是client公告,3是admin公告',
   `bulletin_click` int(11) unsigned NOT NULL DEFAULT '0',
   `bulletin_top` int(11) DEFAULT '0' COMMENT '置顶级别',
   `bulletin_title` varchar(128) NOT NULL COMMENT '标题',
   `bulletin_author` varchar(32) NOT NULL,
   `bulletin_insert_time` int(11) unsigned NOT NULL DEFAULT '0',
-  `bulletin_insert_man` varchar(32) DEFAULT NULL,
+  `bulletin_insert_manId` int(11) unsigned NOT NULL DEFAULT '0',
+  `bulletin_insert_manName` varchar(32) DEFAULT NULL,
+  `bulletin_insert_manEmail` varchar(32) DEFAULT NULL,
   `bulletin_insert_ip` varchar(32) DEFAULT NULL,
   `bulletin_insert_addr` varchar(32) DEFAULT NULL,
   `bulletin_update_time` int(11) unsigned NOT NULL DEFAULT '0',
-  `bulletin_update_man` varchar(32) DEFAULT NULL,
+  `bulletin_update_manId` int(11) unsigned NOT NULL DEFAULT '0',
+  `bulletin_update_manName` varchar(32) DEFAULT NULL,
+  `bulletin_update_manEmail` varchar(32) DEFAULT NULL,
   `bulletin_update_ip` varchar(32) DEFAULT NULL,
   `bulletin_update_addr` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`bulletin_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='公告';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='公告';
 
 /*Data for the table `tb_bulletin` */
+
+/*Table structure for table `tb_bulletin_channel` */
+
+DROP TABLE IF EXISTS `tb_bulletin_channel`;
+
+CREATE TABLE `tb_bulletin_channel` (
+  `channel_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `channel_label` varchar(32) NOT NULL,
+  `channel_count` int(11) unsigned NOT NULL DEFAULT '0',
+  `channel_insert_time` int(11) unsigned NOT NULL DEFAULT '0',
+  `channel_insert_manId` int(11) unsigned NOT NULL DEFAULT '0',
+  `channel_insert_manName` varchar(32) DEFAULT NULL,
+  `channel_insert_manEmail` varchar(32) DEFAULT NULL,
+  `channel_insert_ip` varchar(32) DEFAULT NULL,
+  `channel_insert_addr` varchar(32) DEFAULT NULL,
+  `channel_update_time` int(11) unsigned NOT NULL DEFAULT '0',
+  `channel_update_manId` int(11) unsigned NOT NULL DEFAULT '0',
+  `channel_update_manName` varchar(32) DEFAULT NULL,
+  `channel_update_manEmail` varchar(32) DEFAULT NULL,
+  `channel_update_ip` varchar(32) DEFAULT NULL,
+  `channel_update_addr` varchar(32) DEFAULT NULL,
+  PRIMARY KEY (`channel_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='公告频道';
+
+/*Data for the table `tb_bulletin_channel` */
+
+insert  into `tb_bulletin_channel`(`channel_id`,`channel_label`,`channel_count`,`channel_insert_time`,`channel_insert_manId`,`channel_insert_manName`,`channel_insert_manEmail`,`channel_insert_ip`,`channel_insert_addr`,`channel_update_time`,`channel_update_manId`,`channel_update_manName`,`channel_update_manEmail`,`channel_update_ip`,`channel_update_addr`) values (1,'Test',0,0,0,NULL,NULL,NULL,NULL,0,0,NULL,NULL,NULL,NULL);
 
 /*Table structure for table `tb_bulletin_content` */
 
@@ -126,27 +144,6 @@ CREATE TABLE `tb_config_update_history` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Data for the table `tb_config_update_history` */
-
-/*Table structure for table `tb_config_update_history_2013` */
-
-DROP TABLE IF EXISTS `tb_config_update_history_2013`;
-
-CREATE TABLE `tb_config_update_history_2013` (
-  `history_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `history_configId` int(11) DEFAULT NULL,
-  `history_configKey` varchar(64) NOT NULL,
-  `history_configValue` varchar(64) NOT NULL,
-  `history_insert_time` int(11) unsigned NOT NULL DEFAULT '0',
-  `history_insert_manId` int(11) unsigned NOT NULL DEFAULT '0',
-  `history_insert_manName` varchar(32) DEFAULT NULL,
-  `history_insert_manEmail` varchar(32) DEFAULT NULL,
-  `history_insert_ip` varchar(32) NOT NULL,
-  PRIMARY KEY (`history_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
-
-/*Data for the table `tb_config_update_history_2013` */
-
-insert  into `tb_config_update_history_2013`(`history_id`,`history_configId`,`history_configKey`,`history_configValue`,`history_insert_time`,`history_insert_manId`,`history_insert_manName`,`history_insert_manEmail`,`history_insert_ip`) values (1,45,'test-key-2-1','test-val-2-5',1386005858,1000,'审判长烧鸭','bay.sampanhuang@gmail.com','127.0.0.1'),(2,45,'test-key-2-1','test-val-2-6',1386005956,1000,'审判长烧鸭','bay.sampanhuang@gmail.com','127.0.0.1'),(3,45,'test-key-2-1','test-val-2-7',1386006009,1000,'审判长烧鸭','bay.sampanhuang@gmail.com','127.0.0.1'),(4,45,'test-key-2-1','test-val-2-8',1386006415,1000,'审判长烧鸭','bay.sampanhuang@gmail.com','127.0.0.1'),(5,45,'test-key-2-1','test-val-2-10',1386006462,1000,'审判长烧鸭','bay.sampanhuang@gmail.com','127.0.0.1'),(6,45,'test-key-2-1','test-val-2-11',1386006499,1000,'审判长烧鸭','bay.sampanhuang@gmail.com','127.0.0.1'),(7,48,'test-key-5-1','A51,A52',1386007050,1000,'审判长烧鸭','bay.sampanhuang@gmail.com','127.0.0.1'),(8,48,'test-key-5-1','B51,B52',1386007059,1000,'审判长烧鸭','bay.sampanhuang@gmail.com','127.0.0.1'),(9,48,'test-key-5-1','A51,A52,B51,B52,C51,C52',1386007078,1000,'审判长烧鸭','bay.sampanhuang@gmail.com','127.0.0.1'),(10,48,'test-key-5-1','C51,C52',1386007090,1000,'审判长烧鸭','bay.sampanhuang@gmail.com','127.0.0.1'),(11,48,'test-key-5-1','B51',1386007159,1000,'审判长烧鸭','bay.sampanhuang@gmail.com','127.0.0.1'),(12,48,'test-key-5-1','B51',1386007285,1000,'审判长烧鸭','bay.sampanhuang@gmail.com','127.0.0.1'),(13,48,'test-key-5-1','B52',1386007403,1000,'审判长烧鸭','bay.sampanhuang@gmail.com','127.0.0.1'),(14,44,'member_register-default-role','10',1386074391,1000,'审判长烧鸭','bay.sampanhuang@gmail.com','127.0.0.1');
 
 /*Table structure for table `tb_domain` */
 
@@ -245,7 +242,7 @@ CREATE TABLE `tb_manager` (
 
 /*Data for the table `tb_manager` */
 
-insert  into `tb_manager`(`manager_id`,`manager_roleId`,`manager_name`,`manager_email`,`manager_passwd`,`manager_passwd_change_count`,`manager_passwd_change_time`,`manager_passwd_change_ip`,`manager_login_count`,`manager_login_last_time`,`manager_login_last_ip`,`manager_lock_time`,`manager_active_email`,`manager_insert_time`,`manager_insert_manId`,`manager_insert_manName`,`manager_insert_manEmail`,`manager_insert_ip`,`manager_update_time`,`manager_update_manId`,`manager_update_manName`,`manager_update_manEmail`,`manager_update_ip`) values (1000,1,'审判长烧鸭','bay.sampanhuang@gmail.com','bb35a99fb3909dd82f24925fbbc93403',29,1385353039,'127.0.0.1',128,1387350185,'127.0.0.1',1383465443,0,1374930769,0,NULL,NULL,'127.0.0.01',0,NULL,NULL,NULL,NULL),(1001,5,'貌若潘安','m.sampanhuang@gmail.com','bb35a99fb3909dd82f24925fbbc93403',0,0,NULL,6,1385950639,'127.0.0.1',0,0,0,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL);
+insert  into `tb_manager`(`manager_id`,`manager_roleId`,`manager_name`,`manager_email`,`manager_passwd`,`manager_passwd_change_count`,`manager_passwd_change_time`,`manager_passwd_change_ip`,`manager_login_count`,`manager_login_last_time`,`manager_login_last_ip`,`manager_lock_time`,`manager_active_email`,`manager_insert_time`,`manager_insert_manId`,`manager_insert_manName`,`manager_insert_manEmail`,`manager_insert_ip`,`manager_update_time`,`manager_update_manId`,`manager_update_manName`,`manager_update_manEmail`,`manager_update_ip`) values (1000,1,'审判长烧鸭','bay.sampanhuang@gmail.com','bb35a99fb3909dd82f24925fbbc93403',29,1385353039,'127.0.0.1',134,1388161420,'127.0.0.1',1383465443,0,1374930769,0,NULL,NULL,'127.0.0.01',0,NULL,NULL,NULL,NULL),(1001,5,'貌若潘安','m.sampanhuang@gmail.com','bb35a99fb3909dd82f24925fbbc93403',0,0,NULL,6,1385950639,'127.0.0.1',0,0,0,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL);
 
 /*Table structure for table `tb_manager_log` */
 
@@ -319,11 +316,11 @@ CREATE TABLE `tb_manager_menu` (
   `menu_update_manEmail` varchar(32) DEFAULT NULL,
   `menu_update_ip` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`menu_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=152 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=158 DEFAULT CHARSET=utf8;
 
 /*Data for the table `tb_manager_menu` */
 
-insert  into `tb_manager_menu`(`menu_id`,`menu_fatherId`,`menu_label_zh-cn`,`menu_label_zh-tw`,`menu_label_en-us`,`menu_link`,`menu_show`,`menu_order`,`menu_insert_time`,`menu_insert_manId`,`menu_insert_manName`,`menu_insert_manEmail`,`menu_insert_ip`,`menu_update_time`,`menu_update_manId`,`menu_update_manName`,`menu_update_manEmail`,`menu_update_ip`) values (1,0,'系统设置','系統设置','','',1,1500,1374154702,NULL,NULL,NULL,NULL,1386064612,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(2,122,'管理成员','管理成員','','',1,4,1374154702,NULL,NULL,NULL,NULL,1385465784,1000,NULL,NULL,NULL),(3,2,'查询管理员','查詢管理員',NULL,'system/manager/index',1,9,1374154702,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(4,2,'添加新成员','添加新成員',NULL,'system/manager/insert',1,8,1374154702,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(5,2,'编辑成员','編輯成員',NULL,'system/manager/update',0,7,1374154702,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(6,2,'删除成员','刪除成員',NULL,'system/manager/delete',0,6,1374154702,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(7,2,'明细详情','明細詳情',NULL,'system/manager/detail',0,5,1374154702,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(8,2,'管理员日志','管理員日誌',NULL,'system/manager/log',1,4,1374154702,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(9,122,'权限角色','角色','','',1,3,1374154702,NULL,NULL,NULL,NULL,1385465798,1000,NULL,NULL,NULL),(10,9,'查询角色','查詢角色',NULL,'system/manager-role/index',1,8,1374154702,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(11,9,'添加新角色','添加新角色',NULL,'system/manager-role/insert',1,7,1374154702,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(12,9,'编辑角色','編輯角色',NULL,'system/manager-role/update',0,6,1374154702,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(13,9,'删除角色','刪除角色',NULL,'system/manager-role/delete',0,5,1374154702,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(14,9,'明细详情','明細詳情',NULL,'system/manager-role/detail',0,2,1374154702,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(15,122,'后台菜单','後臺菜單','','',1,5,1374154702,NULL,NULL,NULL,NULL,1385465768,1000,NULL,NULL,NULL),(16,15,'菜单索引','菜單索引',NULL,'system/manager-menu/index',1,9,1374154702,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(17,15,'添加菜单','添加菜單',NULL,'system/manager-menu/insert',1,8,1374154702,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(18,15,'编辑菜单','編輯菜單','','system/manager-menu/update',0,7,1374154702,NULL,NULL,NULL,NULL,1385465854,1000,NULL,NULL,NULL),(19,15,'处理菜单（删除）','刪除菜單','','system/manager-menu/handle',0,6,1374154702,NULL,NULL,NULL,NULL,1385484458,1000,NULL,NULL,NULL),(20,15,'菜单明细','菜單明細',NULL,'system/manager-menu/detail',0,5,1374154702,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(22,0,'会员管理','會員管理',NULL,NULL,1,1600,1374154702,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(23,22,'注册会员','註冊會員','','',1,500,1374154702,NULL,NULL,NULL,NULL,1386042818,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(24,23,'查询会员','查詢會員','','member/default/index',1,4,1374154702,NULL,NULL,NULL,NULL,1386074753,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(25,23,'会员明细','會員明細','','member/default/detail',1,3,1374154702,NULL,NULL,NULL,NULL,1386074765,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(26,22,'会员动态','會員動態','','',1,400,1374154702,NULL,NULL,NULL,NULL,1386042811,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(27,26,'会员登录','會員登錄',NULL,'member/trend/login',1,4,1374154702,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(28,26,'会员注册','會員註冊',NULL,'member/trend/register',1,3,1374154702,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(33,0,'网站导航','網站导航','','',1,1700,1374154802,NULL,NULL,NULL,NULL,1386007790,1000,NULL,NULL,NULL),(35,33,'注册网站','註冊網站',NULL,NULL,1,9,1374154802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(36,35,'查询网站','查詢網站','','website/default/index',1,9,1374154802,NULL,NULL,NULL,NULL,1387164535,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(37,35,'网站明细','網站明細','','website/default/detail',1,8,1374154702,NULL,NULL,NULL,NULL,1387164776,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(38,33,'网站动态','網站動態',NULL,NULL,1,8,1374154802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(39,38,'网站注册','網站註冊',NULL,'website/trend/register',1,9,1374154802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(40,38,'点击流入','點擊流入',NULL,'website/trend/click-in',1,8,1374154802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(41,38,'点击流出','點擊流出',NULL,'website/trend/click-out',1,7,1374154802,NULL,NULL,NULL,NULL,1374155802,NULL,NULL,NULL,NULL),(42,1,'配置参数','配置参数',NULL,NULL,1,6,1374154802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(43,42,'参数索引','參數索引',NULL,'system/config/index',1,9,1374154802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(44,42,'添加参数','添加參數',NULL,'system/config/insert',1,8,1374154802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(45,42,'修改参数','修改參數','','system/config/update',0,7,1374154802,NULL,NULL,NULL,NULL,1385486897,1000,NULL,NULL,NULL),(46,42,'参数处理（删除）','参数处理（删除）','','system/config/handle',0,6,1374154802,NULL,NULL,NULL,NULL,1385900635,1000,NULL,NULL,NULL),(47,42,'输入设置','输入设置','','system/config/alter',0,5,1374154802,NULL,NULL,NULL,NULL,1385900613,1000,NULL,NULL,NULL),(49,0,'个人中心','個人中心',NULL,NULL,1,1300,1374154802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(50,49,'消息中心','消息中心',NULL,NULL,1,4,1374155802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(51,50,'收件箱','收件箱',NULL,'profile/message/inbox',1,8,1374155802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(52,50,'发件箱','發件箱',NULL,'profile/message/outbox',1,7,1374155802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(53,50,'发消息','發消息',NULL,'profile/message/send',1,5,1374155802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(54,50,'草稿箱','草稿箱',NULL,'profile/message/draft',1,6,1374155802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(55,49,'用户安全','用戶安全',NULL,NULL,1,3,1374155802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(56,55,'密码变更','密碼變更',NULL,'profile/safe/resetpwd',1,4,1374155802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(57,55,'帐号变更','帳號變更',NULL,'profile/safe/update?type=name',1,3,1374155802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(58,55,'邮箱变更','郵箱變更',NULL,'profile/safe/update?type=email',1,2,1374155802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(60,50,'收件处理（删除、设为已读）','收件處理（刪除、設為已讀）',NULL,'profile/message/inbox-handle',0,4,1374155802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(61,49,'个人资料','個人資料',NULL,NULL,1,2,1374155802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(62,61,'资料明细','資料明細',NULL,'profile/intro/index',1,2,1374155802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(63,61,'日志查询','日誌查詢',NULL,'profile/intro/log',1,1,1374155802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(64,102,'网站提交','網站提交',NULL,NULL,1,5,1374154802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(65,64,'尚未外理','尚未外理','','apply/website-register/index?register_pass=3',1,9,1374154802,NULL,NULL,NULL,NULL,1387096351,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(66,64,'通过审核','通過審核',NULL,'apply/website-register/index?register_pass=1',1,8,1374154802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(67,64,'未通过审核','未通過審核',NULL,'apply/website-register/index?register_pass=2',1,7,1374154802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(68,64,'申请明细','申請明細',NULL,'apply/website-register/detail',1,6,1374154802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(69,64,'申请处理','申請處理','','apply/website-register/handle',0,5,1374154802,NULL,NULL,NULL,NULL,1387097362,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(71,38,'网站申请','網站申請',NULL,'website/trend/apply',1,6,0,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(72,33,'网站类型','網站類型',NULL,NULL,1,7,1374154802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(73,72,'类型索引','類型索引',NULL,'website/category/index',1,1,1374154802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(74,33,'网站区域','網站區域',NULL,NULL,1,6,0,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(75,74,'区域索引','區域索引',NULL,'website/area/index',1,3,0,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(76,74,'历史快照','歷史快照',NULL,'website/area/history',1,2,0,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(77,150,'会员菜单','會員菜單','','',1,100,1374154702,NULL,NULL,NULL,NULL,1386064556,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(78,77,'菜单索引','菜單索引','','member/member-menu/index',1,6,0,NULL,NULL,NULL,NULL,1386042657,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(79,77,'添加菜单','添加菜單','','member/member-menu/insert',1,5,0,NULL,NULL,NULL,NULL,1386042683,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(80,77,'编辑菜单','編輯菜單','','member/member-menu/update',0,4,0,NULL,NULL,NULL,NULL,1386042712,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(81,77,'删除菜单','刪除菜單','','member/member-menu/delete',0,3,0,NULL,NULL,NULL,NULL,1386042703,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(82,33,'网站标签','網站標籤',NULL,NULL,1,5,1374154802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(83,33,'搜索关键字','搜索關鍵字',NULL,NULL,1,4,1374154802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(84,82,'标签索引','標籤索引',NULL,'website/tag/index',1,3,0,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(85,82,'标签明细','標籤明細',NULL,'website/tag/detail',1,2,0,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(86,83,'关键字索引','關鍵字索引',NULL,'website/keywork/index',1,5,0,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(87,83,'热门关键字','熱門關鍵字',NULL,'website/keywork/hot',1,6,0,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(88,38,'网站搜索','網站搜索',NULL,'website/trend/search',1,5,1374154802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(89,35,'点击流入','點擊流入','','website/default/click-in',1,5,1374151802,NULL,NULL,NULL,NULL,1387164802,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(90,35,'点击流出','點擊流出','','website/default/click-out',1,4,1374154402,NULL,NULL,NULL,NULL,1387164809,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(91,83,'搜索动态','搜索動態',NULL,'website/keywork/search',1,7,0,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(92,35,'资料变更','資料變更','','website/default/update',1,7,1374153802,NULL,NULL,NULL,NULL,1387164785,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(93,35,'网站删除','網站刪除','','website/default/delete',1,6,1374154302,NULL,NULL,NULL,NULL,1387164793,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(94,1,'敏感词库','敏感詞庫',NULL,NULL,1,1,1374354802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(96,94,'敏感词查询','敏感詞查询','','system/filter-word/index',1,6,1379507707,NULL,NULL,NULL,NULL,1385488007,1000,NULL,NULL,NULL),(97,94,'导入敏感词','导入敏感詞','','system/filter-word/import',1,7,1379507707,NULL,NULL,NULL,NULL,1385488036,1000,NULL,NULL,NULL),(102,0,'业务审批','业务審批','','',1,1800,0,NULL,NULL,NULL,NULL,1386007828,1000,NULL,NULL,NULL),(103,102,'网站更新','網站更新',NULL,NULL,1,4,1374154802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(104,103,'未确认','未確認',NULL,NULL,1,1,0,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(106,102,'会员注册','會員註冊',NULL,NULL,1,3,1374154802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(107,106,'未确认','未確認',NULL,NULL,1,1,0,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(108,9,'锁定角色','鎖定角色',NULL,'system/role/lock',0,4,1374154702,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(109,9,'解锁角色','解鎖角色',NULL,'system/role/unlock',0,3,1374154702,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(110,1,'公告管理','公告管理',NULL,NULL,1,2,0,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(111,110,'公告查询','公告查询','','syste/bulletin/index',1,8,0,NULL,NULL,NULL,NULL,1385487349,1000,NULL,NULL,NULL),(112,110,'添加公告','添加公告',NULL,'system/bulletin/insert',1,7,0,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(113,110,'编辑公告','編輯公告',NULL,'system/bulletin/update',0,6,0,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(114,110,'删除公告','刪除公告',NULL,'system/bulletin/delete',0,5,0,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(115,110,'关闭公告','關閉公告',NULL,'system/bulletin/disable',0,4,0,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(116,110,'开启公告','開啟公告',NULL,'system/bulletin/enable',0,3,0,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(117,50,'发件处理（删除）','發件處理（刪除）',NULL,'profile/message/outbox-handle',0,0,0,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(118,1,'数据清理','數據清理',NULL,NULL,0,0,0,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(120,118,'过期日志','過期日誌',NULL,'system/data-clear/log',1,2,0,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(121,50,'草稿处理（删除）','草稿處理（刪除）',NULL,'profile/message/draft-handle',0,0,0,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(122,0,'后台权限','','','',1,1400,1385458695,1000,NULL,NULL,NULL,1385458695,1000,NULL,NULL,NULL),(144,94,'敏感词处理','敏感词处理','','system/filter-word/word-handle',0,1,1385491006,1000,NULL,NULL,NULL,1385491006,1000,NULL,NULL,NULL),(145,42,'参数明细','参数明细','','system/config/detail',1,1,1385645873,1000,NULL,NULL,NULL,1386008463,1000,NULL,NULL,NULL),(146,118,'配置变更日志','配置变更日志','配置变更日志','system/data-clear/config-update-history',1,2,1386007604,1000,NULL,NULL,NULL,1386007604,1000,NULL,NULL,NULL),(147,150,'权限角色','权限角色','权限角色','',1,200,1386008049,1000,NULL,NULL,NULL,1386063834,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(148,147,'查询角色','查询角色','查询角色','member/member-role/index',1,2,1386008124,1000,NULL,NULL,NULL,1386008124,1000,NULL,NULL,NULL),(149,147,'添加新角色','添加新角色','添加新角色','member/member-role/insert',1,1,1386008338,1000,NULL,NULL,NULL,1386008338,1000,NULL,NULL,NULL),(150,0,'会员权限','','','',1,1550,1386063772,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1386063810,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(151,23,'会员日志','会员日志','会员日志','member/default/log',1,1,1386141861,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1386141861,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL);
+insert  into `tb_manager_menu`(`menu_id`,`menu_fatherId`,`menu_label_zh-cn`,`menu_label_zh-tw`,`menu_label_en-us`,`menu_link`,`menu_show`,`menu_order`,`menu_insert_time`,`menu_insert_manId`,`menu_insert_manName`,`menu_insert_manEmail`,`menu_insert_ip`,`menu_update_time`,`menu_update_manId`,`menu_update_manName`,`menu_update_manEmail`,`menu_update_ip`) values (1,0,'系统设置','系統设置','','',1,1500,1374154702,NULL,NULL,NULL,NULL,1386064612,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(2,122,'管理成员','管理成員','','',1,4,1374154702,NULL,NULL,NULL,NULL,1385465784,1000,NULL,NULL,NULL),(3,2,'查询管理员','查詢管理員',NULL,'system/manager/index',1,9,1374154702,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(4,2,'添加新成员','添加新成員',NULL,'system/manager/insert',1,8,1374154702,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(5,2,'编辑成员','編輯成員',NULL,'system/manager/update',0,7,1374154702,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(6,2,'删除成员','刪除成員',NULL,'system/manager/delete',0,6,1374154702,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(7,2,'明细详情','明細詳情',NULL,'system/manager/detail',0,5,1374154702,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(8,2,'管理员日志','管理員日誌',NULL,'system/manager/log',1,4,1374154702,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(9,122,'权限角色','角色','','',1,3,1374154702,NULL,NULL,NULL,NULL,1385465798,1000,NULL,NULL,NULL),(10,9,'查询角色','查詢角色',NULL,'system/manager-role/index',1,8,1374154702,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(11,9,'添加新角色','添加新角色',NULL,'system/manager-role/insert',1,7,1374154702,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(12,9,'编辑角色','編輯角色',NULL,'system/manager-role/update',0,6,1374154702,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(13,9,'删除角色','刪除角色',NULL,'system/manager-role/delete',0,5,1374154702,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(14,9,'明细详情','明細詳情',NULL,'system/manager-role/detail',0,2,1374154702,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(15,122,'后台菜单','後臺菜單','','',1,5,1374154702,NULL,NULL,NULL,NULL,1385465768,1000,NULL,NULL,NULL),(16,15,'菜单索引','菜單索引',NULL,'system/manager-menu/index',1,9,1374154702,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(17,15,'添加菜单','添加菜單',NULL,'system/manager-menu/insert',1,8,1374154702,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(18,15,'编辑菜单','編輯菜單','','system/manager-menu/update',0,7,1374154702,NULL,NULL,NULL,NULL,1385465854,1000,NULL,NULL,NULL),(19,15,'处理菜单（删除）','刪除菜單','','system/manager-menu/handle',0,6,1374154702,NULL,NULL,NULL,NULL,1385484458,1000,NULL,NULL,NULL),(20,15,'菜单明细','菜單明細',NULL,'system/manager-menu/detail',0,5,1374154702,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(22,0,'会员管理','會員管理',NULL,NULL,1,1600,1374154702,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(23,22,'注册会员','註冊會員','','',1,500,1374154702,NULL,NULL,NULL,NULL,1386042818,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(24,23,'查询会员','查詢會員','','member/default/index',1,4,1374154702,NULL,NULL,NULL,NULL,1386074753,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(25,23,'会员明细','會員明細','','member/default/detail',1,3,1374154702,NULL,NULL,NULL,NULL,1386074765,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(26,22,'会员动态','會員動態','','',1,400,1374154702,NULL,NULL,NULL,NULL,1386042811,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(27,26,'会员登录','會員登錄',NULL,'member/trend/login',1,4,1374154702,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(28,26,'会员注册','會員註冊',NULL,'member/trend/register',1,3,1374154702,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(33,0,'网站导航','網站导航','','',1,1700,1374154802,NULL,NULL,NULL,NULL,1386007790,1000,NULL,NULL,NULL),(35,33,'注册网站','註冊網站',NULL,NULL,1,9,1374154802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(36,35,'查询网站','查詢網站','','website/default/index',1,9,1374154802,NULL,NULL,NULL,NULL,1387164535,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(37,35,'网站明细','網站明細','','website/default/detail',1,8,1374154702,NULL,NULL,NULL,NULL,1387164776,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(38,33,'网站动态','網站動態',NULL,NULL,1,8,1374154802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(39,38,'网站注册','網站註冊',NULL,'website/trend/register',1,9,1374154802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(40,38,'点击流入','點擊流入',NULL,'website/trend/click-in',1,8,1374154802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(41,38,'点击流出','點擊流出',NULL,'website/trend/click-out',1,7,1374154802,NULL,NULL,NULL,NULL,1374155802,NULL,NULL,NULL,NULL),(42,1,'配置参数','配置参数',NULL,NULL,1,6,1374154802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(43,42,'参数索引','參數索引',NULL,'system/config/index',1,9,1374154802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(44,42,'添加参数','添加參數',NULL,'system/config/insert',1,8,1374154802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(45,42,'修改参数','修改參數','','system/config/update',0,7,1374154802,NULL,NULL,NULL,NULL,1385486897,1000,NULL,NULL,NULL),(46,42,'参数处理（删除）','参数处理（删除）','','system/config/handle',0,6,1374154802,NULL,NULL,NULL,NULL,1385900635,1000,NULL,NULL,NULL),(47,42,'输入设置','输入设置','','system/config/alter',0,5,1374154802,NULL,NULL,NULL,NULL,1385900613,1000,NULL,NULL,NULL),(49,0,'个人中心','個人中心',NULL,NULL,1,1300,1374154802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(50,49,'消息中心','消息中心',NULL,NULL,1,4,1374155802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(51,50,'收件箱','收件箱',NULL,'profile/message/inbox',1,8,1374155802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(52,50,'发件箱','發件箱',NULL,'profile/message/outbox',1,7,1374155802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(53,50,'发消息','發消息',NULL,'profile/message/send',1,5,1374155802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(54,50,'草稿箱','草稿箱',NULL,'profile/message/draft',1,6,1374155802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(55,49,'用户安全','用戶安全',NULL,NULL,1,3,1374155802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(56,55,'密码变更','密碼變更',NULL,'profile/safe/resetpwd',1,4,1374155802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(57,55,'帐号变更','帳號變更',NULL,'profile/safe/update?type=name',1,3,1374155802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(58,55,'邮箱变更','郵箱變更',NULL,'profile/safe/update?type=email',1,2,1374155802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(60,50,'收件处理（删除、设为已读）','收件處理（刪除、設為已讀）',NULL,'profile/message/inbox-handle',0,4,1374155802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(61,49,'个人资料','個人資料',NULL,NULL,1,2,1374155802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(62,61,'资料明细','資料明細',NULL,'profile/intro/index',1,2,1374155802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(63,61,'日志查询','日誌查詢',NULL,'profile/intro/log',1,1,1374155802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(64,102,'网站提交','網站提交',NULL,NULL,1,5,1374154802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(65,64,'尚未外理','尚未外理','','apply/website-register/index?register_pass=3',1,9,1374154802,NULL,NULL,NULL,NULL,1387096351,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(66,64,'通过审核','通過審核',NULL,'apply/website-register/index?register_pass=1',1,8,1374154802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(67,64,'未通过审核','未通過審核',NULL,'apply/website-register/index?register_pass=2',1,7,1374154802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(68,64,'申请明细','申請明細',NULL,'apply/website-register/detail',1,6,1374154802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(69,64,'申请处理','申請處理','','apply/website-register/handle',0,5,1374154802,NULL,NULL,NULL,NULL,1387097362,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(71,38,'网站申请','網站申請',NULL,'website/trend/apply',1,6,0,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(72,33,'网站类型','網站類型',NULL,NULL,1,7,1374154802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(73,72,'类型索引','類型索引',NULL,'website/category/index',1,1,1374154802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(74,33,'网站区域','網站區域',NULL,NULL,1,6,0,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(75,74,'区域索引','區域索引',NULL,'website/area/index',1,3,0,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(76,74,'历史快照','歷史快照',NULL,'website/area/history',1,2,0,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(77,150,'会员菜单','會員菜單','','',1,100,1374154702,NULL,NULL,NULL,NULL,1386064556,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(78,77,'菜单索引','菜單索引','','member/member-menu/index',1,6,0,NULL,NULL,NULL,NULL,1386042657,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(79,77,'添加菜单','添加菜單','','member/member-menu/insert',1,5,0,NULL,NULL,NULL,NULL,1386042683,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(80,77,'编辑菜单','編輯菜單','','member/member-menu/update',0,4,0,NULL,NULL,NULL,NULL,1386042712,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(81,77,'删除菜单','刪除菜單','','member/member-menu/delete',0,3,0,NULL,NULL,NULL,NULL,1386042703,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(82,33,'网站标签','網站標籤',NULL,NULL,1,5,1374154802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(83,33,'搜索关键字','搜索關鍵字',NULL,NULL,1,4,1374154802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(84,82,'标签索引','標籤索引',NULL,'website/tag/index',1,3,0,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(85,82,'标签明细','標籤明細',NULL,'website/tag/detail',1,2,0,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(86,83,'关键字索引','關鍵字索引','','website/keywork/index',1,8,0,NULL,NULL,NULL,NULL,1387871934,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(88,38,'网站搜索','網站搜索',NULL,'website/trend/search',1,5,1374154802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(89,35,'点击流入','點擊流入','','website/default/click-in',1,5,1374151802,NULL,NULL,NULL,NULL,1387164802,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(90,35,'点击流出','點擊流出','','website/default/click-out',1,4,1374154402,NULL,NULL,NULL,NULL,1387164809,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(91,83,'搜索动态','搜索動態','','website/keywork/trend',1,7,0,NULL,NULL,NULL,NULL,1388059337,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(92,35,'资料变更','資料變更','','website/default/update',1,7,1374153802,NULL,NULL,NULL,NULL,1387164785,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(93,35,'网站删除','網站刪除','','website/default/delete',1,6,1374154302,NULL,NULL,NULL,NULL,1387164793,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(94,1,'敏感词库','敏感詞庫',NULL,NULL,1,1,1374354802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(96,94,'敏感词查询','敏感詞查询','','system/filter-word/index',1,6,1379507707,NULL,NULL,NULL,NULL,1385488007,1000,NULL,NULL,NULL),(97,94,'导入敏感词','导入敏感詞','','system/filter-word/import',1,7,1379507707,NULL,NULL,NULL,NULL,1385488036,1000,NULL,NULL,NULL),(102,0,'业务审批','业务審批','','',1,1800,0,NULL,NULL,NULL,NULL,1386007828,1000,NULL,NULL,NULL),(103,102,'网站更新','網站更新',NULL,NULL,1,4,1374154802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(104,103,'未确认','未確認',NULL,NULL,1,1,0,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(106,102,'会员注册','會員註冊',NULL,NULL,1,3,1374154802,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(107,106,'未确认','未確認',NULL,NULL,1,1,0,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(108,9,'锁定角色','鎖定角色',NULL,'system/role/lock',0,4,1374154702,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(109,9,'解锁角色','解鎖角色',NULL,'system/role/unlock',0,3,1374154702,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(110,152,'公告管理','公告管理','','',1,200,0,NULL,NULL,NULL,NULL,1388127336,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(111,110,'公告查询','公告查询','','bulletin/index/index',1,8,0,NULL,NULL,NULL,NULL,1388133203,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(112,110,'添加公告','添加公告','','bulletin/index/insert',1,7,0,NULL,NULL,NULL,NULL,1388133213,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(113,110,'编辑公告','編輯公告','','bulletin/index/update',0,6,0,NULL,NULL,NULL,NULL,1388133222,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(114,110,'公告处理','公告处理','','bulletin/index/handle',0,5,0,NULL,NULL,NULL,NULL,1388133230,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(117,50,'发件处理（删除）','發件處理（刪除）',NULL,'profile/message/outbox-handle',0,0,0,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(118,1,'数据清理','數據清理',NULL,NULL,0,0,0,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(120,118,'过期日志','過期日誌',NULL,'system/data-clear/log',1,2,0,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(121,50,'草稿处理（删除）','草稿處理（刪除）',NULL,'profile/message/draft-handle',0,0,0,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL),(122,0,'后台权限','','','',1,1400,1385458695,1000,NULL,NULL,NULL,1385458695,1000,NULL,NULL,NULL),(144,94,'敏感词处理','敏感词处理','','system/filter-word/word-handle',0,1,1385491006,1000,NULL,NULL,NULL,1385491006,1000,NULL,NULL,NULL),(145,42,'参数明细','参数明细','','system/config/detail',1,1,1385645873,1000,NULL,NULL,NULL,1386008463,1000,NULL,NULL,NULL),(146,118,'配置变更日志','配置变更日志','配置变更日志','system/data-clear/config-update-history',1,2,1386007604,1000,NULL,NULL,NULL,1386007604,1000,NULL,NULL,NULL),(147,150,'权限角色','权限角色','权限角色','',1,200,1386008049,1000,NULL,NULL,NULL,1386063834,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(148,147,'查询角色','查询角色','查询角色','member/member-role/index',1,2,1386008124,1000,NULL,NULL,NULL,1386008124,1000,NULL,NULL,NULL),(149,147,'添加新角色','添加新角色','添加新角色','member/member-role/insert',1,1,1386008338,1000,NULL,NULL,NULL,1386008338,1000,NULL,NULL,NULL),(150,0,'会员权限','','','',1,1550,1386063772,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1386063810,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(151,23,'会员日志','会员日志','会员日志','member/default/log',1,1,1386141861,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1386141861,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(152,0,'公告发布','公告发布','','',1,1540,1388126515,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1388126515,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(153,152,'频道管理','','','',1,100,1388127121,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1388127344,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(154,153,'频道索引','频道索引','','bulletin/channel/index',1,8,1388127183,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1388127387,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(155,153,'频道管理','','','bulletin/channel/handle',0,7,1388127240,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1388127398,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(156,153,'添加频道','','','bulletin/channel/insert',1,6,1388127267,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1388127267,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(157,153,'更新频道','','','bulletin/channel/update',0,5,1388127292,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1388127292,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL);
 
 /*Table structure for table `tb_manager_msg` */
 
@@ -341,7 +338,7 @@ CREATE TABLE `tb_manager_msg` (
   `msg_delete_outbox` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '收件人是否已经全部删除了',
   PRIMARY KEY (`msg_id`),
   KEY `Delete_Inbox_Outbox` (`msg_delete_inbox`,`msg_delete_outbox`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='发件箱';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='发件箱';
 
 /*Data for the table `tb_manager_msg` */
 
@@ -366,7 +363,7 @@ CREATE TABLE `tb_manager_msg_dest` (
   `msg_id` int(11) unsigned NOT NULL DEFAULT '0',
   `msg_dest` int(11) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='收件人';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='收件人';
 
 /*Data for the table `tb_manager_msg_dest` */
 
@@ -382,7 +379,7 @@ CREATE TABLE `tb_manager_msg_inbox` (
   `inbox_msg_read_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '读件时间',
   PRIMARY KEY (`inbox_id`),
   UNIQUE KEY `MsgId_ManagerId` (`inbox_msgId`,`inbox_manId`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='收件箱';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='收件箱';
 
 /*Data for the table `tb_manager_msg_inbox` */
 
@@ -397,7 +394,7 @@ CREATE TABLE `tb_manager_msg_outbox` (
   `outbox_msg_send_time` int(11) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`outbox_id`),
   UNIQUE KEY `MsgId_ManagerId` (`outbox_msgId`,`outbox_manId`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Data for the table `tb_manager_msg_outbox` */
 
@@ -477,7 +474,7 @@ CREATE TABLE `tb_member` (
   PRIMARY KEY (`member_id`),
   UNIQUE KEY `Email` (`member_email`),
   UNIQUE KEY `Name` (`member_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
 
 /*Data for the table `tb_member` */
 
@@ -567,11 +564,11 @@ CREATE TABLE `tb_member_menu` (
   `menu_update_manEmail` varchar(32) DEFAULT NULL,
   `menu_update_ip` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`menu_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=166 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=172 DEFAULT CHARSET=utf8;
 
 /*Data for the table `tb_member_menu` */
 
-insert  into `tb_member_menu`(`menu_id`,`menu_fatherId`,`menu_label_zh-cn`,`menu_label_zh-tw`,`menu_label_en-us`,`menu_link`,`menu_show`,`menu_order`,`menu_insert_time`,`menu_insert_manId`,`menu_insert_manName`,`menu_insert_manEmail`,`menu_insert_ip`,`menu_update_time`,`menu_update_manId`,`menu_update_manName`,`menu_update_manEmail`,`menu_update_ip`) values (150,0,'个人中心','个人中心','个人中心','',1,1000,1386060549,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1386063000,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(151,150,'个人资料','个人资料','','',1,100,1386060566,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1386062806,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(152,151,'资料明细','','','profile/intro/index',1,10,1386060593,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1386063287,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(153,151,'日志查询','','','profile/intro/log',1,20,1386060612,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1386063279,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(154,150,'用户安全','','','',1,200,1386060672,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1386060672,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(155,154,'密码变更','','','profile/safe/resetpwd',1,30,1386063199,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1386063199,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(156,154,'帐号变更','','','profile/safe/update?type=name',1,20,1386063238,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1386063238,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(157,154,'邮箱变更','','','profile/safe/update?type=email',1,10,1386063254,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1386063254,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(158,150,'消息中心','','','',1,300,1386063333,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1386063333,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(159,158,'收件箱','','','profile/message/inbox',1,80,1386063355,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1386063355,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(160,158,'发件箱','','','profile/message/outbox',1,70,1386063374,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1386063374,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(161,158,'草稿箱','','','profile/message/draft',1,60,1386063394,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1386063394,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(162,158,'发消息','','','profile/message/send',1,50,1386063415,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1386063415,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(163,158,'收件处理（删除、设为已读）','','','profile/message/inbox-handle',0,40,1386063440,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1386063513,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(164,158,'发件处理（删除）','','','profile/message/outbox-handle',0,11,1386063472,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1386063472,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(165,158,'草稿处理（删除）','','','profile/message/draft-handle',0,2,1386063490,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1386063490,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL);
+insert  into `tb_member_menu`(`menu_id`,`menu_fatherId`,`menu_label_zh-cn`,`menu_label_zh-tw`,`menu_label_en-us`,`menu_link`,`menu_show`,`menu_order`,`menu_insert_time`,`menu_insert_manId`,`menu_insert_manName`,`menu_insert_manEmail`,`menu_insert_ip`,`menu_update_time`,`menu_update_manId`,`menu_update_manName`,`menu_update_manEmail`,`menu_update_ip`) values (150,0,'个人中心','个人中心','个人中心','',1,1000,1386060549,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1386063000,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(151,150,'个人资料','个人资料','','',1,100,1386060566,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1386062806,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(152,151,'资料明细','','','profile/intro/index',1,10,1386060593,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1386063287,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(153,151,'日志查询','','','profile/intro/log',1,20,1386060612,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1386063279,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(154,150,'用户安全','','','',1,200,1386060672,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1386060672,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(155,154,'密码变更','','','profile/safe/resetpwd',1,30,1386063199,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1386063199,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(156,154,'帐号变更','','','profile/safe/update?type=name',1,20,1386063238,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1386063238,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(157,154,'邮箱变更','','','profile/safe/update?type=email',1,10,1386063254,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1386063254,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(158,150,'消息中心','','','',1,300,1386063333,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1386063333,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(159,158,'收件箱','','','profile/message/inbox',1,80,1386063355,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1386063355,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(160,158,'发件箱','','','profile/message/outbox',1,70,1386063374,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1386063374,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(161,158,'草稿箱','','','profile/message/draft',1,60,1386063394,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1386063394,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(162,158,'发消息','','','profile/message/send',1,50,1386063415,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1386063415,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(163,158,'收件处理（删除、设为已读）','','','profile/message/inbox-handle',0,40,1386063440,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1386063513,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(164,158,'发件处理（删除）','','','profile/message/outbox-handle',0,11,1386063472,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1386063472,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(165,158,'草稿处理（删除）','','','profile/message/draft-handle',0,2,1386063490,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1386063490,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(166,0,'网站导航','网站导航','','',1,700,1387624236,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1387624236,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(167,166,'注册网站','','','',1,50,1387624260,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1387624425,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(168,167,'网站查询','','','website/default/index',1,0,1387624343,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1387624395,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(169,168,'网站详情','','','website/default/detail',1,0,1387624356,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1387624377,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(170,167,'网站明细','','','webiste/default/detail',1,0,1387630102,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1387630102,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL),(171,167,'网站处理','','','website/default/handle',0,0,1387630157,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL,1387630157,1000,'审判长烧鸭','bay.sampanhuang@gmail.com',NULL);
 
 /*Table structure for table `tb_member_msg` */
 
@@ -787,7 +784,7 @@ CREATE TABLE `tb_website` (
   UNIQUE KEY `Name` (`website_name`),
   UNIQUE KEY `Domain` (`website_domain`),
   KEY `CetgoryId_Continent_Country` (`website_categoryId`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
 
 /*Data for the table `tb_website` */
 
@@ -820,6 +817,7 @@ DROP TABLE IF EXISTS `tb_website_apply_register`;
 
 CREATE TABLE `tb_website_apply_register` (
   `register_id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '流水号',
+  `website_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '网站ID',
   `website_memberId` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '归属ID',
   `website_name` varchar(32) NOT NULL COMMENT '网站名',
   `website_domain` varchar(128) NOT NULL COMMENT '网站主域名',
@@ -838,8 +836,9 @@ CREATE TABLE `tb_website_apply_register` (
   `register_pass_ip` varchar(32) DEFAULT NULL COMMENT '处理IP',
   `register_pass_addr` varchar(32) DEFAULT NULL,
   `register_pass` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '是否通过申请（3未处理，1通过，2未通过）',
-  PRIMARY KEY (`register_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='网站注册申请';
+  PRIMARY KEY (`register_id`),
+  UNIQUE KEY `WebsiteId` (`website_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='网站注册申请';
 
 /*Data for the table `tb_website_apply_register` */
 
@@ -946,27 +945,6 @@ CREATE TABLE `tb_website_category` (
 
 insert  into `tb_website_category`(`category_id`,`category_fatherId`,`category_name_zh-cn`,`category_name_zh-tw`,`category_name_en-us`,`category_count_website`,`category_count_click_in`,`category_count_click_out`,`category_order`,`category_insert_time`,`category_update_tme`) values (3,0,'门户/导航/黄页','門戶/導航/黃頁',NULL,0,0,0,23,1375587654,0),(4,0,'论坛/社区','論壇/社區',NULL,0,0,0,22,1375587654,0),(5,0,'社团/宗教','社團/宗教',NULL,0,0,0,21,1375587654,0),(6,0,'律师/移民/留学','律師/移民/留學',NULL,0,0,0,20,1375587654,0),(7,0,'报刊/文学/媒体','報刊/文學/媒體',NULL,0,0,0,19,1375587654,0),(8,0,'餐饮/购物/商家','餐飲/購物/商家',NULL,0,0,0,18,1375587654,0),(9,0,'财经/保险/地产','財經/保險/地產',NULL,0,0,0,17,1375587654,0),(10,0,'商业专业服务','商業專業服務',NULL,0,0,0,16,1375587654,0),(11,0,'交通旅游','交通旅遊',NULL,0,0,0,15,1375587654,0),(12,0,'教育/外语/求职','教育/外語/求職',NULL,0,0,0,14,1375587654,0),(13,0,'休闲/娱乐/交友','休閒/娛樂/交友',NULL,0,0,0,13,1375587654,0),(14,0,'政府及使领馆','政府及使領館',NULL,0,0,0,12,1375587654,0),(15,0,'个人博客其它','個人博客其他',NULL,0,0,0,11,1375587654,0),(16,0,'企业贸易B2B','企業貿易B2B',NULL,0,0,0,10,1375587654,0);
 
-/*Table structure for table `tb_website_country` */
-
-DROP TABLE IF EXISTS `tb_website_country`;
-
-CREATE TABLE `tb_website_country` (
-  `country_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `country_continent` enum('as','eu','na','sa','oa','af','an') NOT NULL DEFAULT 'as' COMMENT '洲代号',
-  `country_key` varchar(8) NOT NULL COMMENT '国家代号',
-  `country_count_website` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '网站数',
-  `country_count_click_in` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '点击',
-  `country_count_click_out` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '点击',
-  `country_order` int(11) unsigned NOT NULL DEFAULT '0',
-  `country_insert_time` int(11) unsigned NOT NULL DEFAULT '0',
-  `country_update_time` int(11) DEFAULT '0',
-  PRIMARY KEY (`country_id`),
-  UNIQUE KEY `Key` (`country_key`),
-  KEY `Continent` (`country_continent`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Data for the table `tb_website_country` */
-
 /*Table structure for table `tb_website_history` */
 
 DROP TABLE IF EXISTS `tb_website_history`;
@@ -1040,7 +1018,7 @@ CREATE TABLE `tb_website_tag` (
   `tag_update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '标签更新时间',
   PRIMARY KEY (`tag_id`),
   UNIQUE KEY `Name` (`tag_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
 
 /*Data for the table `tb_website_tag` */
 
@@ -1055,7 +1033,7 @@ CREATE TABLE `tb_website_tag_relation` (
   `relation_time` int(11) unsigned NOT NULL,
   PRIMARY KEY (`relation_id`),
   UNIQUE KEY `WebId_TagId` (`relation_websiteId`,`relation_tagId`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Data for the table `tb_website_tag_relation` */
 

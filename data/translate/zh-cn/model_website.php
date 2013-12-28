@@ -8,7 +8,12 @@
  */
 return array(
     'model_website_id' => '网站ID',
-    'keyword_count_enter' => '关键字搜索次数',
-    'keyword_insert_time' => '关键字初次搜索时间',
-    'keyword_update_time' => '关键字最后搜索时间',
+    'model_keyword_count_enter' => '关键字搜索次数',
+    'model_keyword_insert_time' => '关键字初次搜索时间',
+    'model_keyword_update_time' => '关键字最后搜索时间',
+    'model_tag_count' => '标签引用次数',
+    'model_tag_id' => '网站标签ID',
+    'model_tag_name' => '网站标签',
+    'model_tag_insert_time' => '标签初次引用时间',
+    'model_tag_update_time' => '标签最后引用时间',
 );

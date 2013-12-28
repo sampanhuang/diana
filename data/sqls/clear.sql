@@ -1,3 +1,12 @@
+/*清空网站公告*/
+DELETE FROM tb_bulletin;
+DELETE FROM tb_bulletin_content;
+
+/*清空配置历史纪录*/
+DROP TABLE tb_config_update_history_2013;
+
+
+
 /*清空网站会员*/
 DELETE FROM tb_member;
 DELETE FROM tb_member_favorite;
