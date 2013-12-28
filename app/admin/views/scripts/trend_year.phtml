@@ -16,28 +16,7 @@ if(!empty($this->trendYear)){
                 <button type = "submit" class="btn">提交</button></td>
     </fieldset>
 </form>
-
-
-<table width="100%" border="0" cellspacing="1" cellpadding="5"  class="table_border separator_top separator_bot">
-	<tbody>
-    <?php
-    echo '<tr>';
-    echo '<th scope="col" width="4%"></th>';
-    for($month = 1;$month <= 12 ;$month ++){
-        echo '<th scope="col" width="8%">'.$month.'&nbsp;'.$this->translate("global_month_".$month).'</th>';
-    }
-    echo '</tr>';
-    for($day = 1;$day <= 31 ;$day ++){
-        echo '<tr>';
-        echo '<th scope="col">'.$day.'</th>';
-        for($month = 1;$month <= 12 ;$month ++){
-            echo '<td>'.$this->trendYear[$month]['month'][$day]['total'].'</td>';
-        }
-        echo '</tr>';
-    }
-    ?>
-    </tbody>
-</table>
 <?php
+    echo $this->printCalendar($this->trendYear);
 }
 ?>
