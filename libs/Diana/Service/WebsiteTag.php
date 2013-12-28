@@ -14,6 +14,47 @@ class Diana_Service_WebsiteTag extends Diana_Service_Abstract
     }
 
     /**
+     * 生成数据
+     * @param $params
+     * @return array
+     */
+    function makeDataGird($params)
+    {
+        $page = $params['page']?$params['page']:1;
+        $pageSize = $params['rows']?$params['rows']:DIANA_DATAGRID_PAGESIZE_ADMIN;
+        $tmpCondition = $this->filterColumns(array($params),$this->getFilterColumnsForQuery());
+        $order = implode('_',array($params['order_by_1'],$params['order_by_2']));
+        return $this->pageByCondition($page,$pageSize,$tmpCondition[0],$order);
+    }
+
+    /**
+     * 获取排序字段
+     * @return array 排序字段
+     */
+    function getFilterColumnsForOrder()
+    {
+        return array(
+            'tag_update_time',
+            'tag_insert_time',
+            'tag_count',
+        );
+    }
+
+    /**
+     * 获取查询过滤字段
+     * @return array
+     */
+    function getFilterColumnsForQuery()
+    {
+        return array(
+            'tag_id',
+            'tag_name',
+            'tag_count_min',
+            'tag_count_max',
+        );
+    }
+
+    /**
      * 获取网站列表
      * @param $counter
      * @param array $condition
@@ -49,7 +90,49 @@ class Diana_Service_WebsiteTag extends Diana_Service_Abstract
     }
 
     /**
-     * 标签详情
+     * 通过多种渠道获取会员详细信息
+     * @param $column 字段，id,name,email
+     * @param $key 值
+     */
+    function getDetail($column,$key)
+    {
+        if ((empty($column))||(!is_scalar($column))) {
+            $this->setMsgs("Invalid Param - Column");
+            return false;
+        }
+        if ((empty($key))||(!is_scalar($key))) {
+            $this->setMsgs("Invalid Param - Key");
+            return false;
+        }
+        if($column == 'id'){
+            $detail = $this->detailById($key);
+        }elseif($column == 'name'){
+            $detail = $this->getDetailByName($key);
+        }else{
+            $this->setMsgs("Invalid Param - column ".$column);
+            return false;
+        }
+        return $detail;
+    }
+
+    /**
+     * 通过标签名得到详情
+     * @param $name
+     * @return bool
+     */
+    function getDetailByName($name)
+    {
+        $condition = array("tag_name" => $name);
+        $modelWebsiteTag = new Diana_Model_WebsiteTag();
+        if(!$rowsWebsiteTag = $modelWebsiteTag->getRowsByCondition(null,$condition,null,1,0)){
+            return false;
+        }
+        $rowWebsiteTag = $rowsWebsiteTag[0];
+        return $this->getDetailByRow($rowWebsiteTag);
+    }
+
+    /**
+     * 能过标签ID得到详情
      * @param $tagId
      * @return bool
      */
@@ -60,7 +143,13 @@ class Diana_Service_WebsiteTag extends Diana_Service_Abstract
         if(!$rowsWebsiteTag = $modelWebsiteTag->getRowsByCondition(null,$condition,null,1,0)){
             return false;
         }
-        $detailWebsiteTag = $rowsWebsiteTag[0];
+        $rowWebsiteTag = $rowsWebsiteTag[0];
+        return $this->getDetailByRow($rowWebsiteTag);
+    }
+
+    function getDetailByRow($row)
+    {
+        $tagId = $row['tag_id'];
         //获取使用这个标签的网站
         $modelWebsiteTagRelation = new Diana_Model_WebsiteTagRelation();
         if($rowsWebsiteTagRelation = $modelWebsiteTagRelation->getRowsByWebsiteTag(null,null,$tagId)){
@@ -70,10 +159,10 @@ class Diana_Service_WebsiteTag extends Diana_Service_Abstract
             }
             $modelWebsite = new Diana_Model_Website();
             if($rowsWebsite = $modelWebsite->getRowsById(null,$websiteId)){
-                $detailWebsiteTag['tag_website'] = $rowsWebsite;
+                $row['tag_website'] = $rowsWebsite;
             }
         }
-        return $detailWebsiteTag;
+        return $row;
     }
 
     /**

@@ -41,11 +41,29 @@ class Website_KeyworkController extends Admin_Controller_ActionDec
 
     function trendAction()
     {
-        $this->view->event = $eventId = $this->getRequest()->getUserParam('event');
-        $this->view->year = $year = $this->getRequest()->getUserParam('year',date('Y'));
+        $this->view->event = $eventId = $this->getRequest()->getParam('event');
+        $this->view->year = $year = $this->getRequest()->getParam('year',date('Y'));
+        $this->view->show = $show = $this->getRequest()->getParam('show','year');
+        $this->view->date = $date = $this->getRequest()->getParam('date');
+        $this->view->numColumn = $numColumn = $this->getRequest()->getParam('num_column',3);
+        $date = $date?$date:$year;
+        $serviceWebsiteKeyword = new Diana_Service_WebsiteKeyword();
+        if(!empty($eventId)){
+            if($tmpTrendEventLabelOfYear = $serviceWebsiteKeyword->getLabelById($eventId)){
+                $this->view->trendEventLabelOfYear =  $tmpTrendEventLabelOfYear[$eventId];
+            }
+        }
+        $this->view->trendEventLabel = $trendEventLabel = $serviceWebsiteKeyword->getLabelById($keywordId);
         $serviceTrend = new Diana_Service_Trend();
-        if($rowsTrend = $serviceTrend->getWebsiteSearch($year,$eventId)){
-            $this->view->trendYear = $serviceTrend->formatYear($rowsTrend);
+        if($rowsTrend = $serviceTrend->getWebsiteSearch($date,$eventId)){
+            if($show == 'day'){
+                $this->view->rowsTrend = $serviceTrend->formatOneDayRowsOfEventId($rowsTrend);
+                $this->view->trendDay = $serviceTrend->formatDay($rowsTrend);
+                $keywordId = $serviceTrend->getTrendEventId($rowsTrend);
+                $this->view->trendEventLabel = $trendEventLabel = $serviceWebsiteKeyword->getLabelById($keywordId);
+            }elseif($show == 'year'){
+                $this->view->trendYear = $serviceTrend->formatYear($rowsTrend);
+            }
         }else{
             $this->setMsgs($serviceTrend->getMsgs());
         }

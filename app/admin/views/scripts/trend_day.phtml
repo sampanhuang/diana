@@ -1,0 +1,64 @@
+<?php
+$tmpDataTotal = 0;
+$tmpDataMin = 0;
+$tmpDataMax = 0;
+$tmpDataAverage = 0;
+if(!empty($this->trendDay)){
+    $tmpDataTotal = number_format(array_sum($this->trendDay));
+    $tmpDataMin = number_format(min($this->trendDay));
+    $tmpDataMax = number_format(max($this->trendDay));
+    $tmpDataAverage = number_format(round(array_sum($this->trendDay)/24,2),2);
+}
+?>
+<table width="100%" border="0" cellspacing="0" cellpadding="5">
+    <tr>
+        <td width="25%"><span style="color:#999;">日期</span><span style="padding-left:5px;color:#666;font-szie:14px;"><?php echo $this->date;?></span></td>
+        <td width="25%"><span style="color:#999;">条目数</span><span style="padding-left:5px;color:#666;font-szie:14px;"><?php echo count($this->trendEventLabel);?></span></td>
+        <td width="25%">&nbsp;</td>
+        <td width="25%">&nbsp;</td>
+    </tr>
+    <tr>
+        <td width="25%"><span style="color:#999;">总数</span><span style="padding-left:5px;color:#666;font-szie:14px;"><?php echo $tmpDataTotal;?></span></td>
+        <td width="25%"><span style="color:#999;">最小</span><span style="padding-left:5px;color:#666;font-szie:14px;"><?php echo $tmpDataMin;?></span></td>
+        <td width="25%"><span style="color:#999;">最大</span><span style="padding-left:5px;color:#666;font-szie:14px;"><?php echo $tmpDataMax;?></span></td>
+        <td width="25%"><span style="color:#999;">平均</span><span style="padding-left:5px;color:#666;font-szie:14px;"><?php echo $tmpDataAverage;?></span></td>
+    </tr>
+</table>
+<table width="100%" border="0" cellspacing="1" cellpadding="5"  class="table_border separator_top separator_bot">
+    <tr>
+        <th>E\H</th>
+        <?php
+        for($tmpCounterHour = 0;$tmpCounterHour < 24;$tmpCounterHour++){
+            echo '<th width="4%">'.$tmpCounterHour.'</th>';
+        }
+        ?>
+
+    </tr>
+    <?php
+    if(!empty($this->trendEventLabel)){
+        foreach($this->trendEventLabel as $tmpEventId => $tmpEventLabel){
+            echo  '<tr><td>'.$tmpEventLabel.'</td>';
+            for($tmpCounterHour = 0;$tmpCounterHour < 24;$tmpCounterHour++){
+                $tmpFiller = intval($this->rowsTrend[$tmpEventId]['trend_hour_'.$tmpCounterHour]);
+                if(empty($tmpFiller)){
+                    $tmpFiller = '';
+                }
+                echo '<td>'.$tmpFiller.'</td>';
+            }
+            echo '</tr>';
+        }
+    }
+    ?>
+    <tr>
+        <td><b>Total</b></td>
+        <?php
+        for($tmpCounterHour = 0;$tmpCounterHour < 24;$tmpCounterHour++){
+            $tmpFiller = $this->trendDay[$tmpCounterHour];
+            if(empty($tmpFiller)){
+                $tmpFiller = '';
+            }
+            echo '<td>'.$tmpFiller.'</td>';
+        }
+        ?>
+    </tr>
+</table>

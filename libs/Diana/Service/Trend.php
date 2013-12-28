@@ -14,6 +14,60 @@ class Diana_Service_Trend extends Diana_Service_Abstract
         parent::__construct();
     }
 
+    /**
+     * 获取事件ID
+     * @param $rows
+     * @return array|bool
+     */
+    function getTrendEventId($rows)
+    {
+        if(empty($rows)){
+            return false;
+        }
+        $eventId = array();
+        foreach($rows as $row){
+            if(!empty($row['trend_eventId'])){
+                $eventId[] = $row['trend_eventId'];
+            }
+        }
+        if(empty($eventId)){
+            return false;
+        }
+        $eventId = array_unique(array_filter($eventId));
+        return $eventId;
+    }
+
+    function formatOneDayRowsOfEventId($rows)
+    {
+        $resources = array();
+        foreach($rows as $row){
+            $key = $row['trend_eventId'];
+            $resources[$key] = $row;
+        }
+        return $resources;
+    }
+
+    /**
+     * 按小时分布
+     * @param $rows
+     * @return array
+     */
+    function formatDay($rows)
+    {
+        $resources = array();
+        foreach($rows as $row){
+            for($tmpHour = 0;$tmpHour < 24;$tmpHour++){
+                $resources[$tmpHour] += $row['trend_hour_'.$tmpHour];
+            }
+        }
+        return $resources;
+    }
+
+    /**
+     * 按天分布
+     * @param $rows
+     * @return array
+     */
     function formatYear($rows)
     {
         $resources = array();
@@ -30,10 +84,11 @@ class Diana_Service_Trend extends Diana_Service_Abstract
      * @param $keywordId 关键字ID
      * @return array
      */
-    function getWebsiteSearch($year = null,$keywordId)
+    function getWebsiteSearch($date = null,$keywordId = null)
     {
+        list($year, $month, $day) = explode('-',$date);
         $modelWebsiteTrendSearch = new Diana_Model_WebsiteTrendSearch($year);
-        if(!$all = $modelWebsiteTrendSearch->getRowsByCondition(null,array("trend_eventId" => $keywordId))){
+        if(!$all = $modelWebsiteTrendSearch->getRowsByCondition(null,array("trend_eventId" => $keywordId,'trend_month' => $month,'trend_day' => $day))){
             return $all;
         }
         return $all;

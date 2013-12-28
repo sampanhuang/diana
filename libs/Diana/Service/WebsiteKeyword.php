@@ -14,6 +14,26 @@ class Diana_Service_WebsiteKeyword extends Diana_Service_Abstract
     }
 
     /**
+     * 获取
+     * @param $id
+     * @param string $order
+     * @return array|bool
+     */
+    function getLabelById($id,$order = 'keyword_count_enter_desc')
+    {
+        $condition = array('keyword_id' => $id);
+        $label = array();
+        $modelWebsiteKeyword = new Diana_Model_WebsiteKeyword();
+        if(!$rowsWebsiteKeyword = $modelWebsiteKeyword->getRowsByCondition(null,$condition,$order)){
+            return false;
+        }
+        foreach($rowsWebsiteKeyword as $rowWebsiteKeyword){
+            $label[$rowWebsiteKeyword['keyword_id']] = $rowWebsiteKeyword['keyword_label'];
+        }
+        return $label;
+    }
+
+    /**
      * 获取网站列表
      * @param $counter
      * @param array $condition
