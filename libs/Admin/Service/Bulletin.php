@@ -18,7 +18,9 @@ class Admin_Service_Bulletin extends Admin_Service_Abstract
      */
     function insert($input)
     {
+
         if(!$input = $this->filterInput($input)){
+            $this->setMsgs('格式错误');
             return false;
         }
         $inputOther = array(
@@ -34,6 +36,7 @@ class Admin_Service_Bulletin extends Admin_Service_Abstract
             'bulletin_update_ip' => $_SERVER['REMOTE_ADDR'],
         );
         $data = array_merge($input,$inputOther);
+
         unset($data['bulletin_content']);
         $modelBulletinChannel = new Diana_Model_Bulletin();
         if(!$rows = $modelBulletinChannel->saveData(1,$data)){
@@ -60,9 +63,13 @@ class Admin_Service_Bulletin extends Admin_Service_Abstract
      * @param $id
      * @return array|bool
      */
-    function update($input,$id)
+    function update($input)
     {
-        if(empty($id)&&(!is_numeric($id))){
+        if(!empty($input['bulletin_access'])){
+            $input['bulletin_access'] = array_sum($input['bulletin_access']);
+        }
+        $bulletinId = $input['bulletin_id'];
+        if(empty($bulletinId)&&(!is_numeric($bulletinId))){
             $this->setMsgs('错误的ID');
             return false;
         }
@@ -77,7 +84,7 @@ class Admin_Service_Bulletin extends Admin_Service_Abstract
             'bulletin_update_ip' => $_SERVER['REMOTE_ADDR'],
         );
         $data = array_merge($input,$inputOther);
-        $condition = array('bulletin_id' => $id);
+        $condition = array('bulletin_id' => $bulletinId);
         unset($data['bulletin_content']);
         $modelBulletinChannel = new Diana_Model_Bulletin();
         if(!$rows = $modelBulletinChannel->saveData(2,$data,$condition)){
@@ -93,7 +100,7 @@ class Admin_Service_Bulletin extends Admin_Service_Abstract
             $this->setMsgs('公告内容保存失败');
             return false;
         }
-        return $this->getDetailById($id);
+        return $this->getDetailById($bulletinId);
     }
 
 
@@ -105,18 +112,18 @@ class Admin_Service_Bulletin extends Admin_Service_Abstract
     function filterInput($data)
     {
         $filters = array(
-            'bulletin_channel' => array(new Zend_Filter_Int(),new Zend_Filter_Digits(),new Zend_Filter_StringTrim()),
+            'bulletin_channelId' => array(new Zend_Filter_Int(),new Zend_Filter_Digits(),new Zend_Filter_StringTrim()),
             'bulletin_access' => array(new Zend_Filter_Int(),new Zend_Filter_Digits(),new Zend_Filter_StringTrim()),
             'bulletin_title' => array(new Zend_Filter_StripNewlines(),new Zend_Filter_HtmlEntities(),new Zend_Filter_StringTrim()),
             'bulletin_author' => array(new Zend_Filter_StripNewlines(),new Zend_Filter_HtmlEntities(),new Zend_Filter_StringTrim()),
-            'bulletin_content' => array(new Zend_Filter_StripNewlines(),new Zend_Filter_HtmlEntities(),new Zend_Filter_StringTrim()),
+            'bulletin_content' => array(new Zend_Filter_StripNewlines(),new Zend_Filter_StringTrim()),
         );
         $validators = array(
-            'bulletin_channel' => array(new Zend_Validate_Int()),
+            'bulletin_channelId' => array(new Zend_Validate_Int()),
             'bulletin_access' => array(new Zend_Validate_Int()),
-            'bulletin_title' => array(new Zend_Validate_StringLength(array('max' => '64','encoding' => 'utf-8'))),
-            'bulletin_author' => array(new Zend_Validate_StringLength(array('max' => '64','encoding' => 'utf-8'))),
-            'bulletin_content' => array(new Zend_Validate_StringLength(array('max' => '512','encoding' => 'utf-8'))),
+            'bulletin_title' => array(new Zend_Validate_StringLength(array('max' => '128','encoding' => 'utf-8'))),
+            'bulletin_author' => array(new Zend_Validate_StringLength(array('max' => '32','encoding' => 'utf-8'))),
+            'bulletin_content' => array(new Zend_Validate_StringLength(array('max' => '65535','encoding' => 'utf-8'))),
         );
         $input = new Zend_Filter_Input($filters, $validators, $data);
         if (!$input->isValid()) {
@@ -156,53 +163,107 @@ class Admin_Service_Bulletin extends Admin_Service_Abstract
     {
         $offset = ($page - 1)*$pagesize;
         if($offset < 0){$offset = 0;}
-        $channelId = array();
+        //获取频道分类
+        $modelBulletinChannel = new Diana_Model_BulletinChannel();
+        if($rowsBulletinChannel = $modelBulletinChannel->getRowsByCondition()){
+            $tmpBulletinChannelLabel = array();
+            $tmpBulletinChannelFather = array();
+            foreach($rowsBulletinChannel as $rowBulletinChannel){
+                $tmpChannelId = $rowBulletinChannel['channel_id'];
+                $tmpChannelFatherId = $rowBulletinChannel['channel_fatherId'];
+                $tmpChannelLabel = $rowBulletinChannel['channel_label_'.DIANA_TRANSLATE_CURRENT];
+                $tmpBulletinChannelLabel[$tmpChannelId] = $tmpChannelLabel;
+                $tmpBulletinChannelFather[$tmpChannelId] = $tmpChannelFatherId;
+            }
+        }
         $modelBulletin = new Diana_Model_Bulletin();
         if($countBulletin = $modelBulletin->getCountByCondition(null,$condition)){
             $rowsBulletin = $modelBulletin->getRowsByCondition(null,$condition,$order,$pagesize,$offset);
-            foreach($rowsBulletin as $rowBulletin){
-                $channelId[] = $rowBulletin['bulletin_channel'];
-            }
-            $channelId = array_filter(array_unique($channelId));
-            $modelBulletinChannel = new Diana_Model_BulletinChannel();
-            if($rowsBulletinChannel = $modelBulletinChannel->getRowsById(null,$channelId)){
-                foreach($rowsBulletin as &$rowBulletin){
-                    foreach($rowsBulletinChannel as $rowBulletinChannel){
-                        if($rowBulletin['bulletin_channel'] == $rowBulletinChannel['channel_id']){
-                            $rowBulletin['bulletin_channelLabel'] = $rowBulletinChannel['channel_label'];
-                        }
-                    }
+            //获取频道
+            foreach($rowsBulletin as &$rowBulletin){
+                //锁定状态
+                $rowBulletin['bulletin_lock_stat'] = 1;
+                if($rowBulletin['bulletin_lock_time'] > DIANA_TIMESTAMP_START){
+                    $rowBulletin['bulletin_lock_stat'] = 2;
+                }
+                //4是www公告,2是client公告,1是admin公告
+                $tmpBulletinAccess = array();
+                if(in_array($rowBulletin['bulletin_access'],array(1,3,5,7))){
+                    $tmpBulletinAccess[] = 'ADMIN';
+                }
+                if(in_array($rowBulletin['bulletin_access'],array(2,3,6,7))){
+                    $tmpBulletinAccess[] = 'CLIENT';
+                }
+                if(in_array($rowBulletin['bulletin_access'],array(4,5,6,7))){
+                    $tmpBulletinAccess[] = 'WWW';
+                }
+                $rowBulletin['bulletin_accessDomain'] = implode(',',$tmpBulletinAccess);
+
+                //定义频道
+                if((!empty($tmpBulletinChannelLabel))&&(!empty($tmpBulletinChannelFather))){
+                    $tmpBulletinChannelId = $rowBulletin['bulletin_channelId'];
+                    $rowBulletin['bulletin_channelLabel'] = $tmpBulletinChannelLabel[$tmpBulletinChannelId];
+                    $rowBulletin['bulletin_channelFatherId'] = $bulletinChannelFatherId = $tmpBulletinChannelFather[$tmpBulletinChannelId];
+                    $rowBulletin['bulletin_channelFatherLabel'] = $tmpBulletinChannelLabel[$bulletinChannelFatherId];
                 }
             }
+
         }
         return array('total' => $countBulletin,'rows' => $rowsBulletin);
     }
 
+    function getDetail($column,$key)
+    {
+        if ((empty($column))||(!is_scalar($column))) {
+            $this->setMsgs("Invalid Param - 无效的column值");
+            return false;
+        }
+        if ((empty($key))||(!is_scalar($key))) {
+            $this->setMsgs("Invalid Param - 无效的key值");
+            return false;
+        }
+        if($column == 'bulletin_id'){
+            $detail = $this->getDetailById($key);
+        }else{
+            $this->setMsgs("Invalid Param - Column ".$column);
+            return false;
+        }
+        return $detail;
+    }
 
     /**
      * 获取详细的公告资料
      *
      * @param unknown_type $id
-     * @param int $type 应用场景，1前台，2后台
      */
-    function getDetailById($id,$type = 1)
+    function getDetailById($bulletinId)
     {
         $modelBulletin = new Diana_Model_Bulletin();
-        if(!$rowBulletin = $modelBulletin->getRowById(null,$id)){
+        if(!$rowBulletin = $modelBulletin->getRowById(null,$bulletinId)){
             $this->setMsgs('错误的ID');
             return false;
         }
-        if($rowBulletin['bulletin_access'] !== $type){
-            $this->setMsgs('错误的应用场景');
-            return false;
-        }
+        $bulletinChannelId = $rowBulletin['bulletin_channelId'];
+        //获取正文内容
         $modelBulletinContent = new Diana_Model_BulletinContent();
-        if($rowBulletinContent = $modelBulletinContent->getRowById(null,$id)){
+        if($rowBulletinContent = $modelBulletinContent->getRowById(null,$bulletinId)){
             $rowBulletin = array_merge($rowBulletin,$rowBulletinContent);
         }
+        //获取频道
         $modelBulletinChannel = new Diana_Model_BulletinChannel();
-        if(!$rowBulletinChannel = $modelBulletinChannel->getRowsById($rowBulletin['bulletin_channel'])){
-            $rowBulletin = array_merge($rowBulletin,$rowBulletinChannel);
+        if($rowsBulletinChannel = $modelBulletinChannel->getRowsByCondition()){
+            $tmpBulletinChannelLabel = array();
+            $tmpBulletinChannelFather = array();
+            foreach($rowsBulletinChannel as $rowBulletinChannel){
+                $tmpChannelId = $rowBulletinChannel['channel_id'];
+                $tmpChannelFatherId = $rowBulletinChannel['channel_fatherId'];
+                $tmpChannelLabel = $rowBulletinChannel['channel_label_'.DIANA_TRANSLATE_CURRENT];
+                $tmpBulletinChannelLabel[$tmpChannelId] = $tmpChannelLabel;
+                $tmpBulletinChannelFather[$tmpChannelId] = $tmpChannelFatherId;
+            }
+            $rowBulletin['bulletin_channelLabel'] = $tmpBulletinChannelLabel[$bulletinChannelId];
+            $rowBulletin['bulletin_channelFatherId'] = $bulletinChannelFatherId = $tmpBulletinChannelFather[$bulletinChannelId];
+            $rowBulletin['bulletin_channelFatherLabel'] = $tmpBulletinChannelLabel[$bulletinChannelFatherId];
         }
         return $rowBulletin;
     }
@@ -237,7 +298,7 @@ class Admin_Service_Bulletin extends Admin_Service_Abstract
     {
         return array(
             'bulletin_id',
-            'bulletin_channel',
+            'bulletin_channelId',
             'bulletin_access',
             'bulletin_click_min',
             'bulletin_click_max',

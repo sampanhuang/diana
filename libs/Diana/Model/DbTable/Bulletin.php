@@ -21,7 +21,14 @@ class Diana_Model_DbTable_Bulletin extends Diana_Model_DbTable_Abstract
 	function setOrders()
 	{
 		$this->_orders = array(
-			"top_time" => array("bulletin_top desc","bulletin_insert_time desc"),
+            "bulletin_top_desc" => array("bulletin_top desc","bulletin_update_time desc","bulletin_insert_time desc"),
+			"bulletin_insert_time_desc" => array("bulletin_insert_time desc"),
+            "bulletin_update_time_desc" => array("bulletin_update_time desc"),
+            "bulletin_click_desc" => array("bulletin_click desc"),
+            "bulletin_top_asc" => array("bulletin_top asc","bulletin_update_time asc","bulletin_insert_time asc"),
+            "bulletin_insert_time_asc" => array("bulletin_insert_time asc"),
+            "bulletin_update_time_asc" => array("bulletin_update_time asc"),
+            "bulletin_click_asc" => array("bulletin_click asc"),
 		);
 	}
 			

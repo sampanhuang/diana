@@ -7,6 +7,7 @@
  * To change this template use File | Settings | File Templates.
  */
 return array(
+        'model_bulletin_id' => '公告ID',
         'model_bulletin_top' => '权重',
         'model_bulletin_insert_time' => '发布时间',
         'model_bulletin_update_time' => '更新时间',

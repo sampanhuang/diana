@@ -66,8 +66,13 @@ class Admin_Controller_ActionDec extends Admin_Controller_Action
     function handlePost($configHandle)
     {
         if ($this->getRequest()->isPost()) {
-            $result = $this->decHandle($configHandle);
-            return $result;
+            if($result = $this->decHandle($configHandle)){
+                $this->setMsgs('操作成功');
+                return true;
+            }else{
+                $this->setMsgs('操作失败');
+                return false;
+            }
         }
     }
 

@@ -39,6 +39,16 @@ class Bulletin_IndexController extends Admin_Controller_ActionDec
 
     function detailAction()
     {
+        $request = array_filter($this->getRequest()->getParams());
+        $this->view->queryColumns = array('bulletin_id');
+        $request['query_column'] = $request['query_column']?$request['query_column']:'bulletin_id';
+        $request['query_key'] = $request['query_key']?$request['query_key']:$request['bulletin_id'];
+        $this->view->request = $request;
+        $serviceBulletin = new Admin_Service_Bulletin();
+        if(!$this->view->detail = $detail = $serviceBulletin->getDetail($request['query_column'],$request['query_key'])){
+            $this->setMsgs('查询失败');
+            $this->setMsgs($serviceBulletin->getMsgs());
+        }
 
     }
 
@@ -48,16 +58,45 @@ class Bulletin_IndexController extends Admin_Controller_ActionDec
         if(empty($request['bulletin_author'])){
             $request['bulletin_author'] = $this->currentManagerName.'&lt;'.$this->currentManagerEmail.'&gt;';
         }
-        $this->view->request = $request;
+        $this->view->reqHandle = 'insert';
+        $this->view->request = $this->view->detail = $request;
+        $serviceBulletin = new Admin_Service_Bulletin();
         $serviceBulletinChannel = new Admin_Service_BulletinChannel();
         $this->view->optionsBulletinChannelOfFather = $serviceBulletinChannel->makeOptionsOfFather();
         $this->view->optionsBulletinChannelOfSon = $serviceBulletinChannel->makeOptionsOfSon();
-
+        $configHandle = array(
+            'insert' => array(
+                'object' => $serviceBulletin,
+                'method' => 'insert',
+            ),
+        );
+        if($this->handlePost($configHandle)){
+            unset($this->view->detail);
+        }
     }
 
     function updateAction()
     {
-
+        $request = array_filter($this->getRequest()->getParams());
+        $this->view->reqHandle = 'update';
+        if(empty($request['bulletin_id'])){
+            $this->setMsgs('参数ID不能为空');
+            return false;
+        }
+        $serviceBulletin = new Admin_Service_Bulletin();
+        $configHandle = array(
+            'update' => array(
+                'object' => $serviceBulletin,
+                'method' => 'update',
+            ),
+        );
+        $this->handlePost($configHandle);
+        if($detailBulletin = $serviceBulletin->getDetailById($request['bulletin_id'])){
+            $this->view->detail = $detailBulletin;
+        }
+        $serviceBulletinChannel = new Admin_Service_BulletinChannel();
+        $this->view->optionsBulletinChannelOfFather = $serviceBulletinChannel->makeOptionsOfFather();
+        $this->view->optionsBulletinChannelOfSon = $serviceBulletinChannel->makeOptionsOfSon();
     }
 
     function handleAction()

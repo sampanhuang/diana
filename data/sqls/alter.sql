@@ -11,3 +11,7 @@ alter table `utf8_diana`.`tb_bulletin` change `bulletin_access` `bulletin_access
 alter table `utf8_diana`.`tb_bulletin_channel` add column `channel_label_zh-tw` varchar(32) NULL after `channel_label_zh-cn`, add column `channel_label_en-us` varchar(32) NULL after `channel_label_zh-tw`,change `channel_label` `channel_label_zh-cn` varchar(32) character set utf8 collate utf8_general_ci NOT NULL;
 alter table `utf8_diana`.`tb_bulletin_channel` add column `channel_fatherId` int(11) UNSIGNED DEFAULT '0' NOT NULL COMMENT '父频道ID' after `channel_id`;
 alter table `utf8_diana`.`tb_bulletin_channel` add column `channel_order` int(11) UNSIGNED NOT NULL COMMENT '排序' after `channel_label_en-us`;
+
+/*给公告添加锁定日期字段*/
+alter table `utf8_diana`.`tb_bulletin` change `bulletin_channel` `bulletin_channelId` int(11) UNSIGNED default '0' NOT NULL comment '公告频道';
+alter table `utf8_diana`.`tb_bulletin` add column `bulletin_lock_time` int(11) UNSIGNED DEFAULT '0' NOT NULL COMMENT '锁定时间' after `bulletin_author`,change `bulletin_insert_time` `bulletin_insert_time` int(11) UNSIGNED default '0' NOT NULL;

@@ -40,5 +40,8 @@ return array(
     'global_website_domain' => '域名',
     'global_orderby_desc' => '降序',
     'global_orderby_asc' => '升序',
+    'global_lock_0' => '已锁定',
+    'global_lock_1' => '未锁定',
+    'global_lock_2' => '已锁定',
 
 );

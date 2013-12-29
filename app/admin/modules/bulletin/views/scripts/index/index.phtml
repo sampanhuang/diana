@@ -78,8 +78,8 @@ $this->headScript()->captureEnd();
             return false;
         }
         for(var i=0; i<rows.length; i++){
-            ids.push(rows[i].member_id);
-            labels.push(rows[i].member_email);
+            ids.push(rows[i].bulletin_id);
+            labels.push(rows[i].bulletin_title);
         }
         var messagerTitle = handle_label + '确认';
         var messagerBody = '你确认要' + handle_label + '以下' + rows.length + '条帐号数据吗？<br><br>' + labels.join(' , ');
@@ -94,11 +94,6 @@ $this->headScript()->captureEnd();
         }else{
             member_lock_time = 0;
             dialog_id = 'dialog-handle';
-            if(handle == 'delete'){
-                iconclass = 'icon-delete';
-            }else if(handle == 'unlock'){
-                iconclass = 'icon-unlock';
-            }
             $('#dialog-handle').dialog({
                 title: messagerTitle,
                 content:messagerBody,
@@ -160,11 +155,31 @@ $this->headScript()->captureEnd();
         return returnAjax;
     }
     /**
+     * 频道
+     * @param val
+     * @param row
+     * @return {String}
+     */
+    function formatChannel(val,row)
+    {
+        return row.bulletin_channelFatherLabel + ' / ' + row.bulletin_channelLabel;
+    }
+
+    function formatLockStat(val,row)
+    {
+        if (val == 1){
+            return '<span style="color:green;"><?php echo $this->translate('global_lock_1');?></span>';
+        }else{
+            return '<span style="color:red;"><?php echo $this->translate('global_lock_2');?></span>';
+        }
+    }
+
+    /**
      * 格式化操作选项
      */
     function formatAction(val,row)
     {
-        var detailLink = '<a href="javascript:addTabWithParent(\'公告发布/公告管理/公告查询\',\'/bulletin/index/detail/bulletin_id/'+ row.bulletin_id +'\',true)" >明细</a>';
+        var detailLink = '<a href="javascript:addTabWithParent(\'公告发布/公告管理/公告明细\',\'/bulletin/index/detail/bulletin_id/'+ row.bulletin_id +'\',true)" >明细</a>';
         var modifyLink = '<a href="javascript:addTabWithParent(\'公告发布/公告管理/公告更新\',\'/bulletin/index/update/bulletin_id/'+ row.bulletin_id +'\',true)" >更新</a>'
         return detailLink + '&nbsp;' +  modifyLink ;
         //return detailLink;
@@ -178,7 +193,7 @@ $this->headScript()->captureEnd();
             <table width="100%" border="0" cellspacing="1" cellpadding="5" class="table_border separator_top separator_bot">
                 <tr>
                     <th width="10%">流水号</th>
-                    <td width="40%"><input type="text" name="bulletin_id" id="bulletin_id" style="width:195px;" value="<?php echo $this->datapost['bulletin_id'];?>" />&nbsp;多个流水号请用逗号隔开</td>
+                    <td width="40%"><input type="text" name="bulletin_id" id="input_bulletin_id" style="width:195px;" value="<?php echo $this->request['bulletin_id'];?>" />&nbsp;多个流水号请用逗号隔开</td>
                     <th width="10%">关键字</th>
                     <td width="40%"><input type="text" name="bulletin_title_like" id="input_bulletin_title_like"  style="width:195px;"  value="<?php echo $this->request['bulletin_title_like'];?>" /></td>
                 </tr>
@@ -193,8 +208,8 @@ $this->headScript()->captureEnd();
                     <td>
                         <select name="order_by_1" id="input_order_by_1"  class="easyui-combobox"   style="width:195px;" >
                             <?php
-                            $selected = '';
                             foreach($this->queryOrderColumns as $queryOrderColumn){
+                                $selected = '';
                                 if($queryOrderColumn == $this->request['order_by_1']){
                                     $selected = ' selected ';
                                 }
@@ -208,8 +223,8 @@ $this->headScript()->captureEnd();
                     <td>
                         <select name="order_by_2" id="input_order_by_2"  class="easyui-combobox"   style="width:195px;" >
                             <?php
-                            $selected = '';
                             foreach($this->queryOrderSc as $queryOrderSc){
+                                $selected = '';
                                 if($queryOrderSc == $this->request['order_by_2']){
                                     $selected = ' selected ';
                                 }
@@ -247,18 +262,21 @@ $this->headScript()->captureEnd();
     <tr>
         <th data-options="field:'ck',checkbox:true"></th>
         <th data-options="field:'bulletin_id',width:60">流水号</th>
-        <th data-options="field:'bulletin_title',width:200" >标题</th>
+        <th data-options="field:'bulletin_title',width:300" >标题</th>
         <th data-options="field:'bulletin_author',width:100" >作者</th>
-        <th data-options="field:'bulletin_channelLabel',width:100" >频道</th>
-        <th data-options="field:'bulletin_type',width:100" >范围</th>
+        <th data-options="field:'bulletin_channel',width:150"  formatter="formatChannel">频道</th>
+        <th data-options="field:'bulletin_accessDomain',width:130" >范围</th>
         <th data-options="field:'bulletin_click',width:100,align:'left'" >点击数</th>
         <th data-options="field:'keyword_action',width:100,align:'left'"  formatter="formatAction">选项</th>
     </tr>
     </thead>
     <thead>
     <tr>
-        <th data-options="field:'bulletin_insert_time',width:180,align:'left'"  formatter="formatTimeStamp">第一次查询</th>
-        <th data-options="field:'bulletin_update_time',width:180,align:'left'" formatter="formatTimeStamp">最后一次查询</th>
+        <th data-options="field:'bulletin_top',width:120,align:'left'" >权重</th>
+        <th data-options="field:'bulletin_lock_stat',width:65,align:'left'"  formatter="formatLockStat">锁定状态</th>
+        <th data-options="field:'bulletin_lock_time',width:120,align:'left'"  formatter="formatTimeStamp">解锁时间</th>
+        <th data-options="field:'bulletin_insert_time',width:120,align:'left'"  formatter="formatTimeStamp">添加时间</th>
+        <th data-options="field:'bulletin_update_time',width:120,align:'left'" formatter="formatTimeStamp">更新时间</th>
     </tr>
     </thead>
 </table>
@@ -266,6 +284,8 @@ $this->headScript()->captureEnd();
 <div id="toolbar" style="height:auto;padding:5px;">
     <a id="linkbotton_grid_tool_select" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-archives',plain:true" onclick="gridSelectAll(this,'datagrid_result')">全选</a>
     <a id="linkbotton_grid_tool_dell" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-delete',plain:true" onclick="sendRequest('delete','删除','icon-delete')">删除</a>
+    <a id="linkbotton_grid_tool_lock" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-lock',plain:true" onclick="sendRequest('lock','锁定','icon-lock')">锁定</a>
+    <a id="linkbotton_grid_tool_unlock" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-unlock',plain:true" onclick="sendRequest('unlock','解锁','icon-unlock')">解锁</a>
     <a id="linkbotton_grid_tool_refresh" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-refresh',plain:true" onclick="$('#datagrid_result').datagrid('reload');">刷新</a>
 </div>
 <!--帐号明细-->
