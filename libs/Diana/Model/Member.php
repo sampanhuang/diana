@@ -87,6 +87,21 @@ class Diana_Model_Member extends Diana_Model_Abstract
      * @param $lockTime
      * @return array
      */
+    function updateWithPass($id,$time)
+    {
+        $data = array(
+            "member_pass_time" => $time,
+        );
+        $condition = array("member_id" => $id);
+        return $this->saveData(2,$data,$condition);
+    }
+
+    /**
+     * 更新锁定
+     * @param $id
+     * @param $lockTime
+     * @return array
+     */
     function updateWithLock($id,$lockTime)
     {
         $data = array(

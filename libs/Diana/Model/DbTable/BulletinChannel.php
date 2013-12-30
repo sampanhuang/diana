@@ -21,7 +21,7 @@ class Diana_Model_DbTable_BulletinChannel extends Diana_Model_DbTable_Abstract
     function setOrders()
     {
         $this->_orders = array(
-            "channel_insert_time_desc" => array("channel_insert_time desc"),
+            "channel_order_desc" => array("channel_order desc"),
         );
     }
 
@@ -39,6 +39,12 @@ class Diana_Model_DbTable_BulletinChannel extends Diana_Model_DbTable_Abstract
             $tmpWheres = $this->getWhereByCondition("channel_id",$condition["channel_id"],1);
             $wheres = array_merge($wheres,$tmpWheres);
         }
+        if (!empty($condition["channel_fatherId"])) {//流水号
+            $tmpWheres = array();
+            $tmpWheres = $this->getWhereByCondition("channel_fatherId",$condition["channel_fatherId"],1);
+            $wheres = array_merge($wheres,$tmpWheres);
+        }
+
         return $wheres;
     }
 }

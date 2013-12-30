@@ -83,8 +83,10 @@ $(function(){
                         }
                         foreach(array(4,2,1) as $tmpV){
                             $tmpChecked = '';
-                            if(in_array($tmpV,$this->detail['bulletin_access'])){
-                                $tmpChecked = 'checked="checked"';
+                            if(!empty($this->detail['bulletin_access'])){
+                                if(in_array($tmpV,$this->detail['bulletin_access'])){
+                                    $tmpChecked = 'checked="checked"';
+                                }
                             }
                             echo '<label><input type="checkbox" name="bulletin_access[]" value="'.$tmpV.'" id="bulletin_access_'.$tmpV.'" '.$tmpChecked.' />'.$this->translate('model_bulletin_access_'.$tmpV).'</label>&nbsp;&nbsp;';
                         }

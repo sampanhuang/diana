@@ -12,13 +12,89 @@ class Admin_Service_Bulletin extends Admin_Service_Abstract
     }
 
     /**
+     * 公告删除
+     * @param $input
+     * @return bool|int
+     */
+    function delete($input)
+    {
+        $bulletinId = $input['bulletin_id'];
+        if(empty($bulletinId)){
+            $this->setMsgs('缺少参数 - bulletin_id');
+            return false;
+        }
+        $condition = array('bulletin_id' => $bulletinId);
+        $modelBulletin = new Diana_Model_Bulletin();
+        if(!$rowsAffectedOfBulletin = $modelBulletin->delData($condition)){
+            $this->setMsgs('删除失败-1');
+            return false;
+        }
+        $modelBulletinContent = new Diana_Model_BulletinContent();
+        if(!$rowsAffectedOfBulletinContent = $modelBulletinContent->delData($condition)){
+            $this->setMsgs('删除失败-2');
+            return false;
+        }
+        $this->setMsgs('成功删除'.$rowsAffectedOfBulletin.'条纪录');
+        return $rowsAffectedOfBulletin;
+    }
+
+    /**
+     * 锁定
+     * @param $input
+     * @return array|bool
+     */
+    function lock($input)
+    {
+        $bulletinId = $input['bulletin_id'];
+        $lockTime = $input['lock_time'];
+        if(empty($bulletinId)||empty($lockTime)){
+            $this->setMsgs('缺少参数 - bulletin_id - lock_time');
+            return false;
+        }
+        $data = array('bulletin_lock_time' => strtotime($lockTime));
+        $condition = array('bulletin_id' => $bulletinId);
+        $modelBulletin = new Diana_Model_Bulletin();
+        if(!$rows = $modelBulletin->saveData(2,$data,$condition)){
+            $this->setMsgs('更新失败');
+            return false;
+        }
+        $this->setMsgs('成功更新'.count($rows).'条纪录');
+        return $rows;
+    }
+
+    /**
+     * 解锁
+     * @param $input
+     * @return array|bool
+     */
+    function unlock($input)
+    {
+        $bulletinId = $input['bulletin_id'];
+        if(empty($bulletinId)){
+            $this->setMsgs('缺少参数 - bulletin_id');
+            return false;
+        }
+        $data = array('bulletin_lock_time' => (DIANA_TIMESTAMP_START - 10));
+        $condition = array('bulletin_id' => $bulletinId);
+        $modelBulletin = new Diana_Model_Bulletin();
+        if(!$rows = $modelBulletin->saveData(2,$data,$condition)){
+            $this->setMsgs('更新失败');
+            return false;
+        }
+        $this->setMsgs('成功更新'.count($rows).'条纪录');
+        return $rows;
+    }
+
+    /**
      * 插入数据
      * @param $input
      * @return array|bool
      */
     function insert($input)
     {
-
+        if(!empty($input['bulletin_access'])){
+            $input['bulletin_access'] = array_sum($input['bulletin_access']);
+        }
         if(!$input = $this->filterInput($input)){
             $this->setMsgs('格式错误');
             return false;
@@ -209,7 +285,7 @@ class Admin_Service_Bulletin extends Admin_Service_Abstract
             }
 
         }
-        return array('total' => $countBulletin,'rows' => $rowsBulletin);
+        return array('total' => intval($countBulletin),'rows' => $rowsBulletin);
     }
 
     function getDetail($column,$key)

@@ -95,6 +95,7 @@ class Admin_Service_Member extends Admin_Service_Abstract
     function filterFormSearch($post)
     {
         $exp = array(
+            'wait_pass' => 1,
             'member_name' => 1,
             'member_email' => 1,
             'member_roleId' => 1,
@@ -135,6 +136,31 @@ class Admin_Service_Member extends Admin_Service_Abstract
         $memberId = $params['member_id'];
         $lockTime = 0;
         return $this->setLockTimeById($memberId,$lockTime);
+    }
+
+    function pass($input)
+    {
+        $memberId = $input['member_id'];
+        if(!$rowsMember = $this->checkMemberId($memberId)){
+            return false;
+        }
+        $updateMemberId = array();
+        foreach($rowsMember as $rowMember){
+            if($rowMember['member_pass_time'] <= 0){
+                $updateMemberId[] = $rowMember['member_id'];
+            }
+        }
+        if(empty($updateMemberId)){
+            $this->setMsgs('没有可以更新的纪录，你选的纪录之前都已通过了');
+            return false;
+        }
+        $modelMember = new Diana_Model_Member();
+        if(!$rowsMember = $modelMember->updateWithPass($updateMemberId,time())){
+            $this->setMsgs('更新失败');
+            return false;
+        }
+        $this->setMsgs('成功更新'.count($updateMemberId).'条纪录');
+        return $rowsMember;
     }
 
     /**

@@ -10,13 +10,35 @@ class Admin_Service_BulletinChannel extends Admin_Service_Abstract
     {
         parent::__construct();
     }
+
+    function delete($input)
+    {
+        $channelId = $input['channel_id'];
+        if(empty($channelId)&&(!is_numeric($channelId))){
+            $this->setMsgs('错误的ID');
+            return false;
+        }
+        $modelBulletinChannel = new Diana_Model_BulletinChannel();
+        //判断是否有下级，有下级就无法删除
+        if($modelBulletinChannel->getSonByFather(null,$channelId)){
+            $this->setMsgs('无法删除仍有子类的父类');
+            return false;
+        }
+        $condition = array( 'channel_id' => $channelId );
+        if(!$rowsAffected = $modelBulletinChannel->delData($condition)){
+            $this->setMsgs('删除失败');
+            return false;
+        }
+        $this->setMsgs('成功删除'.$rowsAffected.'条纪录');
+        return $rowsAffected;
+    }
     /**
      * 新建一个公告频道
      * @param $input
      */
     function insert($input)
     {
-        if(!$input = $this->filterInputOfChannel($input)){
+        if(!$input = $this->filterInput($input)){
             return false;
         }
         $inputOther = array(
@@ -37,6 +59,7 @@ class Admin_Service_BulletinChannel extends Admin_Service_Abstract
             $this->setMsgs('数据写入失败');
             return false;
         }
+        $this->setMsgs('保存成功');
         return $rows[0];
     }
 
@@ -45,14 +68,27 @@ class Admin_Service_BulletinChannel extends Admin_Service_Abstract
      * @param $input
      * @param $id
      */
-    function update($input,$id)
+    function update($input)
     {
-        if(empty($id)&&(!is_numeric($id))){
+        $channelId = $input['channel_id'];
+        if(empty($channelId)&&(!is_numeric($channelId))){
             $this->setMsgs('错误的ID');
             return false;
         }
-        if(!$input = $this->filterInputOfChannel($input)){
+        if(!$input = $this->filterInput($input)){
             return false;
+        }
+        if($channelId == $input['channel_fatherId']){
+            $this->setMsgs('不能将自己设为自己的父类');
+            return false;
+        }
+        $modelBulletinChannel = new Diana_Model_BulletinChannel();
+        //如果有子类，就不能把自己设为别人的子类
+        if(!empty($input['channel_fatherId'])){
+            if($modelBulletinChannel->getSonByFather(null,$input['channel_fatherId'])){
+                $this->setMsgs('当前类别已有子类，无法将他从父类降为子类');
+                return false;
+            }
         }
         $inputOther = array(
             'channel_update_time' => time(),
@@ -62,8 +98,7 @@ class Admin_Service_BulletinChannel extends Admin_Service_Abstract
             'channel_update_ip' => $_SERVER['REMOTE_ADDR'],
         );
         $data = array_merge($input,$inputOther);
-        $condition = array('channel_id' => $id);
-        $modelBulletinChannel = new Diana_Model_BulletinChannel();
+        $condition = array('channel_id' => $channelId);
         if(!$rows = $modelBulletinChannel->saveData(2,$data,$condition)){
             $this->setMsgs('数据更新失败');
             return false;
@@ -78,12 +113,19 @@ class Admin_Service_BulletinChannel extends Admin_Service_Abstract
     function filterInput($data)
     {
         $filters = array(
-            'channel_label' => array(new Zend_Filter_StripNewlines(),new Zend_Filter_HtmlEntities(),new Zend_Filter_StringTrim()),
+            'channel_fatherId' => array(new Zend_Filter_Int(),new Zend_Filter_Digits(),new Zend_Filter_StringTrim()),
+            'channel_label_zh-cn' => array(new Zend_Filter_StripNewlines(),new Zend_Filter_HtmlEntities(),new Zend_Filter_StringTrim()),
+            'channel_label_zh-tw' => array(new Zend_Filter_StripNewlines(),new Zend_Filter_HtmlEntities(),new Zend_Filter_StringTrim()),
+            'channel_label_en-us' => array(new Zend_Filter_StripNewlines(),new Zend_Filter_HtmlEntities(),new Zend_Filter_StringTrim()),
+            'channel_order' => array(new Zend_Filter_Int(),new Zend_Filter_Digits(),new Zend_Filter_StringTrim()),
         );
         $validators = array(
-            'channel_label' => array(new Zend_Validate_StringLength(array('max' => '64','encoding' => 'utf-8'))),
+            'channel_fatherId' => array(new Zend_Validate_Int(),'allowEmpty' => true),
+            'channel_label_zh-cn' => array(new Zend_Validate_StringLength(array('max' => '64','encoding' => 'utf-8'))),
+            'channel_label_zh-tw' => array(new Zend_Validate_StringLength(array('max' => '64','encoding' => 'utf-8')),'allowEmpty' => true),
+            'channel_label_en-us' => array(new Zend_Validate_StringLength(array('max' => '64','encoding' => 'utf-8')),'allowEmpty' => true),
+            'channel_order' => array(new Zend_Validate_Int(),'allowEmpty' => true),
         );
-        $input = new Zend_Filter_Input($filters, $validators, $data);
         $input = new Zend_Filter_Input($filters, $validators, $data);
         if (!$input->isValid()) {
             $messageInput = $input->getMessages();
@@ -129,40 +171,72 @@ class Admin_Service_BulletinChannel extends Admin_Service_Abstract
         return $options;
     }
 
-    /**
-     * 生成数据
-     * @param $params
-     * @return array
-     */
-    function makeDataGird($params)
-    {
-        $page = $params['page']?$params['page']:1;
-        $pageSize = $params['rows']?$params['rows']:DIANA_DATAGRID_PAGESIZE_ADMIN;
-        $tmpCondition = $this->filterColumns(array($params),$this->getFilterColumnsForQuery());
-        $order = implode('_',array($params['order_by_1'],$params['order_by_2']));
-        return $this->pageByCondition($page,$pageSize,$tmpCondition[0],$order);
-    }
 
     /**
-     * 获取分页
-     *
-     * @param int $page 当前页
-     * @param int $pagesize 每页纪录数
-     * @param array $condition 查询条件
-     * @param array $order 排序方式
-     * @return array
+     * 为tree grid提供数据
      */
-    function pageByCondition($page = 1,$pagesize = 1,$condition = array(),$order = null)
+    function makeTreeGrid($input)
     {
-        $offset = ($page - 1)*$pagesize;
-        if($offset < 0){$offset = 0;}
+        $treeGrid = array();
         $modelBulletinChannel = new Diana_Model_BulletinChannel();
-        if($countBulletin = $modelBulletinChannel->getCountByCondition(null,$condition)){
-            $rowsBulletin = $modelBulletinChannel->getRowsByCondition(null,$condition,$order,$pagesize,$offset);
+        //获取所有数据
+        if(!$rows = $modelBulletinChannel->getRowsByCondition()){
+            return false;
         }
-        return array('total' => $countBulletin,'rows' => $rowsBulletin);
+        //获取一级配置
+        foreach($rows as $row){
+            if(empty($row['channel_fatherId'])){
+                $row['state'] = 'closed';
+                $treeGrid[] = $row;
+            }
+        }
+        foreach($treeGrid as &$rowFather){
+            foreach($rows as $row){
+                if($rowFather['channel_id'] == $row['channel_fatherId']){
+                    $rowFather['children'][] = $row;
+                }
+            }
+            if(empty($rowFather['children'])){
+                unset($rowFather['state']);
+            }
+        }
+        return $treeGrid;
     }
 
+
+    function getDetail($column,$key)
+    {
+        if ((empty($column))||(!is_scalar($column))) {
+            $this->setMsgs("Invalid Param - 无效的column值");
+            return false;
+        }
+        if ((empty($key))||(!is_scalar($key))) {
+            $this->setMsgs("Invalid Param - 无效的key值");
+            return false;
+        }
+        if($column == 'channel_id'){
+            $detail = $this->getDetailById($key);
+        }else{
+            $this->setMsgs("Invalid Param - Column ".$column);
+            return false;
+        }
+        return $detail;
+    }
+
+    function getDetailById($channelId)
+    {
+        $modelBulletinChannel = new Diana_Model_BulletinChannel();
+        if($row = $modelBulletinChannel->getRowById(null,$channelId)){
+            if(!empty($row['channel_fatherId'])){
+                if($rowFather = $modelBulletinChannel->getRowById(null,$row['channel_fatherId'])){
+                    $row['channel_fatherLabel_zh-cn'] = $rowFather['channel_label_zh-cn'];
+                    $row['channel_fatherLabel_zh-tw'] = $rowFather['channel_label_zh-tw'];
+                    $row['channel_fatherLabel_en-us'] = $rowFather['channel_label_en-us'];
+                }
+            }
+        }
+        return $row;
+    }
 
     /**
      * 过滤
@@ -185,7 +259,6 @@ class Admin_Service_BulletinChannel extends Admin_Service_Abstract
     {
         return array(
             'channel_id',
-            'channel_label',
         );
     }
 

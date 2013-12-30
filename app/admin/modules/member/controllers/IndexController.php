@@ -6,7 +6,7 @@
  * Time: 下午5:51
  * To change this template use File | Settings | File Templates.
  */
-class Member_DefaultController extends Admin_Controller_ActionDec
+class Member_IndexController extends Admin_Controller_ActionDec
 {
     function init()
     {
@@ -59,6 +59,10 @@ class Member_DefaultController extends Admin_Controller_ActionDec
             'unlock' => array(
                 'object' => $serviceMember,
                 'method' => 'unlock',
+            ),
+            'pass' => array(
+                'object' => $serviceMember,
+                'method' => 'pass',
             ),
         );
         $this->handleAjax($configHandle);

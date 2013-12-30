@@ -15,3 +15,6 @@ alter table `utf8_diana`.`tb_bulletin_channel` add column `channel_order` int(11
 /*给公告添加锁定日期字段*/
 alter table `utf8_diana`.`tb_bulletin` change `bulletin_channel` `bulletin_channelId` int(11) UNSIGNED default '0' NOT NULL comment '公告频道';
 alter table `utf8_diana`.`tb_bulletin` add column `bulletin_lock_time` int(11) UNSIGNED DEFAULT '0' NOT NULL COMMENT '锁定时间' after `bulletin_author`,change `bulletin_insert_time` `bulletin_insert_time` int(11) UNSIGNED default '0' NOT NULL;
+
+/*公告频道给排序添加默认值*/
+alter table `utf8_diana`.`tb_bulletin_channel` change `channel_order` `channel_order` int(11) UNSIGNED default '0' NOT NULL comment '排序';

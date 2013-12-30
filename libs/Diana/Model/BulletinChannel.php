@@ -11,6 +11,12 @@ class Diana_Model_BulletinChannel extends Diana_Model_Abstract
         $this->dt = new Diana_Model_DbTable_BulletinChannel();
     }
 
+    function getSonByFather($refresh = null,$fatherId)
+    {
+        $condition = array("channel_fatherId" => $fatherId);
+        return $this->getRowsByCondition($refresh,$condition);
+    }
+
 
     /**
      * 通过流水号ID获取一条纪录

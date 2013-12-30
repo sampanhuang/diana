@@ -36,7 +36,7 @@ class Admin_Controller_ActionDec extends Admin_Controller_Action
         if(substr_count($ajaxPrint,'json') >= 1){
             $this->getHelper("layout")->disableLayout();//关闭布局
             $this->getHelper("viewRenderer")->setNoRender();//关闭视图
-            ob_clean();
+            //ob_clean();
             header('content-type: application/json; charset=utf-8');
             if($ajaxPrint == 'json_1'){
                 $response = array(
@@ -87,6 +87,7 @@ class Admin_Controller_ActionDec extends Admin_Controller_Action
         $reqHandle = strtolower(trim($request['req_handle']));//请求处理的事务
         //如果不是ajax请求，则忽略
         if(empty($reqHandle)){
+            $this->setMsgs('没有指定操作类型！');
             return false;
         }
 

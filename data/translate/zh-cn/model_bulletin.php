@@ -15,4 +15,5 @@ return array(
         'model_bulletin_access_4' => 'WWW',
         'model_bulletin_access_2' => 'CLIENT',
         'model_bulletin_access_1' => 'ADMIN',
+        'model_channel_id' => '公告频道ID',
     );

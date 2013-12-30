@@ -6,7 +6,7 @@
  * Time: 下午5:51
  * To change this template use File | Settings | File Templates.
  */
-class Website_DefaultController extends Admin_Controller_ActionDec
+class Website_IndexController extends Admin_Controller_ActionDec
 {
     var $yearStart = 2013;
     var $yearEnd = 0;

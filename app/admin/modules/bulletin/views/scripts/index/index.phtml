@@ -54,21 +54,10 @@ $this->headScript()->captureEnd();
         });
     });
     /**
-     * 打开帐号明细窗口
-     */
-    function openWindowDetail(id,label)
-    {
-        $('#window-detail').window({
-            closed:false,
-            title: '帐号【' + label + '】明细',
-            href:'<?php echo $this->url(array('action' => 'detail','simple' => 1));?>/member_id/' + id
-        });
-    }
-    /**
      * 操作请求发送确认
      */
     function sendRequest(handle,handle_label,iconclass){
-        var member_lock_time = '';//锁定时间
+        var lock_time = '';//锁定时间
         var dialog_id = '';//对话框的ID
         var ids = [];
         var labels = [];
@@ -84,17 +73,15 @@ $this->headScript()->captureEnd();
         var messagerTitle = handle_label + '确认';
         var messagerBody = '你确认要' + handle_label + '以下' + rows.length + '条帐号数据吗？<br><br>' + labels.join(' , ');
         if(handle == 'lock'){
-            member_lock_time = $('#input_lock_time').datetimebox('getValue');
             dialog_id = 'dialog-handle-lock';
-            $('#dialog-handle-lock').dialog({
+            $('#'+dialog_id).dialog({
                 title: messagerTitle,
                 content:messagerBody,
                 closed:false
             });
         }else{
-            member_lock_time = 0;
             dialog_id = 'dialog-handle';
-            $('#dialog-handle').dialog({
+            $('#'+dialog_id).dialog({
                 title: messagerTitle,
                 content:messagerBody,
                 closed:false,
@@ -105,7 +92,7 @@ $this->headScript()->captureEnd();
         $('#link_buttons_ok').click(function(){
             $("#link_buttons_ok").unbind();//删除原来的事件绑定
             $('#' + dialog_id).dialog('close');//添加新的点击绑定
-            sendReqWithAjax(handle,ids,member_lock_time);
+            sendReqWithAjax(handle,ids);
         });
         //在调出对话框后点击取消
         $('#link_buttons_cancel').click(function(){
@@ -117,12 +104,17 @@ $this->headScript()->captureEnd();
     /**
      * 发送删除、锁定、解税等请求
      */
-    function sendReqWithAjax(handle,ids,lock_time)
+    function sendReqWithAjax(handle,ids)
     {
         if(ids == '' || ids == null || handle == ''){
             $.messager.alert('确认请求','请确认你发送了参数过来','error');
             return false;
         }
+        var lock_time = 0;
+        if(handle == 'lock'){
+            lock_time = $('#input_lock_time').datetimebox('getValue');
+        }
+
         var returnAjax = false;
         $.ajax({
             async:false,
@@ -131,7 +123,7 @@ $this->headScript()->captureEnd();
             contentType:"utf-8",
             cache:false,
             url:"/bulletin/index/handle",
-            data: {ajax_print:'json_1',req_handle:handle,member_id:ids,member_lock_time:lock_time},
+            data: {ajax_print:'json_1',req_handle:handle,bulletin_id:ids,lock_time:lock_time},
             success: function(json) {
                 if (json.stat == 1) {
                     $.messager.alert('确认请求',json.msgs);
@@ -266,13 +258,13 @@ $this->headScript()->captureEnd();
         <th data-options="field:'bulletin_author',width:100" >作者</th>
         <th data-options="field:'bulletin_channel',width:150"  formatter="formatChannel">频道</th>
         <th data-options="field:'bulletin_accessDomain',width:130" >范围</th>
-        <th data-options="field:'bulletin_click',width:100,align:'left'" >点击数</th>
-        <th data-options="field:'keyword_action',width:100,align:'left'"  formatter="formatAction">选项</th>
+        <th data-options="field:'bulletin_click',width:60,align:'left'" >点击数</th>
+        <th data-options="field:'keyword_action',width:80,align:'left'"  formatter="formatAction">选项</th>
     </tr>
     </thead>
     <thead>
     <tr>
-        <th data-options="field:'bulletin_top',width:120,align:'left'" >权重</th>
+        <th data-options="field:'bulletin_top',width:60,align:'left'" >权重</th>
         <th data-options="field:'bulletin_lock_stat',width:65,align:'left'"  formatter="formatLockStat">锁定状态</th>
         <th data-options="field:'bulletin_lock_time',width:120,align:'left'"  formatter="formatTimeStamp">解锁时间</th>
         <th data-options="field:'bulletin_insert_time',width:120,align:'left'"  formatter="formatTimeStamp">添加时间</th>

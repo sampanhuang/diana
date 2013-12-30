@@ -101,6 +101,21 @@ class Bulletin_IndexController extends Admin_Controller_ActionDec
 
     function handleAction()
     {
-
+        $serviceBulletin = new Admin_Service_Bulletin();
+        $configHandle = array(
+            'delete' => array(
+                'object' => $serviceBulletin,
+                'method' => 'delete',
+            ),
+            'lock' => array(
+                'object' => $serviceBulletin,
+                'method' => 'lock',
+            ),
+            'unlock' => array(
+                'object' => $serviceBulletin,
+                'method' => 'unlock',
+            ),
+        );
+        $this->handleAjax($configHandle);
     }
 }

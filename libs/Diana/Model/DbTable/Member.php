@@ -52,6 +52,12 @@ class Diana_Model_DbTable_Member extends Diana_Model_DbTable_Abstract
             $tmpWheres = $this->getWhereByCondition("member_name",$condition["member_name"],2);
             $wheres = array_merge($wheres,$tmpWheres);
         }
+        if (!empty($condition["wait_pass"])) {//会员邮箱
+            $tmpWheres = array();
+            $tmpWheres = $this->getWhereByCondition("member_pass_time",0,3);
+            $wheres = array_merge($wheres,$tmpWheres);
+        }
+
         return $wheres;
     }
 }
