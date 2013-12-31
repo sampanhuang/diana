@@ -22,11 +22,10 @@ class Website_IndexController extends Admin_Controller_ActionDec
      * 查询模块
      */
     function indexAction(){
-        $request = $this->getRequest()->getParams();
+        $this->view->request = $request = $this->getRequest()->getParams();
         $queryGrid = array('ajax_print' => 'json_2','req_handle' => 'datagrid-result');
         $queryGrid = array_merge($queryGrid,$request);
         $serviceWebsite = new Diana_Service_Website();
-        $this->view->dataget = $request;
         $this->view->queryGrid = $queryGrid;
         $this->view->pagesize = $this->getRequest()->getParam('rows',DIANA_DATAGRID_PAGESIZE_ADMIN) ;
         $configHandle = array(

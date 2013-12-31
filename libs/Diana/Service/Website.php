@@ -45,10 +45,10 @@ class Diana_Service_Website extends Diana_Service_Abstract
     function makeDataGird($request)
     {
         $page = $request['page'];
-        $pagesize = $request['rows'];
-        $format = array('website_id','website_name','website_domain');
-        $condition = $this->filterColumns($request,$format);
-        return $this->pageByCondition($page,$pagesize,$condition);
+        $pageSize = $request['rows'];
+        $format = array('website_id','website_name','website_domain','wait_pass');
+        $condition = $this->filterColumns(array($request),$format);
+        return $this->pageByCondition($page,$pageSize,$condition);
 
     }
 

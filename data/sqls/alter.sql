@@ -18,3 +18,5 @@ alter table `utf8_diana`.`tb_bulletin` add column `bulletin_lock_time` int(11) U
 
 /*公告频道给排序添加默认值*/
 alter table `utf8_diana`.`tb_bulletin_channel` change `channel_order` `channel_order` int(11) UNSIGNED default '0' NOT NULL comment '排序';
+/*website_update_stat附以新意义*/
+alter table `utf8_diana`.`tb_website` change `website_update_stat` `website_update_stat` int(11) UNSIGNED default '0' NOT NULL comment '修改状态1无修改申请2有修改申请3拒绝此次修改', change `website_update_count` `website_update_count` int(11) UNSIGNED default '0' NOT NULL comment '修改次数';

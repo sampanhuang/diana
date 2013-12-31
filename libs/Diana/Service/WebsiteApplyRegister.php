@@ -232,11 +232,11 @@ class Diana_Service_WebsiteApplyRegister extends Diana_Service_Abstract
         //剔除已经存在的纪录，避免重复提交
         foreach($tmpInsertData as $keyApplyId => $valApply){
             if(in_array($valApply['website_name'],$existWebsiteName)){
-                echo $valApply['website_name'];
+                //echo $valApply['website_name'];
                 break;
             }
             if(in_array($valApply['website_domain'],$existWebsiteDomain)){
-                $valApply['website_domain'];
+                //$valApply['website_domain'];
                 break;
             }
             $insertData[$keyApplyId] = $valApply;

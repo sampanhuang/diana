@@ -78,6 +78,13 @@ class Diana_Model_DbTable_Website extends Diana_Model_DbTable_Abstract
             $tmpWheres = $this->getWhereByCondition("website_country",$condition["website_country"],2);
             $wheres = array_merge($wheres,$tmpWheres);
         }
+        if (!empty($condition["wait_pass"])) {//关键字
+            $tmpWheres = array();
+            $tmpWheres = $this->getWhereByCondition("website_update_stat",array(2,3),1);
+            $wheres = array_merge($wheres,$tmpWheres);
+        }
+
+
         return $wheres;
     }
 }

@@ -101,7 +101,9 @@ if(!empty($this->detail)){
             <th width="10%">分类</th>
             <td width="23%"><?php echo $this->detail['website_categoryFatherName'].'/'.$this->detail['website_categoryName'];?></td>
             <th width="10%">会员</th>
-            <td width="23%"><a href="javascript:addTabWithParent('会员管理/注册会员/会员明细','member/default/detail/member_id/<?php echo $this->detail['website_memberId'];?>',true);"><?php echo $this->detail['member_name'];?></a><span style="margin-left:5px;color: #999999">&lt;<?php echo $this->detail['member_email'];?>&gt;</span></td>
+            <td width="23%">
+                <?php $tmpUrlMemberDetail = 'member/index/detail/member_id/'.$this->detail['website_memberId'];?>
+                <a href="javascript:addTabWithParent('会员管理/注册会员/会员明细','<?php echo $tmpUrlMemberDetail;?>',true);"><?php echo $this->detail['member_name'];?></a><span style="margin-left:5px;color: #999999">&lt;<?php echo $this->detail['member_email'];?>&gt;</span></td>
         </tr>
         <tr>
             <th width="10%">点击流入</th>

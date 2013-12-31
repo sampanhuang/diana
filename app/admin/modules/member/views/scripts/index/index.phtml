@@ -135,7 +135,7 @@ $this->headScript()->captureEnd();
             dataType: "json",
             contentType:"utf-8",
             cache:false,
-            url:"/member/default/handle",
+            url:"/member/index/handle",
             data: {ajax_print:'json_1',req_handle:handle,member_id:ids,member_lock_time:lock_time},
             success: function(json) {
                 if (json.stat == 1) {
@@ -164,7 +164,7 @@ $this->headScript()->captureEnd();
      */
     function formatAction(val,row)
     {
-        var detailLink = '<a href="javascript:addTabWithParent(\'会员管理/注册会员/会员明细\',\'/member/default/detail/member_id/'+row.member_id+'\',true)" >明细</a>';
+        var detailLink = '<a href="javascript:addTabWithParent(\'会员管理/注册会员/会员明细\',\'/member/index/detail/member_id/'+row.member_id+'\',true)" >明细</a>';
         var modifyLink = '<a href="/member/member/update/member_id/'+row.member_id +'">编辑</a>'
         //return detailLink + '&nbsp;' +  modifyLink ;
         return detailLink;

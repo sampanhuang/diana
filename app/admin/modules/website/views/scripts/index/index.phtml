@@ -135,7 +135,7 @@ function sendReqWithAjax(handle,ids,lock_time)
         dataType: "json",
         contentType:"utf-8",
         cache:false,
-        url:"/member/default/handle",
+        url:"/website/index/handle",
         data: {ajax_print:'json_1',req_handle:handle,member_id:ids,member_lock_time:lock_time},
         success: function(json) {
             if (json.stat == 1) {
@@ -164,7 +164,7 @@ function sendReqWithAjax(handle,ids,lock_time)
  */
 function formatAction(val,row)
 {
-    var detailLink = '<a href="javascript:addTabWithParent(\'网站导航/注册网站/网站明细\',\'/website/default/detail/website_id/'+ row.website_id +'\',true)" >明细</a>';
+    var detailLink = '<a href="javascript:addTabWithParent(\'网站导航/注册网站/网站明细\',\'/website/index/detail/website_id/'+ row.website_id +'\',true)" >明细</a>';
     //var modifyLink = '<a href="/member/member/update/member_id/'+row.member_id +'">编辑</a>'
     //return detailLink + '&nbsp;' +  modifyLink ;
     return detailLink;
@@ -223,7 +223,7 @@ function formatLockTime(val,row)
  */
 function formatMember(val,row)
 {
-    return  '<a href="javascript:addTabWithParent(\'会员管理/注册会员/会员明细\',\'/member/default/detail/member_id/'+row.website_memberId+'\',true)" >' + row.website_memberName + '</a>';
+    return  '<a href="javascript:addTabWithParent(\'会员管理/注册会员/会员明细\',\'/member/index/detail/member_id/'+row.website_memberId+'\',true)" >' + row.website_memberName + '</a>';
 }
 
 function formatWebsiteArea(val,row)
@@ -244,13 +244,27 @@ function formatWebsiteCategory(val,row)
         return row.website_categoryFatherName + ' / ' + row.website_categoryName;
     }
 }
-
+<?php if(in_array($this->request['wait_pass'],array(2,3))){ ?>
+function formatUpdateStat(val,row)
+{
+    var label;
+    var color;
+    if(val == 2 || val == 0){
+        label = '未审核';
+        color = 'blue';
+    }else if(val == 3){
+        label = '未通过';
+        color = 'red';
+    }
+    return '<span style="color:' + color + ';">' + label + '</span>';
+}
+<?php }?>
 /**
  * 格式化操作选项
  */
 function formatWebsiteName(val,row)
 {
-    var detailLink = '<a href="javascript:addTabWithParent(\'网站导航/注册网站/网站明细\',\'/website/default/detail/website_id/' + row.website_id + '\',true)" >' + row.website_name + '</a>';
+    var detailLink = '<a href="javascript:addTabWithParent(\'网站导航/注册网站/网站明细\',\'/website/index/detail/website_id/' + row.website_id + '\',true)" >' + row.website_name + '</a>';
     //var modifyLink = '<a href="javascript:addTabWithParent(\'会员管理/注册会员/会员明细\',\'/apply/website-register/detail/register_id/'+row.register_id+'\',true)" >编辑</a>'
     //return detailLink + '&nbsp;' +  modifyLink ;
     return detailLink;
@@ -317,6 +331,12 @@ function formatWebsiteName(val,row)
     <tr>
         <th data-options="field:'ck',checkbox:true"></th>
         <th data-options="field:'website_id',width:60">流水号</th>
+        <?php
+        if(in_array($this->request['wait_pass'],array(2,3))){
+            echo '<th data-options="field:\'website_update_stat\',width:120" formatter="formatUpdateStat">更新状态</th>';
+            echo '<th data-options="field:\'website_update_count\',width:80">更新次数</th>';
+        }
+        ?>
         <th data-options="field:'website_name',width:120" formatter="formatWebsiteName">网站名称</th>
         <th data-options="field:'website_domain',width:200,align:'left'" >网站域名</th>
         <th data-options="field:'website_areaId',width:120,align:'left'"  formatter="formatWebsiteArea">地区</th>
@@ -339,6 +359,10 @@ function formatWebsiteName(val,row)
     <a id="linkbotton_grid_tool_dell" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-delete',plain:true" onclick="sendRequest('delete','删除','icon-delete')">删除</a>
     <a id="linkbotton_grid_tool_lock" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-lock',plain:true" onclick="sendRequest('lock','锁定','icon-lock')">锁定</a>
     <a id="linkbotton_grid_tool_unlock" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-unlock',plain:true" onclick="sendRequest('unlock','解锁','icon-unlock')">解锁</a>
+    <?php if(in_array($this->request['wait_pass'],array(2,3))){ ?>
+    <a id="linkbotton_grid_tool_pass_update" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-greenled',plain:true" onclick="sendRequest('pass_update','同意修改','icon-greenled')">同意修改</a>
+    <a id="linkbotton_grid_tool_unpass_update" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-redled',plain:true" onclick="sendRequest('unpass_update','拒绝修改','icon-redled')">拒绝修改</a>
+    <?php }?>
     <a id="linkbotton_grid_tool_refresh" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-refresh',plain:true" onclick="$('#datagrid_result').datagrid('reload');">刷新</a>
 </div>
 <!--帐号明细-->

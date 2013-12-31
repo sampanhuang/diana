@@ -18,7 +18,7 @@ class Member_IndexController extends Admin_Controller_ActionDec
      * 查询模块
      */
     function indexAction(){
-        $request = $this->getRequest()->getParams();
+        $this->view->request = $request = $this->getRequest()->getParams();
         $queryGrid = array('ajax_print' => 'json','req_handle' => 'datagrid-result');
         $queryGrid = array_merge($queryGrid,$request);
         //获取角色数据
