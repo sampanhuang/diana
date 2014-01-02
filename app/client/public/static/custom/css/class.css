@@ -47,3 +47,7 @@ p.footer {
 .table_border{background-color: #dddddd;}
 .table_border th{font-weight:normal;background-color: #f4f4f4;}
 .table_border td{background-color: #fff;}
+
+/*输入提示*/
+.span_notice{color: #999999;}
+

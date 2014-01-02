@@ -9,7 +9,7 @@ class GuestController extends Diana_Controller_Action
     function init()
     {
         parent::init();
-        $this->_helper->layout->setLayout('guest');
+        //$this->_helper->layout->setLayout('guest');
         $this->view->menus = $this->menus = array(
             array(
                 'action' => 'login',
@@ -51,7 +51,7 @@ class GuestController extends Diana_Controller_Action
     function loginAction()
     {
         $this->view->headTitle("管理员登录");
-        $serviceDoorkeeper = new Admin_Service_Doorkeeper();
+        $serviceDoorkeeper = new Client_Service_Doorkeeper();
         $cookieName = $serviceDoorkeeper->getCookieWithLastime();//获取cookie名
         if ($cookieValue = $_COOKIE[$cookieName]) {//获取最后一名登录者的名字
             $this->view->emailLasttime = $cookieValue;
@@ -63,8 +63,8 @@ class GuestController extends Diana_Controller_Action
             $this->getHelper("viewRenderer")->setNoRender();//关闭视图
             $show = array("stat" => 0,"msgs" => "");
             if ($dataget["show_data"] == "login") {
-                if ($detailManager = $serviceDoorkeeper->login($dataget["email"],$dataget["passwd"],$dataget["captcha"])) {
-                    setcookie($cookieName, $detailManager['manager_email'], time()+311040000, "/", $_SERVER['SERVER_NAME']);
+                if ($detailMember = $serviceDoorkeeper->login($dataget["email"],$dataget["passwd"],$dataget["captcha"])) {
+                    setcookie($cookieName, $detailMember['manager_email'], time()+311040000, "/", $_SERVER['SERVER_NAME']);
                     $show["stat"] = 1;
                 }else{
                     $show['focus'] = $serviceDoorkeeper->focus;
@@ -87,11 +87,11 @@ class GuestController extends Diana_Controller_Action
     function logoutAction()
     {
         $this->view->headTitle("注销登录");
-        $serviceDoorkeeper = new Admin_Service_Doorkeeper();
-        if ($detailManager = $serviceDoorkeeper->logout()) {
-            $this->view->manager = $detailManager;
+        $serviceDoorkeeper = new Client_Service_Doorkeeper();
+        if ($detailMember = $serviceDoorkeeper->logout()) {
+            $this->view->manager = $detailMember;
         }else{
-            $this->redirect("/default/guest/login");
+            //$this->redirect("/default/guest/login");
         }
     }
 
@@ -105,19 +105,18 @@ class GuestController extends Diana_Controller_Action
         $this->view->dataget = $dataget = array_map("trim",array_filter($this->getRequest()->getParams()));
         $this->view->step = $step = $dataget['step'];
         if($dataget['step'] == 2){
-            $serviceManagerPassword = new Admin_Service_ManagerPassword();
-            if ($serviceManagerPassword->forgetPwd(2,$dataget)) {
-                $serviceManager = new Admin_Service_Manager();
-                $this->setMsgs('你已经成功更新了密码！如果忘记了请返回你的邮箱查看。建议你在登录之后再修改一次密码（改成你好记又安全的）');
-                if ($managerDetail = $serviceManager->getManagerById($dataget['id'])) {
+            $serviceMemberPassword = new Client_Service_MemberPassword();
+            if ($serviceMemberPassword->forgetPwd(2,$dataget)) {
+                $serviceMember = new Client_Service_Member();
+                $this->view->alert = '你已经成功更新了密码！如果忘记了请返回你的邮箱查看。建议你在登录之后再修改一次密码（改成你好记又安全的）';
+                if ($managerDetail = $serviceMember->getMemberById($dataget['id'])) {
                     $this->view->managerDetail = $managerDetail;
                     $this->view->dataget = $dataget;
                 }else{
-                    $this->setMsgs($serviceManager->getMsgs());
+                    $this->setMsgs($serviceMember->getMsgs());
                 }
             }else{
-                $this->setMsgs('无效的链接');
-                $this->setMsgs($serviceManagerPassword->getMsgs());
+                $this->view->alert = '无效的链接'.implode(';',$serviceMemberPassword->getMsgs());
             }
         }
         if (!empty($dataget["show_data"])) {
@@ -125,11 +124,11 @@ class GuestController extends Diana_Controller_Action
             $this->getHelper("viewRenderer")->setNoRender();//关闭视图
             $show = array("stat" => 0,"msgs" => "");
             if ($dataget["show_data"] == "sendmail") {
-                $serviceManagerPassword = new Admin_Service_ManagerPassword();
-                if ($detailManager = $serviceManagerPassword->forgetPwd(1,$dataget)){
+                $serviceMemberPassword = new Client_Service_MemberPassword();
+                if ($detailMember = $serviceMemberPassword->forgetPwd(1,$dataget)){
                     $show["stat"] = 1;
                 }else{
-                    $show["msgs"] = implode(",",$serviceManagerPassword->getMsgs());
+                    $show["msgs"] = implode(",",$serviceMemberPassword->getMsgs());
                 }
             }
             ob_clean();

@@ -2,41 +2,79 @@
 if(!empty($this->trendYear)){
 ?>
 <form id="form_choose_year" name="form_choose_year" method="get">
-    <div class="row">
-        <div class="span2">
-            <select id="year" name="year" class="span2">
+    <fieldset border="false"  class="fieldset_border separator_bot" >
+        <legend>查询</legend>
+                <select id="year" name="year" class="span2">
+                    <?php
+                    for($year = $this->yearStart ; $year <= $this->yearEnd ;$year++){
+                        $tmpSelected = '';
+                        if($this->year = $year){
+                            $tmpSelected = ' selected ';
+                        }
+                        echo '<option value="'.$year.'" '.$tmpSelected.'>'.$year.'年</option>';
+                    }
+                    ?>
+                </select>
                 <?php
-                for($year = $this->yearStart ; $year <= $this->yearEnd ;$year++){
-                    echo '<option value="'.$year.'">'.$year.'年</option>';
+
+                for($tmpCounterColumn = 1;$tmpCounterColumn <= 4;$tmpCounterColumn++)
+                {
+                    $tmpChecked = '';
+                    if($tmpCounterColumn == $this->numColumn){
+                        $tmpChecked = ' checked="checked" ';
+                    }
+                    echo '<label><input type="radio" name="num_column" value="'.$tmpCounterColumn.'" id="radio_num_column_'.$tmpCounterColumn.'" '.$tmpChecked.' />'.$tmpCounterColumn.'列显示</label>';
                 }
                 ?>
-            </select>
-        </div>
-        <div class="span8"><button type = "submit" class="btn">提交</button></div>
-    </div>
+                <button type = "submit" class="btn">提交</button>
+                <a href="<?php echo $this->url(array('event'=> 0));?>" >清空查询条件</a>
+        </td>
+    </fieldset>
 </form>
-
-
-<table width="100%" border="0" cellspacing="0" cellpadding="0" class="table table-striped table-bordered table-hover">
-	<tbody>
-    <?php
-    echo '<tr>';
-    echo '<th scope="col" width="4%"></th>';
-    for($month = 1;$month <= 12 ;$month ++){
-        echo '<th scope="col" width="8%">'.$month.'&nbsp;'.$this->translate("global_month_".$month).'</th>';
-    }
-    echo '</tr>';
-    for($day = 1;$day <= 31 ;$day ++){
-        echo '<tr>';
-        echo '<th scope="col">'.$day.'</th>';
-        for($month = 1;$month <= 12 ;$month ++){
-            echo '<td>'.$this->trendYear[$month]['month'][$day]['total'].'</td>';
+<?php
+    $tmpDataTotal = 0;
+    $tmpDataMin = 0;
+    $tmpDataMax = 0;
+    $tmpDataAverage = 0;
+    $tmpAllTrend = array();
+    $tmpAllTrendOfDay = array();
+    if(!empty($this->trendYear)){
+        foreach($this->trendYear as $month => $tmpTrendMonth){
+            $tmpAllTrend[] = array_sum($tmpTrendMonth);
+            $tmpAllTrendOfDay = array_merge($tmpAllTrendOfDay,$tmpTrendMonth);
         }
-        echo '</tr>';
+    }
+    if(!empty($tmpAllTrend)){
+        $tmpDataTotal = number_format(array_sum($tmpAllTrend));
+        $tmpDataMin = number_format(min($tmpAllTrend));
+        $tmpDataMinOfDay = number_format(min($tmpAllTrendOfDay));
+        $tmpDataMax = number_format(max($tmpAllTrend));
+        $tmpDataMaxOfMonth = number_format(max($tmpAllTrendOfDay));
+        $tmpDataAverage = number_format(round(array_sum($tmpAllTrend)/12,2),2);
+        $tmpDataAverageOfDay = number_format(round(array_sum($tmpAllTrend)/365,2),2);
     }
     ?>
-    </tbody>
+<table width="100%" border="0" cellspacing="0" cellpadding="5">
+    <tr>
+        <td width="25%"><span style="color:#999;">年份</span><span style="padding-left:5px;color:#666;font-szie:14px;"><?php echo $this->year;?></span></td>
+        <td width="25%"><span style="color:#999;">条目</span><span style="padding-left:5px;color:#666;font-szie:14px;"><?php echo $this->trendEventLabelOfYear;?></span></td>
+        <td width="25%">&nbsp;</td>
+        <td width="25%">&nbsp;</td>
+    </tr>
+    <tr>
+        <td width="25%"><span style="color:#999;">总数</span><span style="padding-left:5px;color:#666;font-szie:14px;"><?php echo $tmpDataTotal;?></span></td>
+        <td width="25%"><span style="color:#999;">最小（月）</span><span style="padding-left:5px;color:#666;font-szie:14px;"><?php echo $tmpDataMin;?></span></td>
+        <td width="25%"><span style="color:#999;">最大（月）</span><span style="padding-left:5px;color:#666;font-szie:14px;"><?php echo $tmpDataMax;?></span></td>
+        <td width="25%"><span style="color:#999;">平均（月）</span><span style="padding-left:5px;color:#666;font-szie:14px;"><?php echo $tmpDataAverage;?></span></td>
+    </tr>
+    <tr>
+        <td width="25%"></td>
+        <td width="25%"><span style="color:#999;">最小（日）</span><span style="padding-left:5px;color:#666;font-szie:14px;"><?php echo $tmpDataMinOfDay;?></span></td>
+        <td width="25%"><span style="color:#999;">最大（日）</span><span style="padding-left:5px;color:#666;font-szie:14px;"><?php echo $tmpDataMaxOfMonth;?></span></td>
+        <td width="25%"><span style="color:#999;">平均（日）</span><span style="padding-left:5px;color:#666;font-szie:14px;"><?php echo $tmpDataAverageOfDay;?></span></td>
+    </tr>
 </table>
 <?php
+    echo $this->printCalendar($this->trendYear,null,$this->numColumn,$this->url().'?show=day');
 }
 ?>

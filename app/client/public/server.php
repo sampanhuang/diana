@@ -1,2 +1,3 @@
 <?php
-print_r($_SERVER);
+$tmpUrl = parse_url('apply/website-register/index?register_pass/0');
+print_r($tmpUrl) ;

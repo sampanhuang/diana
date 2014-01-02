@@ -254,7 +254,7 @@ class Diana_Service_WebsiteApplyRegister extends Diana_Service_Abstract
             foreach($insertData as $keyApplyId => $valWebsite){
                 if($tmpRowsWebsite = $modelWebsite->saveData(1,$valWebsite)){
                     $modelWebsiteIntro->saveIntro($tmpRowsWebsite[0]['website_id'],$optionsWebsiteApplyInstro[$tmpRowsWebsite[0]['website_applyId']]);
-                    if(!$serviceWebsiteTag->updateWebsiteTag($tmpRowsWebsite[0]['website_id'],$tmpRowsWebsite[0]['website_tag'].",".$tmpRowsWebsite[0]['website_name'].",".$tmpRowsWebsite[0]['website_domain'])){
+                    if(!$serviceWebsiteTag->updateWebsiteTag($tmpRowsWebsite[0]['website_id'],$tmpRowsWebsite[0]['website_tag'])){
                         $this->setMsgs($serviceWebsiteTag->getMsgs());
                     }
                     $rowsWebsite = array_merge($rowsWebsite,$tmpRowsWebsite);

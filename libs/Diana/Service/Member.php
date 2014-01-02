@@ -110,7 +110,6 @@ class Diana_Service_Member extends Diana_Service_Abstract
      */
     function getMemberById($id)
     {
-
         //参数问题
         if ((empty($id))||(!is_numeric($id))) {
             $this->setMsgs("Invalid Param");
@@ -166,7 +165,7 @@ class Diana_Service_Member extends Diana_Service_Abstract
             $rowRole['role_menuTree'] = $serviceMemberMenu->makeTreeByIds($rowRole['role_menuId']);
         }
         if(!empty($rowRole['role_menuTree'])){
-            $rowRole['role_menu'] = $serviceMemberMenu->makeMenusByTree($rowRole['role_menuTree']);
+            $rowRole['role_menu'] = $serviceMemberMenu->makeMenusByTreeForEasyui($rowRole['role_menuTree']);
         }
         return $rowRole;
     }

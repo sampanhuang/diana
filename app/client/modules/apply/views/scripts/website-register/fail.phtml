@@ -1,0 +1,79 @@
+<?php
+if(!empty($this->paginator['rows'])){
+$this->headScript()->captureStart();?>
+$(function(){
+$("#checkall").click(
+function(){
+if($("#checkall").is(":checked")){
+$("input[name='register_id[]']").each(function(){this.checked=true;});
+$("#button_checkall").text('全部取消');
+}else{
+$("input[name='register_id[]']").each(function(){this.checked=false;});
+$("#button_checkall").text('全部选择');
+}
+}
+);
+$("#button_checkall").click(
+function(){
+if($("#checkall").is(":checked")){
+$("input[name='register_id[]']").each(function(){this.checked=false;});
+$("#button_checkall").text('全部选择');
+$("#checkall").each(function(){this.checked=false;});
+}else{
+$("input[name='register_id[]']").each(function(){this.checked=true;});
+$("#button_checkall").text('全部取消');
+$("#checkall").each(function(){this.checked=true;});
+
+}
+}
+);
+});
+<?php $this->headScript()->captureEnd();?>
+<div class="row" style="margin-bottom: 5px;">
+    <div class="span5">
+        <div class="btn-group">
+            <button id="button_checkall" name="button_checkall" class="btn  btn-small">全部选择</button>
+            <button class="btn  btn-small btn-danger">删除</button>
+        </div>
+    </div>
+    <div class="span5"><?php echo $this->render('paginator.phtml'); ?></div>
+</div>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="table table-striped table-hover">
+	<thead>
+    <tr>
+        <th  width="20"><input type="checkbox" name="checkall" id="checkall"></th>
+        <th  width="50">ID</th>
+        <th  width="150">名称</th>
+        <th  width="200">域名</th>
+        <th  width="100">时间</th>
+        <th  width="100">归属人</th>
+        <th >选项</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php
+
+        foreach($this->paginator['rows'] as $row){
+        ?>
+        <tr>
+            <td><input type="checkbox" name="register_id[]" id="register_id_<?php echo $row['apply_id'];?>"></td>
+            <td><?php echo $row['apply_id'];?></td>
+            <td><?php echo $this->utf8Substr($row['website_name'],12);?></td>
+            <td><?php echo $this->utf8Substr($row['website_domain'],32);?></td>
+            <td><?php echo $this->formatDate("Y-m-d H:i",$row['apply_insert_time']);?></td>
+            <td><?php echo $row['website_memberEmail'];?></td>
+            <td>
+                <a href="<?php echo $this->url(array('action'=>'detail','apply_id'=>$row['apply_id']));?>">明细</a>
+            </td>
+        </tr>
+        <?php }?>
+    </tbody>
+</table>
+<div class="row" style="margin-bottom: 5px;">
+    <div class="span2">
+    </div>
+    <div class="span8"><?php echo $this->render('paginator.phtml'); ?></div>
+</div>
+<?php
+}
+?>

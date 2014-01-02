@@ -55,54 +55,10 @@ class Admin_Controller_Action extends Diana_Controller_Action
         $this->view->headTitle("[".implode("::",array_filter(array($this->currentManagerEmail,$this->currentManagerName)))."]");
         $this->view->headTitle("--".DIANA_WEBSITE_TITLE);
 
-
-        //是否显示面包屑
-        $this->view->showBreadcrumb = true;
-        $this->breadcrumbActions = $this->currentManagerRoleResourceTrees[$this->currentModuleName]["controller"][$this->currentControllerName]["action"];
-
-
-    }
-
-    /**
-     * 设置调用哪个JQUERY
-     */
-    function setJqueryLang()
-    {
-        $suffixJqueryLang = 'en';
-        if(DIANA_TRANSLATE_CURRENT == 'zh-cn'){
-            $suffixJqueryLang = 'zh_CN';
-        }elseif(DIANA_TRANSLATE_CURRENT == 'zh-tw'){
-            $suffixJqueryLang = 'zh_TW';
-        }
-        $this->view->suffixJqueryLang = $suffixJqueryLang;
-    }
-
-
-
-    /**
-     * 设置是否显示导航条
-     *
-     * @param int|bool $showBreadcrumb
-     */
-    function setShowBreadcrumb($showBreadcrumb)
-    {
-        $this->showBreadcrumb = $showBreadcrumb;
-    }
-
-    /**
-     * 设置导航下拉选项
-     *
-     * @param array $breadcrumbActions array("key" => xxx,"label" => "xxx")
-     */
-    function showBreadcrumbActions($breadcrumbActions)
-    {
-        $this->breadcrumbActions = $breadcrumbActions;
     }
 
     public function postDispatch()
     {
         parent::postDispatch();
-        $this->view->showBreadcrumb = $this->showBreadcrumb;
-        $this->view->breadcrumbActions = $this->breadcrumbActions;
     }
 }

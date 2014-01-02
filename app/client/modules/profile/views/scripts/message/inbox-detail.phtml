@@ -1,0 +1,17 @@
+<div class="div_bg_fa separator_bot">
+<?php if (!empty($this->detailInbox)) { ?>
+            <table width="100%" border="0" cellspacing="0" cellpadding="5">
+                <tr>
+                    <td align="center"><strong><?php echo $this->detailInbox['msg_subject'];?></strong></td>
+                </tr>
+                <tr>
+                    <td align="center">
+                        <?php echo $this->detailInbox['msg_source_name'].'&nbsp;<span style="color:#999999;">&lt;'.$this->detailInbox['msg_source_email'].'&gt;</span>&nbsp;&nbsp;&nbsp;'.$this->formatDate('Y-m-d H:i',$this->detailInbox['inbox_msg_accept_time']);?>
+                    </td>
+                </tr>
+                <tr>
+                    <td><?php echo $this->detailInbox['msg_content'];?></td>
+                </tr>
+            </table>
+<?php }?>
+</div>
