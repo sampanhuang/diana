@@ -215,16 +215,6 @@ function formatLockTime(val,row)
         return '<span style="color:' + color + ';">' + date('Y-m-d H:i',row.member_lock_time) + '</span>';
     }
 }
-/**
- * 会员字段格式化
- * @param val
- * @param row
- * @return {String}
- */
-function formatMember(val,row)
-{
-    return  '<a href="javascript:addTabWithParent(\'会员管理/注册会员/会员明细\',\'/member/index/detail/member_id/'+row.website_memberId+'\',true)" >' + row.website_memberName + '</a>';
-}
 
 function formatWebsiteArea(val,row)
 {
@@ -341,7 +331,6 @@ function formatWebsiteName(val,row)
         <th data-options="field:'website_domain',width:200,align:'left'" >网站域名</th>
         <th data-options="field:'website_areaId',width:120,align:'left'"  formatter="formatWebsiteArea">地区</th>
         <th data-options="field:'website_categoryId',width:120,align:'left'"  formatter="formatWebsiteCategory">类别</th>
-        <th data-options="field:'website_memberId',width:120,align:'left'" formatter="formatMember">网站所有人</th>
         <th data-options="field:'website_click_in',width:80,align:'left'">进站流量</th>
         <th data-options="field:'website_click_out',width:80,align:'left'">出站流量</th>
     </tr>

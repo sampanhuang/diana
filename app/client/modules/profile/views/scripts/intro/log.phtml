@@ -1,5 +1,5 @@
 <?php
-if(($this->dataget['log_detail'] == 'yes')&&(!empty($this->dataget['log_id']))){
+if(($this->request['log_detail'] == 'yes')&&(!empty($this->request['log_id']))){
     echo $this->render('intro/log-detail.phtml');
 }else{
     echo $this->render('intro/log-index.phtml');

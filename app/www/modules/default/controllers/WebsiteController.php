@@ -198,7 +198,7 @@ class WebsiteController extends Www_Controller_Action
         $this->view->allWebsiteArea = $allWebsiteArea = $serviceWebsiteArea->getAll();
         //获取网站信息
         $serviceWebsite = new Diana_Service_Website();
-        if($detailWebsite = $serviceWebsite->detailById($websiteId,true)){
+        if($detailWebsite = $serviceWebsite->getWebsiteById($websiteId,true)){
             $this->setHeadTitle($allWebsiteCategory[$detailWebsite['website_categoryId']]['category_name_'.DIANA_TRANSLATE_CURRENT]);
             $this->setHeadTitle($allWebsiteArea[$detailWebsite['website_country']]['area_name_'].DIANA_TRANSLATE_CURRENT);
             $this->setHeadTitle($detailWebsite['website_name']);

@@ -20,11 +20,11 @@ class Profile_MessageController extends Client_Controller_ActionDec
     function inboxAction(){
         $dataGet = $this->view->dataget = $this->getRequest()->getParams();
         $queryGrid = array('show_ajax' => 'json','data_ajax' => 'datagrid_msg');
-        $serviceManagerMsg = new Admin_Service_ManagerMsg();
+        $serviceMemberMsg = new Client_Service_MemberMsg();
         if ($this->getRequest()->isPost()) {
             $dataPost = $this->getRequest()->getPost();
             $this->view->datapost = $dataPost;
-            $queryGridPost = $serviceManagerMsg->filterFormSearchAboutInbox($dataPost);
+            $queryGridPost = $serviceMemberMsg->filterFormSearchAboutInbox($dataPost);
             $queryGrid = array_merge($queryGrid,$queryGridPost);
         }
         $this->view->queryGrid = $queryGrid;
@@ -33,15 +33,15 @@ class Profile_MessageController extends Client_Controller_ActionDec
         $this->view->pagesize = $dataGet['rows'];
         //取数据源
         if ($dataGet['data_ajax'] == 'datagrid_msg') {
-            $dataGet['inbox_managerId'] = $this->currentManagerId;
-            if($dataGrid = $serviceManagerMsg->makeDataGridWIthInbox($dataGet['page'],$dataGet['rows'],$dataGet)){
+            $dataGet['inbox_memberId'] = $this->currentMemberId;
+            if($dataGrid = $serviceMemberMsg->makeDataGridWIthInbox($dataGet['page'],$dataGet['rows'],$dataGet)){
                 echo json_encode($dataGrid);
             }
         }
         //获取详细信息
         if(($dataGet['inbox_detail'] == 'yes')&&(!empty($dataGet['inbox_id']))){
-            if(!$this->view->detailInbox = $serviceManagerMsg->readFromInbox($dataGet['inbox_id'])){
-                 $this->setMsgs($serviceManagerMsg->getMsgs());
+            if(!$this->view->detailInbox = $serviceMemberMsg->readFromInbox($dataGet['inbox_id'])){
+                 $this->setMsgs($serviceMemberMsg->getMsgs());
             }
         }
     }
@@ -57,20 +57,20 @@ class Profile_MessageController extends Client_Controller_ActionDec
         if(empty($dataGet['inbox_id'])){
             $json['msgs'] = '无法接收到inbox_id';
         }else{
-            $serviceManagerMsg = new Admin_Service_ManagerMsg();
+            $serviceMemberMsg = new Client_Service_MemberMsg();
             if($dataGet['data_ajax'] == 'delete'){
-                if($countDelete = $serviceManagerMsg->deleteWithInbox($dataGet['inbox_id'],$this->currentManagerId)){
+                if($countDelete = $serviceMemberMsg->deleteWithInbox($dataGet['inbox_id'],$this->currentMemberId)){
                     $json['stat'] = 1;
                     $json['msgs'] = '成功删除'.$countDelete.'条消息';
                 }else{
-                    $json['msgs'] = '删除失败;'.implode(';',$serviceManagerMsg->getMsgs());
+                    $json['msgs'] = '删除失败;'.implode(';',$serviceMemberMsg->getMsgs());
                 }
             }elseif($dataGet['data_ajax'] == 'markread'){
-                if($countMarkRead = $serviceManagerMsg->markReadWithInbox($dataGet['inbox_id'],$this->currentManagerId)){
+                if($countMarkRead = $serviceMemberMsg->markReadWithInbox($dataGet['inbox_id'],$this->currentMemberId)){
                     $json['stat'] = 1;
                     $json['msgs'] = '成功将'.$countMarkRead.'条消息的状态变更为已读';
                 }else{
-                    $json['msgs'] = '已读状态变更失败;'.implode(';',$serviceManagerMsg->getMsgs());
+                    $json['msgs'] = '已读状态变更失败;'.implode(';',$serviceMemberMsg->getMsgs());
                 }
             }
         }
@@ -84,11 +84,11 @@ class Profile_MessageController extends Client_Controller_ActionDec
     {
         $dataGet = $this->view->dataget = $this->getRequest()->getParams();
         $queryGrid = array('show_ajax' => 'json','data_ajax' => 'datagrid_msg');
-        $serviceManagerMsg = new Admin_Service_ManagerMsg();
+        $serviceMemberMsg = new Client_Service_MemberMsg();
         if ($this->getRequest()->isPost()) {
             $dataPost = $this->getRequest()->getPost();
             $this->view->datapost = $dataPost;
-            $queryGridPost = $serviceManagerMsg->filterFormSearchAboutOutbox($dataPost);
+            $queryGridPost = $serviceMemberMsg->filterFormSearchAboutOutbox($dataPost);
             $queryGrid = array_merge($queryGrid,$queryGridPost);
         }
         $this->view->queryGrid = $queryGrid;
@@ -97,16 +97,16 @@ class Profile_MessageController extends Client_Controller_ActionDec
         $this->view->pagesize = $dataGet['rows'];
         //取数据源
         if ($dataGet['data_ajax'] == 'datagrid_msg') {
-            $dataGet['outbox_managerId'] = $this->currentManagerId;
+            $dataGet['outbox_memberId'] = $this->currentMemberId;
             $dataGet['outbox_send_stat'] = 1;//1是已发送，2是草稿
-            if($dataGrid = $serviceManagerMsg->makeDataGridWIthOutbox($dataGet['page'],$dataGet['rows'],$dataGet)){
+            if($dataGrid = $serviceMemberMsg->makeDataGridWIthOutbox($dataGet['page'],$dataGet['rows'],$dataGet)){
                 echo json_encode($dataGrid);
             }
         }
         //获取详细信息
         if(($dataGet['outbox_detail'] == 'yes')&&(!empty($dataGet['outbox_id']))){
-            if(!$this->view->detailOutbox = $serviceManagerMsg->readFromOutbox($dataGet['outbox_id'])){
-                $this->setMsgs($serviceManagerMsg->getMsgs());
+            if(!$this->view->detailOutbox = $serviceMemberMsg->readFromOutbox($dataGet['outbox_id'])){
+                $this->setMsgs($serviceMemberMsg->getMsgs());
             }
         }
     }
@@ -122,12 +122,12 @@ class Profile_MessageController extends Client_Controller_ActionDec
             $json['msgs'] = '无法接收到outbox_id';
         }else{
             if($dataGet['data_ajax'] == 'delete'){
-                $serviceManagerMsg = new Admin_Service_ManagerMsg();
-                if($countDelete = $serviceManagerMsg->deleteWithOutbox($dataGet['outbox_id'],$this->currentManagerId)){
+                $serviceMemberMsg = new Client_Service_MemberMsg();
+                if($countDelete = $serviceMemberMsg->deleteWithOutbox($dataGet['outbox_id'],$this->currentMemberId)){
                     $json['stat'] = 1;
                     $json['msgs'] = '成功删除'.$countDelete.'条消息';
                 }else{
-                    $json['msgs'] = '删除失败;'.implode($serviceManagerMsg->getMsgs());
+                    $json['msgs'] = '删除失败;'.implode($serviceMemberMsg->getMsgs());
                 }
             }
         }
@@ -141,11 +141,11 @@ class Profile_MessageController extends Client_Controller_ActionDec
     {
         $dataGet = $this->view->dataget = $this->getRequest()->getParams();
         $queryGrid = array('show_ajax' => 'json','data_ajax' => 'datagrid_msg');
-        $serviceManagerMsg = new Admin_Service_ManagerMsg();
+        $serviceMemberMsg = new Client_Service_MemberMsg();
         if ($this->getRequest()->isPost()) {
             $dataPost = $this->getRequest()->getPost();
             $this->view->datapost = $dataPost;
-            $queryGridPost = $serviceManagerMsg->filterFormSearchAboutDraft($dataPost);
+            $queryGridPost = $serviceMemberMsg->filterFormSearchAboutDraft($dataPost);
             $queryGrid = array_merge($queryGrid,$queryGridPost);
         }
         $this->view->queryGrid = $queryGrid;
@@ -154,9 +154,9 @@ class Profile_MessageController extends Client_Controller_ActionDec
         $this->view->pagesize = $dataGet['rows'];
         //取数据源
         if ($dataGet['data_ajax'] == 'datagrid_msg') {
-            $dataGet['outbox_managerId'] = $this->currentManagerId;
+            $dataGet['outbox_memberId'] = $this->currentMemberId;
             $dataGet['outbox_send_stat'] = 2;//1是已发送，2是草稿
-            if($dataGrid = $serviceManagerMsg->makeDataGridWithOutbox($dataGet['page'],$dataGet['rows'],$dataGet)){
+            if($dataGrid = $serviceMemberMsg->makeDataGridWithOutbox($dataGet['page'],$dataGet['rows'],$dataGet)){
                 echo json_encode($dataGrid);
             }
         }
@@ -173,12 +173,12 @@ class Profile_MessageController extends Client_Controller_ActionDec
             $json['msgs'] = '无法接收到outbox_id';
         }else{
             if($dataGet['data_ajax'] == 'delete'){
-                $serviceManagerMsg = new Admin_Service_ManagerMsg();
-                if($countDelete = $serviceManagerMsg->deleteWithOutbox($dataGet['outbox_id'],$this->currentManagerId)){
+                $serviceMemberMsg = new Client_Service_MemberMsg();
+                if($countDelete = $serviceMemberMsg->deleteWithOutbox($dataGet['outbox_id'],$this->currentMemberId)){
                     $json['stat'] = 1;
                     $json['msgs'] = '成功删除'.$countDelete.'条消息';
                 }else{
-                    $json['msgs'] = '删除失败;'.implode($serviceManagerMsg->getMsgs());
+                    $json['msgs'] = '删除失败;'.implode($serviceMemberMsg->getMsgs());
                 }
             }
         }
@@ -191,20 +191,20 @@ class Profile_MessageController extends Client_Controller_ActionDec
     function sendAction()
     {
         $this->view->dataGet = $dataGet = $this->getRequest()->getParams();
-        $serviceManagerMsg = new Admin_Service_ManagerMsg();
+        $serviceMemberMsg = new Client_Service_MemberMsg();
         //有无提交post，如果提交了，就保存
         if ($this->getRequest()->isPost()) {
             $this->view->detail = $dataPost = $this->getRequest()->getPost();
             if($dataPost['handle_type'] == 'save' || $dataPost['handle_type'] == 'send'){
-                $dataPost['msg_source'] = $this->currentManagerId;
-                if(!$detailManagerMsgOutbox = $serviceManagerMsg->save($dataPost,$dataPost['outbox_id'])){
+                $dataPost['msg_source'] = $this->currentMemberId;
+                if(!$detailMemberMsgOutbox = $serviceMemberMsg->save($dataPost,$dataPost['outbox_id'])){
                     $this->setMsgs('草稿保存失败');
-                    $this->setMsgs($serviceManagerMsg->getMsgs());
+                    $this->setMsgs($serviceMemberMsg->getMsgs());
                 }else{
                     if($dataPost['handle_type'] == 'send'){
-                        if(!$serviceManagerMsg->send($detailManagerMsgOutbox)){
+                        if(!$serviceMemberMsg->send($detailMemberMsgOutbox)){
                             $this->setMsgs('消息发送失败');
-                            $this->setMsgs($serviceManagerMsg->getMsgs());
+                            $this->setMsgs($serviceMemberMsg->getMsgs());
                         }else{
                             $this->setMsgs('消息发送成功');
                             unset($this->view->detail);
@@ -219,19 +219,19 @@ class Profile_MessageController extends Client_Controller_ActionDec
         if(empty($dataGet['data_ajax'])){
             $this->view->outboxId = $outboxId = $dataGet['outbox_id'];
             if(!empty($outboxId)){
-                if($detailManagerMsgOutbox = $serviceManagerMsg->readFromOutbox($outboxId)){
-                    if($detailManagerMsgOutbox['outbox_msg_send_time'] == 0){
-                        $this->view->detail = $detailManagerMsgOutbox;
+                if($detailMemberMsgOutbox = $serviceMemberMsg->readFromOutbox($outboxId)){
+                    if($detailMemberMsgOutbox['outbox_msg_send_time'] == 0){
+                        $this->view->detail = $detailMemberMsgOutbox;
                     }
                 }else{
                     $this->setMsgs('消息草稿读取失败');
-                    $this->setMsgs($serviceManagerMsg->getMsgs());
+                    $this->setMsgs($serviceMemberMsg->getMsgs());
                 }
             }
         }elseif ($dataGet['data_ajax'] == 'msg_dest') {//收件人树状菜单
-            $serviceManager = new Admin_Service_Manager();
-            if($treeManager = $serviceManager->makeTree()){
-                echo json_encode($treeManager);
+            $serviceMember = new Client_Service_Member();
+            if($treeMember = $serviceMember->makeTree()){
+                echo json_encode($treeMember);
             }
         }
     }

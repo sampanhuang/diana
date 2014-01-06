@@ -6,10 +6,10 @@
  * Time: 下午11:40
  * To change this template use File | Settings | File Templates.
  */
-class Diana_Model_DbTable_MemberMsg extends Diana_Model_DbTable_Abstract
+class Diana_Model_DbTable_MemberMsgDest extends Diana_Model_DbTable_Abstract
 {
-    var $_name = "member_msg";
-    var $_primary  = array("msg_id");
+    var $_name = "member_msg_dest";
+    var $_primary  = array("id");
 
     function __construct()
     {
@@ -24,7 +24,7 @@ class Diana_Model_DbTable_MemberMsg extends Diana_Model_DbTable_Abstract
     function setOrders()
     {
         $this->_orders = array(
-            "new" => array("msg_insert_time desc"),
+            "new" => array("msg_id desc"),
         );
     }
 
@@ -42,19 +42,9 @@ class Diana_Model_DbTable_MemberMsg extends Diana_Model_DbTable_Abstract
             $tmpWheres = $this->getWhereByCondition("msg_id",$condition["msg_id"],1);
             $wheres = array_merge($wheres,$tmpWheres);
         }
-        if(!empty($condition['msg_subject_like'])){//标题模糊查询
+        if (!empty($condition["msg_dest"])) {//根据收件人来查询
             $tmpWheres = array();
-            $tmpWheres = $this->getWhereByCondition("msg_subject",$condition["msg_subject_like"],5);
-            $wheres = array_merge($wheres,$tmpWheres);
-        }
-        if (!empty($condition["msg_delete_inbox"])) {//根据发件人来查询
-            $tmpWheres = array();
-            $tmpWheres = $this->getWhereByCondition("msg_delete_inbox",$condition["msg_delete_inbox"],1);
-            $wheres = array_merge($wheres,$tmpWheres);
-        }
-        if (!empty($condition["msg_delete_outbox"])) {//根据发件人来查询
-            $tmpWheres = array();
-            $tmpWheres = $this->getWhereByCondition("msg_delete_outbox",$condition["msg_delete_outbox"],1);
+            $tmpWheres = $this->getWhereByCondition("msg_dest",$condition["msg_dest"],1);
             $wheres = array_merge($wheres,$tmpWheres);
         }
         return $wheres;

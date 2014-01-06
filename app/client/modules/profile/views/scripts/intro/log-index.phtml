@@ -21,7 +21,7 @@ $(function(){
         rownumbers:true,
         cache:false,
         pagination:true,
-        pageList:[<?php echo DIANA_DATAGRID_PAGELIST_ADMIN;?>],
+        pageList:[<?php echo DIANA_DATAGRID_PAGELIST_CLIENT;?>],
         pageSize:<?php echo $this->pagesize;?>,
         url:'<?php echo $this->url(array('ajax_print' => 'json','req_handle' => 'datagrid_result'));?>'
     });
@@ -62,7 +62,7 @@ $(function(){
             width:690,
             height:390,
             title: '日志明细',
-            href:'/system/manager/log/log_detail/yes/log_id/' + log_id
+            href:'/profile/intro/log/log_detail/yes/log_id/' + log_id
         });
     }
 </script>

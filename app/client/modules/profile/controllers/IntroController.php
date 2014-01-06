@@ -27,68 +27,25 @@ class Profile_IntroController extends Client_Controller_ActionDec
      */
     function logAction()
     {
-        $serviceManagerLog = new Admin_Service_ManagerLog();
-        $resultDataGridColumns = array(
-
-        );
-        //DataGridColumns
-        $configDataGridColumns = array(
-            'frozen' => array(
-
-            ),
-            'mobile' => array(
-
-            ),
-        );
-        $this->setDataGridColumns($configDataGridColumns);
+        $this->view->request = $request = $this->view->dataget = $this->getRequest()->getParams();
+        $serviceMemberLog = new Diana_Service_MemberLog();
         //ajax处理配置
         $configHandle = array(
             'datagrid_result' => array(//查询
-                'object' => $serviceManagerLog,
+                'object' => $serviceMemberLog,
                 'method' => 'makeDataGrid',
             ),
             'combobox_log-type' => array(
-                'object' => $serviceManagerLog,
+                'object' => $serviceMemberLog,
                 'method' => 'makeLogTypeCombobox',
             ),
             'detail' => array(//明细
-                'object' => $serviceManagerLog,
+                'object' => $serviceMemberLog,
                 'method' => 'getDetailById',
             ),
         );
         //ajax处理
         $this->handleAjax($configHandle);
-        /*
-        $dataGet = $this->getRequest()->getParams();
-        $queryGrid = array('show_ajax' => 'json','data_ajax' => 'manager-log-datagrid');
-        $serviceManagerLog = new Admin_Service_ManagerLog();
-        if ($this->getRequest()->isPost()) {
-            $dataPost = $this->getRequest()->getPost();
-            $this->view->datapost = $dataPost;
-            $queryGridPost = $serviceManagerLog->filterFormSearch($dataPost);
-            $queryGrid = array_merge($queryGrid,$queryGridPost);
-        }
-        $this->view->dataget = $dataGet;
-        $this->view->queryGrid = $queryGrid;
-        //默认是20纪录一页
-        if (empty($dataGet['rows'])) {
-            $this->view->pagesize = DIANA_DATAGRID_PAGESIZE_ADMIN;
-        }
-        if(($dataGet['log_detail'] == 'yes')&&(!empty($dataGet['log_id']))){
-            if(!$detailManagerLog = $serviceManagerLog->getDetailById($dataGet['log_id'])){
-                $this->setMsgs($serviceManagerLog->getMsgs());
-            }
-            $this->view->detailManagerLog = $detailManagerLog;
-        }
-        if ($dataGet['data_ajax'] == 'manager-log-datagrid') {
-            $dataGet['log_managerId'] = $this->currentManagerId;
-            $grid = $serviceManagerLog->makeDataGrid($dataGet['page'],$dataGet['rows'],$dataGet);
-            echo json_encode($grid);
-        }elseif($dataGet['data_ajax'] == 'log-type-combobox'){
-            $logTypeComboBox = $serviceManagerLog->makeLogTypeCombobox();
-            echo json_encode($logTypeComboBox);
-        }
-        */
     }
 
 }
