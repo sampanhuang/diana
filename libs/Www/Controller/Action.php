@@ -27,6 +27,10 @@ class Www_Controller_Action extends Diana_Controller_Action
         if($mainChannels = $serviceFront->getMainChannels()){
             $this->view->mainChannels = $this->mainChannels =  $mainChannels;
         }
+
+        $serviceConfig = new Diana_Service_Config();
+        $this->debug['ajax_type'] = $serviceConfig->getValueByKey('debug_ajax_type_www');
+        $this->debug['ajax_on_clean'] = $serviceConfig->getValueByKey('debug_ajax_ob_clean_www');
     }
 
     /**

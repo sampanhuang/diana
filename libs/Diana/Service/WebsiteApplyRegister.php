@@ -588,6 +588,7 @@ class Diana_Service_WebsiteApplyRegister extends Diana_Service_Abstract
             'website_domain' => 1,
             'register_id' => 1,
             'register_pass' => 1,
+            'website_memberId' => 1,
         );
         return array_filter(array_intersect_key($post,$exp));
 

@@ -18,7 +18,7 @@ class Profile_SafeController extends Client_Controller_ActionDec
      * 密码更新
      */
     function resetpwdAction(){
-        $request = $this->_request;
+        $request = $this->getRequest()->getParams();
         if($request->isPost()) {
             $post = $request->getPost();
             $serviceCaptcha = new Diana_Service_Captcha();
@@ -42,8 +42,8 @@ class Profile_SafeController extends Client_Controller_ActionDec
      */
     function updateAction()
     {
-        $request = $this->_request;
-        $serviceMember = new Client_Service_Member();
+        $request = $this->getRequest()->getParams();
+        $serviceMember = new Diana_Service_Member();
         $condition = array('log_memberId' => $this->currentMemberId);//日志查询条件
         //处理get提交
         $updateType = $request->getParam('type','name');

@@ -18,6 +18,7 @@ class Client_Controller_Action extends Diana_Controller_Action
         parent::init();
         //设置jquery
         $this->setJqueryLang();
+
         //判断是否为已登录用户，且达到条件进入这个功能模块模块
         $serviceDoorkeeper = new Client_Service_Doorkeeper();
         if (!$sessionMemberId = $serviceDoorkeeper->checkSession()) {
@@ -26,18 +27,18 @@ class Client_Controller_Action extends Diana_Controller_Action
         }
         if (!$detailMember = $serviceDoorkeeper->checkPower($this->currentModuleName,$this->currentControllerName,$this->currentActionName,$sessionMemberId)) {
             $dataget = $this->getRequest()->getParams();
-            if ((!empty($dataget['data_ajax']))&&(!empty($dataget['show_ajax']))){
+            if ((!empty($dataget['ajax_print']))&&(!empty($dataget['req_handle']))){
                 $tmpJsonPower = array(
                     'stat' => 0,
                     'msgs' => '很可惜啊，你没有权限进行当前操作!<br>如果有需要，请联系管理员吧<br>'.implode(';',$serviceDoorkeeper->getMsgs()),
                 );
                 echo json_encode($tmpJsonPower);
             }else{
-                echo $sessionMemberId;
                 //$this->redirect('/default/guest/warning/content/'.implode('<br>',$serviceDoorkeeper->getMsgs()));
             }
             exit();
         }
+
         $this->view->currentMemberDetail = $this->currentMemberDetail = $detailMember;//用户详细资料
         $this->view->currentMemberId = $this->currentMemberId = $detailMember['member_id'];//用户ID
         $this->view->currentMemberEmail = $this->currentMemberEmail = $detailMember['member_email'];//用户帐号
@@ -55,6 +56,11 @@ class Client_Controller_Action extends Diana_Controller_Action
         $this->view->headTitle(implode(">",array($currentModuleLabel,$currentControllerLabel,$currentActionLabel)));
         $this->view->headTitle("[".implode("::",array_filter(array($this->currentMemberEmail,$this->currentMemberName)))."]");
         $this->view->headTitle("--".DIANA_WEBSITE_TITLE);
+
+        //设置view
+        $serviceConfig = new Diana_Service_Config();
+        $this->debug['ajax_type'] = $serviceConfig->getValueByKey('debug_ajax_type_client');
+        $this->debug['ajax_on_clean'] = $serviceConfig->getValueByKey('debug_ajax_ob_clean_client');
 
     }
 

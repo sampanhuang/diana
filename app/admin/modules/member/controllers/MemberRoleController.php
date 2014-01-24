@@ -6,7 +6,7 @@
  * Time: 下午5:51
  * To change this template use File | Settings | File Templates.
  */
-class Member_MemberRoleController extends Admin_Controller_Action
+class Member_MemberRoleController extends Client_Controller_ActionDec
 {
     function init()
     {

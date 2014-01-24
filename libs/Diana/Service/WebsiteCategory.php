@@ -52,6 +52,48 @@ class Diana_Service_WebsiteCategory extends Diana_Service_Abstract
     }
 
     /**
+     * 获取父类
+     * @return array|bool
+     */
+    function getOptionsWithFather()
+    {
+        $options = array();
+        $modelWebsiteCategory = new Diana_Model_WebsiteCategory();
+        if(!$rows = $modelWebsiteCategory->getRowsByCondition(null)){
+            return false;
+        }
+        foreach($rows as $row){
+            $tmpFatherId = $row['category_fatherId'];
+            $tmpRowSonId = $row['category_id'];
+            if($tmpFatherId == 0){
+                $options[$tmpRowSonId] = $row['category_name_'.DIANA_TRANSLATE_DEFAULT];
+            }
+        }
+        return $options;
+    }
+
+    /**
+     * 获取子类
+     * @return array|bool
+     */
+    function getOptionsWithSon()
+    {
+        $options = array();
+        $modelWebsiteCategory = new Diana_Model_WebsiteCategory();
+        if(!$rows = $modelWebsiteCategory->getRowsByCondition(null)){
+            return false;
+        }
+        foreach($rows as $row){
+            $tmpFatherId = $row['category_fatherId'];
+            $tmpRowSonId = $row['category_id'];
+            if($tmpFatherId > 0){
+                $options[$tmpFatherId][$tmpRowSonId] = $row['category_name_'.DIANA_TRANSLATE_DEFAULT];
+            }
+        }
+        return $options;
+    }
+
+    /**
      * 生成树数据
      *
      * @return unknown

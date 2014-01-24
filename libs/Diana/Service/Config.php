@@ -64,7 +64,10 @@ class Diana_Service_Config extends Diana_Service_Abstract
         }
         //生成要导入的数组
         foreach($rowsConfig as $rowConfig){
-            if((!empty($rowConfig['conf_key']))&&(!empty($rowConfig['conf_value']))){
+            if((!empty($rowConfig['conf_key']))){
+                if(empty($rowConfig['conf_value'])){
+                    $rowConfig['conf_value'] = $rowConfig['conf_default'];
+                }
                 $tmpArrConfKey = explode("_",$rowConfig['conf_key']);
                 $tmpPreConfKey = $tmpArrConfKey[0];
                 $importConfig[$tmpPreConfKey][$rowConfig['conf_key']] = $rowConfig['conf_value'];
@@ -86,7 +89,11 @@ class Diana_Service_Config extends Diana_Service_Abstract
      */
     function getPathByPre($pre)
     {
-        return DIANA_DIR_DATA_CONFIG.'/'.$pre.'.php';;
+        $path = DIANA_DIR_DATA_CONFIG.'/'.$pre.'.php';
+        if(!file_exists(dirname($path))){
+            @mkdir(dirname($path),0777,true);
+        }
+        return $path;
     }
 
 

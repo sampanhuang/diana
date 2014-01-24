@@ -1,0 +1,87 @@
+<?php
+$this->headScript()->captureStart();
+$this->headScript()->captureEnd();
+?>
+<script type="text/javascript">
+    $(function(){
+        $('#treegrid_conf').treegrid({
+            singleSelect:false,//允许多行选择
+            toolbar:'#toolbar',
+            rownumbers: true,
+            animate: true,
+            collapsible: true,
+            fitColumns: true,
+            url: '<?php echo $this->url($this->queryGrid);?>',
+            idField: 'conf_id',
+            treeField: 'conf_label',
+            onClickRow:function(row){
+                if(row.conf_fatherId == 0){
+                    $(this).treegrid('toggle', row.conf_id);
+                }
+            }
+        });
+    });
+
+    //全部关闭
+    function collapseAll(){
+        $('#treegrid_conf').treegrid('collapseAll');
+    }
+    //全部打开
+    function expandAll(){
+        $('#treegrid_conf').treegrid('expandAll');
+    }
+    function formatAction(val,row)
+    {
+        var updateLink = '<a href="javascript:addTabWithParent(\'系统管理/配置参数/修改参数\',\'/system/config/update/conf_key/'+row.conf_key+'\',true)" >修改</a>'
+        var detailLink = '<a href="javascript:addTabWithParent(\'系统管理/配置参数/参数明细\',\'/system/config/detail/conf_key/'+row.conf_key+'\',true)" >明细</a>'
+        return updateLink + '&nbsp;' +  detailLink;
+    }
+    function openWindowWithUpdate(div_id,conf_id)
+    {
+        $('#'+div_id).dialog({
+            //top:($(window).height() - 690) * 0.5,
+            //left:($(window).width() - 390) * 0.5,
+            closed:false,
+            width:690,
+            height:390,
+            title: '配置修改',
+            href:'/system/config/update/conf_id/' + conf_id
+        });
+    }
+
+</script>
+<!---帮助内容-->
+<div class="div_bg_fa separator_bot">
+    <fieldset border="false" class="fieldset_border separator_bot" >
+        <legend>友情提示</legend>
+        <div id="div_help" class="ul_help">
+            <ul>
+                <li>我们提供了批量删除的操作</li>
+                <li>但是只允许删除没有下级菜单的对象</li>
+                <li>在这个地方，修改与设置是两层意思</li>
+                <li>修改仅仅只是变更配置参数的值</li>
+                <li>设置不光可以变更配置参数的值，还可以修改更多内容</li>
+            </ul>
+        </div>
+    </fieldset>
+    </form>
+</div>
+<!--数据网格-->
+<table id="treegrid_conf" class="easyui-treegrid" title="索引列表" width="100%" height="100%" >
+    <thead>
+        <tr>
+            <th data-options="field:'ck',checkbox:true"></th>
+            <th data-options="field:'conf_label',width:220">变量用途</th>
+            <th data-options="field:'conf_action',width:80" formatter="formatAction">操作</th>
+            <th data-options="field:'conf_value',width:200">变量值</th>
+            <th data-options="field:'conf_remark',width:300">备注</th>
+        </tr>
+    </thead>
+</table>
+<!--数据网格工具栏-->
+<div id="toolbar" style="height:auto;padding:5px;">
+    <a id="linkbotton_grid_tool_select" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-drawings',plain:true" onclick="gridSelectAll(this,'treegrid_conf')">全选</a>
+    <a id="linkbotton_grid_tool_refresh" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-refresh',plain:true" onclick="$('#treegrid_conf').treegrid('reload')">刷新</a>
+    <a id="linkbotton_grid_tool_lock" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-sign-in',plain:true" onclick="expandAll()">全部展开</a>
+    <a id="linkbotton_grid_tool_unlock" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-sign-out',plain:true" onclick="collapseAll()">全部关闭</a>
+</div>

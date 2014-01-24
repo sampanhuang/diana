@@ -12,10 +12,10 @@ class Website_IndexController extends Client_Controller_ActionDec
     var $yearEnd = 0;
     function init()
     {
+
         parent::init();
         $this->view->yearStart = $this->yearStart;
         $this->view->yearEnd = $this->yearEnd = intval(date("Y"));
-
     }
 
     /**
@@ -23,6 +23,7 @@ class Website_IndexController extends Client_Controller_ActionDec
      */
     function indexAction(){
         $this->view->request = $request = $this->getRequest()->getParams();
+        $request['website_memberId'] = $this->currentMemberId;
         $queryGrid = array('ajax_print' => 'json_2','req_handle' => 'datagrid-result');
         $queryGrid = array_merge($queryGrid,$request);
         $serviceWebsite = new Diana_Service_Website();
@@ -32,6 +33,7 @@ class Website_IndexController extends Client_Controller_ActionDec
             'datagrid-result' => array(
                 'object' => $serviceWebsite,
                 'method' => 'makeDataGird',
+                'input' => $request,
             ),
         );
         $this->handleAjax($configHandle);

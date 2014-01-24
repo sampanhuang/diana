@@ -46,11 +46,11 @@ class Diana_Service_Member extends Diana_Service_Abstract
             $this->setMsgs("Invalid Param - Key");
             return false;
         }
-        if($column == 'id'){
+        if($column == 'member_id'){
             $detailMember = $this->getMemberById($key);
-        }elseif($column == 'name'){
+        }elseif($column == 'member_name'){
             $detailMember = $this->getMemberByName($key);
-        }elseif($column == 'email'){
+        }elseif($column == 'member_email'){
             $detailMember = $this->getMemberByEmail($key);
         }else{
             $this->setMsgs("Invalid Param - column ".$column);
@@ -137,6 +137,11 @@ class Diana_Service_Member extends Diana_Service_Abstract
         return $rowMember;
     }
 
+    /**
+     * 通过ID获取权限组
+     * @param $roleId
+     * @return bool
+     */
     function getRoleById($roleId)
     {
         //参数判断
@@ -185,5 +190,140 @@ class Diana_Service_Member extends Diana_Service_Abstract
             $return['second'] = $time - DIANA_TIMESTAMP_START;
         }
         return $return;
+    }
+
+
+
+    /**
+     * 更新帐号或是邮箱
+     * @param $id ID
+     * @param $input 外部输入
+     * @param $type 类型 1帐号，2邮箱
+     */
+    function updateNameEmail($id,$input,$type)
+    {
+        //确认外部参数是否正确
+        if (empty($id)||empty($input)||empty($type)) {
+            $this->setMsgs('各项参数不能为空');
+            return false;
+        }
+        if ((!is_numeric($id))||(!is_string($input))||(!is_string($type))) {
+            $this->setMsgs('各项参数必须为标量');
+            return false;
+        }
+        //判断用户ID是否正确
+        $modelMember = new Diana_Model_Member();
+        if (!$rowsMember = $modelMember->getRowsById(null,$id)) {
+            $this->setMsgs('错误的用户ID');
+            return false;
+        }
+        $managerName = $rowsMember[0]['manager_name'];
+        $managerEmail = $rowsMember[0]['manager_email'];
+        $logType = 0;//日志类型
+        $logRemark = array('old'=>'','new' => $input);//日志备注
+        if($type == 'name'){//帐号判断
+            if(strtolower($input) == strtolower($managerName)){
+                $this->setMsgs('未进行任何帐号变更操作');
+                return false;
+            }
+            if(!$this->isExistsWithName($input,$id)){
+                $this->setMsgs('帐号'.$input.'已经被使用');
+                return false;
+            }
+            $logType =130;
+            $logRemark['old'] = $managerName;
+            $dataUpdate = array('manager_name' => $input);
+        }elseif($type == 'email'){//邮箱判官
+            if(strtolower($input) == strtolower($managerEmail)){
+                $this->setMsgs('未进行任何邮箱变更操作');
+                return false;
+            }
+            if(!$this->isExistsWithEmail($input,$id)){
+                $this->setMsgs('邮箱'.$input.'已经被使用');
+                return false;
+            }
+            $logType =120;
+            $logRemark['old'] = $managerEmail;
+            $dataUpdate = array('manager_email' => $input);
+
+        }else{
+            $this->setMsgs('无效的参数Type');
+            return false;
+        }
+        //更新数据
+        if(!$modelMember->saveData(2,$dataUpdate,array('manager_id' => $id))){
+            $this->setMsgs('数据保存失败!');
+            return false;
+        }
+        //写入新session
+        if (!$detailMember = $this->getMemberById($id)) {
+            $this->setMsgs("错误的用户ID");
+            return false;
+        }
+        $serviceDoorkeeper = new Client_Service_Doorkeeper();
+        $serviceDoorkeeper->writeSession($detailMember);
+        //更新日志
+        $serviceMemberLog = new Client_Service_MemberLog();
+        if (!$serviceMemberLog->write($logType,$id,$detailMember['manager_email'],$detailMember['manager_name'],$logRemark)) {
+            $this->setMsgs('当前用户【'.$detailMember['manager_email'].'】密码变更日志写入失败');
+            //return false;//日志更新失败不鸟他
+        }
+        return $detailMember;
+    }
+
+    /**
+     * 判断当前帐号是否有重复的
+     * 如果$id不为空，那么肯定是重命名的
+     * 如果$id为空，那么肯定是创建新的
+     * @param string $label 帐号
+     * @param int $id $id ID
+     * @return bool 为真则当前帐号可用，为假则不可用
+     */
+    function isExistsWithName($name,$id = null)
+    {
+        //参数不能为空
+        if (empty($name)) {
+            $this->setMsgs('参数不能为空');
+            return false;
+        }
+        $modelMember = new Diana_Model_Member();
+        if ($rows = $modelMember->getRowsByName(true,$name)) {
+            if (empty($id)) {
+                return false;
+            }else{
+                if ($rows[0]['manager_id'] <> $id) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 判断当前邮箱是否有重复的
+     * 如果$id不为空，那么肯定是重命名的
+     * 如果$id为空，那么肯定是创建新的
+     * @param string $label 邮箱
+     * @param int $id $id ID
+     * @return bool 为真则当前邮箱可用，为假则不可用
+     */
+    function isExistsWithEmail($email,$id = null)
+    {
+        //参数不能为空
+        if (empty($email)) {
+            $this->setMsgs('参数不能为空');
+            return false;
+        }
+        $modelMember = new Diana_Model_Member();
+        if ($rows = $modelMember->getRowsByEmail(true,$email)) {
+            if (empty($id)) {
+                return false;
+            }else{
+                if ($rows[0]['manager_id'] <> $id) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

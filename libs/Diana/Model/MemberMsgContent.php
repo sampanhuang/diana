@@ -1,4 +1,4 @@
-<?member
+<?
 /**
  * 管理员-消息管理
  * Created by JetBrains PhpStorm.

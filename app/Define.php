@@ -49,6 +49,7 @@ define('DIANA_DIR_LIBS_ZEND', realpath("D:/PhpSourceCode/FrameWrok/ZendFramework
 
 define('DIANA_DIR_DATA', DIANA_DIR_ROOT."/../data");//数据目录
 define('DIANA_DIR_DATA_CONFIG', DIANA_DIR_DATA."/configs");//配置文件目录
+define('DIANA_DIR_DATA_MEMBER_CONFIG', DIANA_DIR_DATA."/member_configs");//配置文件目录
 define('DIANA_DIR_DATA_STATE', DIANA_DIR_DATA."/state");//配置文件目录
 define('DIANA_DIR_DATA_TEMPLATE', DIANA_DIR_DATA."/template");//模板目录
 define('DIANA_DIR_DATA_TRANSLATE', DIANA_DIR_DATA."/translate");//语言包目录

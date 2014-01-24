@@ -41,7 +41,7 @@ CREATE TABLE `tb_bulletin` (
   `bulletin_update_ip` varchar(32) DEFAULT NULL,
   `bulletin_update_addr` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`bulletin_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='公告';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='公告';
 
 /*Table structure for table `tb_bulletin_channel` */
 
@@ -53,7 +53,7 @@ CREATE TABLE `tb_bulletin_channel` (
   `channel_label_zh-cn` varchar(32) NOT NULL,
   `channel_label_zh-tw` varchar(32) DEFAULT NULL,
   `channel_label_en-us` varchar(32) DEFAULT NULL,
-  `channel_order` int(11) unsigned NOT NULL COMMENT '排序',
+  `channel_order` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '排序',
   `channel_count` int(11) unsigned NOT NULL DEFAULT '0',
   `channel_insert_time` int(11) unsigned NOT NULL DEFAULT '0',
   `channel_insert_manId` int(11) unsigned NOT NULL DEFAULT '0',
@@ -116,7 +116,7 @@ CREATE TABLE `tb_config` (
   `conf_alter_addr` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`conf_id`),
   UNIQUE KEY `ConfKey` (`conf_key`)
-) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tb_config_update_history` */
 
@@ -135,6 +135,24 @@ CREATE TABLE `tb_config_update_history` (
   `history_insert_addr` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`history_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/*Table structure for table `tb_config_update_history_2014` */
+
+DROP TABLE IF EXISTS `tb_config_update_history_2014`;
+
+CREATE TABLE `tb_config_update_history_2014` (
+  `history_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `history_configId` int(11) DEFAULT NULL,
+  `history_configKey` varchar(64) NOT NULL,
+  `history_configValue` varchar(64) NOT NULL,
+  `history_insert_time` int(11) unsigned NOT NULL DEFAULT '0',
+  `history_insert_manId` int(11) unsigned NOT NULL DEFAULT '0',
+  `history_insert_manName` varchar(32) DEFAULT NULL,
+  `history_insert_manEmail` varchar(32) DEFAULT NULL,
+  `history_insert_ip` varchar(32) NOT NULL,
+  `history_insert_addr` varchar(32) DEFAULT NULL,
+  PRIMARY KEY (`history_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tb_domain` */
 
@@ -240,11 +258,11 @@ CREATE TABLE `tb_manager_log` (
   KEY `Type_ManagerId` (`log_type`,`log_managerId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='管理员登录日志';
 
-/*Table structure for table `tb_manager_log_2013` */
+/*Table structure for table `tb_manager_log_2014` */
 
-DROP TABLE IF EXISTS `tb_manager_log_2013`;
+DROP TABLE IF EXISTS `tb_manager_log_2014`;
 
-CREATE TABLE `tb_manager_log_2013` (
+CREATE TABLE `tb_manager_log_2014` (
   `log_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '流水号',
   `log_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '登录时间',
   `log_ip` varchar(64) NOT NULL COMMENT '登录IP',
@@ -255,7 +273,7 @@ CREATE TABLE `tb_manager_log_2013` (
   `log_managerEmail` varchar(64) DEFAULT NULL COMMENT '管理员邮箱',
   PRIMARY KEY (`log_id`),
   KEY `Type_ManagerId` (`log_type`,`log_managerId`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='管理员登录日志';
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='管理员登录日志';
 
 /*Table structure for table `tb_manager_log_remark` */
 
@@ -268,11 +286,11 @@ CREATE TABLE `tb_manager_log_remark` (
   PRIMARY KEY (`log_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-/*Table structure for table `tb_manager_log_remark_2013` */
+/*Table structure for table `tb_manager_log_remark_2014` */
 
-DROP TABLE IF EXISTS `tb_manager_log_remark_2013`;
+DROP TABLE IF EXISTS `tb_manager_log_remark_2014`;
 
-CREATE TABLE `tb_manager_log_remark_2013` (
+CREATE TABLE `tb_manager_log_remark_2014` (
   `log_id` int(11) unsigned NOT NULL COMMENT '流水号',
   `log_user_agent` varchar(256) NOT NULL COMMENT '浏览器信息',
   `log_remark` text COMMENT '备注',
@@ -317,7 +335,7 @@ CREATE TABLE `tb_manager_menu` (
   `menu_update_manEmail` varchar(32) DEFAULT NULL,
   `menu_update_ip` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`menu_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=159 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=165 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tb_manager_msg` */
 
@@ -417,7 +435,7 @@ CREATE TABLE `tb_manager_role_menu` (
   `menu_id` int(11) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `RoleId_MenuId` (`role_id`,`menu_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=742 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=828 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tb_member` */
 
@@ -453,7 +471,86 @@ CREATE TABLE `tb_member` (
   PRIMARY KEY (`member_id`),
   UNIQUE KEY `Email` (`member_email`),
   UNIQUE KEY `Name` (`member_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
+
+/*Table structure for table `tb_member_config` */
+
+DROP TABLE IF EXISTS `tb_member_config`;
+
+CREATE TABLE `tb_member_config` (
+  `conf_id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '流水号',
+  `conf_fatherId` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '父级',
+  `conf_key` varchar(32) NOT NULL COMMENT '键',
+  `conf_label` varchar(32) NOT NULL COMMENT '名称',
+  `conf_default` varchar(128) DEFAULT NULL COMMENT '默认值',
+  `conf_input_type` enum('input','select','textarea','checkbox','radio') DEFAULT 'input' COMMENT '表单类型',
+  `conf_options` varchar(512) DEFAULT NULL COMMENT '备选项',
+  `conf_remark` varchar(128) DEFAULT NULL COMMENT '备注',
+  `conf_order` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '排序',
+  `conf_create_time` int(11) NOT NULL DEFAULT '0',
+  `conf_create_manId` int(11) DEFAULT '0',
+  `conf_create_manName` varchar(32) DEFAULT NULL,
+  `conf_create_manEmail` varchar(32) DEFAULT NULL,
+  `conf_create_ip` varchar(32) DEFAULT NULL,
+  `conf_create_addr` varchar(32) DEFAULT NULL,
+  `conf_alter_time` int(11) DEFAULT '0',
+  `conf_alter_manId` int(11) DEFAULT '0',
+  `conf_alter_manName` varchar(32) DEFAULT NULL,
+  `conf_alter_manEmail` varchar(32) DEFAULT NULL,
+  `conf_alter_ip` varchar(32) DEFAULT NULL,
+  `conf_alter_addr` varchar(32) DEFAULT NULL,
+  PRIMARY KEY (`conf_id`),
+  UNIQUE KEY `ConfKey` (`conf_key`)
+) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8;
+
+/*Table structure for table `tb_member_config_update_history` */
+
+DROP TABLE IF EXISTS `tb_member_config_update_history`;
+
+CREATE TABLE `tb_member_config_update_history` (
+  `history_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `history_memberId` int(11) DEFAULT NULL,
+  `history_configId` int(11) DEFAULT NULL,
+  `history_configKey` varchar(64) NOT NULL,
+  `history_configValue` varchar(64) NOT NULL,
+  `history_insert_time` int(11) unsigned NOT NULL DEFAULT '0',
+  `history_insert_ip` varchar(32) NOT NULL,
+  `history_insert_addr` varchar(32) DEFAULT NULL,
+  PRIMARY KEY (`history_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/*Table structure for table `tb_member_config_update_history_2014` */
+
+DROP TABLE IF EXISTS `tb_member_config_update_history_2014`;
+
+CREATE TABLE `tb_member_config_update_history_2014` (
+  `history_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `history_memberId` int(11) DEFAULT NULL,
+  `history_configId` int(11) DEFAULT NULL,
+  `history_configKey` varchar(64) NOT NULL,
+  `history_configValue` varchar(64) NOT NULL,
+  `history_insert_time` int(11) unsigned NOT NULL DEFAULT '0',
+  `history_insert_ip` varchar(32) NOT NULL,
+  `history_insert_addr` varchar(32) DEFAULT NULL,
+  PRIMARY KEY (`history_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+
+/*Table structure for table `tb_member_config_value` */
+
+DROP TABLE IF EXISTS `tb_member_config_value`;
+
+CREATE TABLE `tb_member_config_value` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `conf_id` int(11) unsigned NOT NULL DEFAULT '0',
+  `conf_memberId` int(11) unsigned NOT NULL DEFAULT '0',
+  `conf_value` varchar(128) NOT NULL,
+  `conf_insert_time` int(11) unsigned NOT NULL DEFAULT '0',
+  `conf_insert_ip` varchar(32) DEFAULT NULL,
+  `conf_update_time` int(11) unsigned NOT NULL DEFAULT '0',
+  `conf_update_ip` varchar(32) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `ConfigMember` (`conf_id`,`conf_memberId`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tb_member_favorite` */
 
@@ -467,6 +564,41 @@ CREATE TABLE `tb_member_favorite` (
   PRIMARY KEY (`favorite_id`),
   UNIQUE KEY `MemberId_WebsiteId` (`favorite_memberId`,`favorite_websiteId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/*Table structure for table `tb_member_friend` */
+
+DROP TABLE IF EXISTS `tb_member_friend`;
+
+CREATE TABLE `tb_member_friend` (
+  `friend_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `friend_master_memberId` int(11) unsigned NOT NULL DEFAULT '0',
+  `friend_guest_memberId` int(11) unsigned NOT NULL DEFAULT '0',
+  `friend_request_time` int(11) unsigned NOT NULL DEFAULT '0',
+  `friend_request_ip` varchar(32) DEFAULT NULL,
+  `friend_insert_time` int(11) unsigned NOT NULL DEFAULT '0',
+  `friend_insert_ip` varchar(32) DEFAULT NULL,
+  PRIMARY KEY (`friend_id`),
+  UNIQUE KEY `Master_Guest` (`friend_master_memberId`,`friend_guest_memberId`)
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8;
+
+/*Table structure for table `tb_member_friend_request` */
+
+DROP TABLE IF EXISTS `tb_member_friend_request`;
+
+CREATE TABLE `tb_member_friend_request` (
+  `request_id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '流水号',
+  `request_source` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '请求发起人',
+  `request_dest` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '请求接收人',
+  `request_remark` varchar(256) DEFAULT NULL COMMENT '请求备注',
+  `request_insert_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '发送时间',
+  `request_insert_ip` varchar(32) DEFAULT NULL COMMENT '发送IP',
+  `request_pass` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '处理结果，3未处理，1接受，2拒绝',
+  `request_pass_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '通过时间',
+  `request_pass_ip` varchar(32) DEFAULT NULL COMMENT '通过IP',
+  PRIMARY KEY (`request_id`),
+  KEY `Source` (`request_source`),
+  KEY `Dest` (`request_dest`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='会员交友请求';
 
 /*Table structure for table `tb_member_history_password` */
 
@@ -498,11 +630,11 @@ CREATE TABLE `tb_member_log` (
   KEY `MemberId` (`log_memberId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='用户登录日志';
 
-/*Table structure for table `tb_member_log_2013` */
+/*Table structure for table `tb_member_log_2014` */
 
-DROP TABLE IF EXISTS `tb_member_log_2013`;
+DROP TABLE IF EXISTS `tb_member_log_2014`;
 
-CREATE TABLE `tb_member_log_2013` (
+CREATE TABLE `tb_member_log_2014` (
   `log_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '流水号',
   `log_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '登录时间',
   `log_ip` varchar(64) NOT NULL COMMENT '登录IP',
@@ -513,13 +645,24 @@ CREATE TABLE `tb_member_log_2013` (
   `log_memberEmail` varchar(64) DEFAULT NULL COMMENT '用户邮箱',
   PRIMARY KEY (`log_id`),
   KEY `MemberId` (`log_memberId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='用户登录日志';
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='用户登录日志';
 
 /*Table structure for table `tb_member_log_remark` */
 
 DROP TABLE IF EXISTS `tb_member_log_remark`;
 
 CREATE TABLE `tb_member_log_remark` (
+  `log_id` int(11) unsigned NOT NULL COMMENT '流水号',
+  `log_user_agent` varchar(256) NOT NULL COMMENT '浏览器信息',
+  `log_remark` text COMMENT '备注',
+  PRIMARY KEY (`log_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/*Table structure for table `tb_member_log_remark_2014` */
+
+DROP TABLE IF EXISTS `tb_member_log_remark_2014`;
+
+CREATE TABLE `tb_member_log_remark_2014` (
   `log_id` int(11) unsigned NOT NULL COMMENT '流水号',
   `log_user_agent` varchar(256) NOT NULL COMMENT '浏览器信息',
   `log_remark` text COMMENT '备注',
@@ -550,7 +693,7 @@ CREATE TABLE `tb_member_menu` (
   `menu_update_manEmail` varchar(32) DEFAULT NULL,
   `menu_update_ip` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`menu_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=172 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=192 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tb_member_msg` */
 
@@ -559,14 +702,64 @@ DROP TABLE IF EXISTS `tb_member_msg`;
 CREATE TABLE `tb_member_msg` (
   `msg_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `msg_source` int(11) NOT NULL DEFAULT '0' COMMENT '发送人',
-  `msg_dest` int(11) NOT NULL DEFAULT '0' COMMENT '接收人',
   `msg_subject` varchar(64) NOT NULL COMMENT '标题',
-  `msg_content` varchar(512) DEFAULT NULL COMMENT '内容',
-  `msg_insert_time` int(11) NOT NULL DEFAULT '0' COMMENT '保存时间',
-  `msg_send_time` int(11) NOT NULL DEFAULT '0' COMMENT '发送时间',
-  `msg_read_time` int(11) NOT NULL DEFAULT '0' COMMENT '阅读时间',
+  `msg_insert_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `msg_insert_ip` varchar(32) DEFAULT NULL COMMENT '创建IP',
+  `msg_update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '保存时间',
+  `msg_update_ip` varchar(32) DEFAULT NULL COMMENT '保存IP',
+  `msg_delete_inbox` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '发件人是否已经删除了',
+  `msg_delete_outbox` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '收件人是否已经全部删除了',
+  PRIMARY KEY (`msg_id`),
+  KEY `Delete_Inbox_Outbox` (`msg_delete_inbox`,`msg_delete_outbox`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='发件箱';
+
+/*Table structure for table `tb_member_msg_content` */
+
+DROP TABLE IF EXISTS `tb_member_msg_content`;
+
+CREATE TABLE `tb_member_msg_content` (
+  `msg_id` int(11) unsigned NOT NULL COMMENT '消息流水号',
+  `msg_content` varchar(512) NOT NULL COMMENT '消息内容',
   PRIMARY KEY (`msg_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/*Table structure for table `tb_member_msg_dest` */
+
+DROP TABLE IF EXISTS `tb_member_msg_dest`;
+
+CREATE TABLE `tb_member_msg_dest` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `msg_id` int(11) unsigned NOT NULL DEFAULT '0',
+  `msg_dest` int(11) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='收件人';
+
+/*Table structure for table `tb_member_msg_inbox` */
+
+DROP TABLE IF EXISTS `tb_member_msg_inbox`;
+
+CREATE TABLE `tb_member_msg_inbox` (
+  `inbox_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `inbox_msgId` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '消息ID',
+  `inbox_manId` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '收件人',
+  `inbox_msg_accept_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '收件时间',
+  `inbox_msg_read_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '读件时间',
+  PRIMARY KEY (`inbox_id`),
+  UNIQUE KEY `MsgId_MemberId` (`inbox_msgId`,`inbox_manId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='收件箱';
+
+/*Table structure for table `tb_member_msg_outbox` */
+
+DROP TABLE IF EXISTS `tb_member_msg_outbox`;
+
+CREATE TABLE `tb_member_msg_outbox` (
+  `outbox_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `outbox_msgId` int(11) unsigned NOT NULL DEFAULT '0',
+  `outbox_manId` int(11) unsigned NOT NULL DEFAULT '0',
+  `outbox_msg_send_time` int(11) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`outbox_id`),
+  UNIQUE KEY `MsgId_MemberId` (`outbox_msgId`,`outbox_manId`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tb_member_role` */
 
@@ -600,7 +793,7 @@ CREATE TABLE `tb_member_role_menu` (
   `menu_id` int(11) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `RoleId_MenuId` (`role_id`,`menu_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=73 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=164 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tb_member_trend_login` */
 
@@ -641,6 +834,45 @@ CREATE TABLE `tb_member_trend_login` (
   UNIQUE KEY `Month_Day_Event` (`trend_month`,`trend_day`,`trend_eventId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+/*Table structure for table `tb_member_trend_login_2014` */
+
+DROP TABLE IF EXISTS `tb_member_trend_login_2014`;
+
+CREATE TABLE `tb_member_trend_login_2014` (
+  `trend_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `trend_eventId` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_year` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_month` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_day` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_0` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_1` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_2` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_3` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_4` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_5` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_6` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_7` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_8` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_9` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_10` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_11` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_12` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_13` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_14` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_15` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_16` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_17` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_18` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_19` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_20` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_21` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_22` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_23` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_total` int(11) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`trend_id`),
+  UNIQUE KEY `Month_Day_Event` (`trend_month`,`trend_day`,`trend_eventId`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
 /*Table structure for table `tb_member_trend_register` */
 
 DROP TABLE IF EXISTS `tb_member_trend_register`;
@@ -678,6 +910,44 @@ CREATE TABLE `tb_member_trend_register` (
   PRIMARY KEY (`trend_id`),
   UNIQUE KEY `Month_Day` (`trend_month`,`trend_day`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/*Table structure for table `tb_member_trend_register_2014` */
+
+DROP TABLE IF EXISTS `tb_member_trend_register_2014`;
+
+CREATE TABLE `tb_member_trend_register_2014` (
+  `trend_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `trend_year` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_month` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_day` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_0` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_1` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_2` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_3` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_4` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_5` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_6` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_7` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_8` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_9` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_10` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_11` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_12` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_13` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_14` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_15` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_16` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_17` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_18` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_19` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_20` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_21` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_22` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_23` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_total` int(11) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`trend_id`),
+  UNIQUE KEY `Month_Day` (`trend_month`,`trend_day`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tb_safe_filter_word` */
 
@@ -734,7 +1004,7 @@ CREATE TABLE `tb_website` (
   `website_update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '修改时间',
   `website_update_man` varchar(32) DEFAULT NULL,
   `website_update_ip` varchar(32) DEFAULT NULL,
-  `website_update_stat` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '修改状态1无修改申请2已修改申请3拒绝此次修改',
+  `website_update_stat` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '修改状态1无修改申请2有修改申请3拒绝此次修改',
   `website_update_count` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '修改次数',
   `website_delete_stat` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '删除状态0无删除申请1已提交申请',
   `website_applyId` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '申请ID',
@@ -744,7 +1014,7 @@ CREATE TABLE `tb_website` (
   UNIQUE KEY `Name` (`website_name`),
   UNIQUE KEY `Domain` (`website_domain`),
   KEY `CetgoryId_Continent_Country` (`website_categoryId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
 
 /*Table structure for table `tb_website_apply_delete` */
 
@@ -793,8 +1063,8 @@ CREATE TABLE `tb_website_apply_register` (
   `register_pass_addr` varchar(32) DEFAULT NULL,
   `register_pass` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '是否通过申请（3未处理，1通过，2未通过）',
   PRIMARY KEY (`register_id`),
-  UNIQUE KEY `WebsiteId` (`website_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='网站注册申请';
+  KEY `WebsiteId` (`website_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='网站注册申请';
 
 /*Table structure for table `tb_website_apply_register_intro` */
 
@@ -924,7 +1194,7 @@ CREATE TABLE `tb_website_keyword` (
   `keyword_update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '最后查询时间',
   PRIMARY KEY (`keyword_id`),
   UNIQUE KEY `Label` (`keyword_label`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tb_website_meta` */
 
@@ -950,7 +1220,7 @@ CREATE TABLE `tb_website_tag` (
   `tag_update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '标签更新时间',
   PRIMARY KEY (`tag_id`),
   UNIQUE KEY `Name` (`tag_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
 
 /*Table structure for table `tb_website_tag_relation` */
 
@@ -963,7 +1233,7 @@ CREATE TABLE `tb_website_tag_relation` (
   `relation_time` int(11) unsigned NOT NULL,
   PRIMARY KEY (`relation_id`),
   UNIQUE KEY `WebId_TagId` (`relation_websiteId`,`relation_tagId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tb_website_trend_apply_register` */
 
@@ -1003,13 +1273,12 @@ CREATE TABLE `tb_website_trend_apply_register` (
   UNIQUE KEY `Month_Day` (`trend_month`,`trend_day`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-/*Table structure for table `tb_website_trend_click_in` */
+/*Table structure for table `tb_website_trend_apply_register_2014` */
 
-DROP TABLE IF EXISTS `tb_website_trend_click_in`;
+DROP TABLE IF EXISTS `tb_website_trend_apply_register_2014`;
 
-CREATE TABLE `tb_website_trend_click_in` (
+CREATE TABLE `tb_website_trend_apply_register_2014` (
   `trend_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `trend_eventId` int(11) unsigned NOT NULL DEFAULT '0',
   `trend_year` int(11) unsigned NOT NULL DEFAULT '0',
   `trend_month` int(11) unsigned NOT NULL DEFAULT '0',
   `trend_day` int(11) unsigned NOT NULL DEFAULT '0',
@@ -1039,14 +1308,14 @@ CREATE TABLE `tb_website_trend_click_in` (
   `trend_hour_23` int(11) unsigned NOT NULL DEFAULT '0',
   `trend_hour_total` int(11) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`trend_id`),
-  UNIQUE KEY `Month_Day_Event` (`trend_month`,`trend_day`,`trend_eventId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  UNIQUE KEY `Month_Day` (`trend_month`,`trend_day`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
-/*Table structure for table `tb_website_trend_click_in_2013` */
+/*Table structure for table `tb_website_trend_click_in` */
 
-DROP TABLE IF EXISTS `tb_website_trend_click_in_2013`;
+DROP TABLE IF EXISTS `tb_website_trend_click_in`;
 
-CREATE TABLE `tb_website_trend_click_in_2013` (
+CREATE TABLE `tb_website_trend_click_in` (
   `trend_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `trend_eventId` int(11) unsigned NOT NULL DEFAULT '0',
   `trend_year` int(11) unsigned NOT NULL DEFAULT '0',
@@ -1158,6 +1427,44 @@ CREATE TABLE `tb_website_trend_register` (
   UNIQUE KEY `Month_Day` (`trend_month`,`trend_day`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+/*Table structure for table `tb_website_trend_register_2014` */
+
+DROP TABLE IF EXISTS `tb_website_trend_register_2014`;
+
+CREATE TABLE `tb_website_trend_register_2014` (
+  `trend_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `trend_year` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_month` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_day` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_0` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_1` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_2` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_3` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_4` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_5` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_6` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_7` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_8` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_9` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_10` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_11` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_12` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_13` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_14` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_15` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_16` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_17` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_18` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_19` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_20` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_21` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_22` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_23` int(11) unsigned NOT NULL DEFAULT '0',
+  `trend_hour_total` int(11) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`trend_id`),
+  UNIQUE KEY `Month_Day` (`trend_month`,`trend_day`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
 /*Table structure for table `tb_website_trend_search` */
 
 DROP TABLE IF EXISTS `tb_website_trend_search`;
@@ -1197,11 +1504,11 @@ CREATE TABLE `tb_website_trend_search` (
   UNIQUE KEY `Month_Day_Event` (`trend_month`,`trend_day`,`trend_eventId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-/*Table structure for table `tb_website_trend_search_2013` */
+/*Table structure for table `tb_website_trend_search_2014` */
 
-DROP TABLE IF EXISTS `tb_website_trend_search_2013`;
+DROP TABLE IF EXISTS `tb_website_trend_search_2014`;
 
-CREATE TABLE `tb_website_trend_search_2013` (
+CREATE TABLE `tb_website_trend_search_2014` (
   `trend_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `trend_eventId` int(11) unsigned NOT NULL DEFAULT '0',
   `trend_year` int(11) unsigned NOT NULL DEFAULT '0',
@@ -1234,7 +1541,7 @@ CREATE TABLE `tb_website_trend_search_2013` (
   `trend_hour_total` int(11) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`trend_id`),
   UNIQUE KEY `Month_Day_Event` (`trend_month`,`trend_day`,`trend_eventId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

@@ -43,7 +43,7 @@
                             if($tmpQueryColumn == $this->request['query_column']){
                                 $tmpHtmlTagChecked = 'checked="checked"';
                             }
-                            echo '<label><input type="radio" name="query_column" value="'.$tmpQueryColumn.'" id="query_column_'.$tmpQueryColumn.'" '.$tmpHtmlTagChecked.'  />'.$this->translate('global_'.$tmpQueryColumn).'</label>';
+                            echo '<label><input type="radio" name="query_column" value="'.$tmpQueryColumn.'" id="query_column_'.$tmpQueryColumn.'" '.$tmpHtmlTagChecked.'  />'.$this->translate('model_'.$tmpQueryColumn).'</label>';
                         }
                         ?>
                     </td>

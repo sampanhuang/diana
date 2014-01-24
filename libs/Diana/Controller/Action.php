@@ -5,6 +5,7 @@
  */
 class Diana_Controller_Action extends Zend_Controller_Action
 {
+    var $debug;
 	var $msgs;
 	var $currentModuleName;
 	var $currentControllerName;
@@ -29,8 +30,23 @@ class Diana_Controller_Action extends Zend_Controller_Action
                 header('content-type: application/json; charset=utf-8');
             }
         }
+
+        //调试模式设定
+        $this->debug = array(
+            'ajax_type' => 'GET',//AJAX清求方法
+            'ajax_ob_clean' => 1,//AJAX输出前是否清空缓冲区
+        );
 	}
 
+
+    /**
+     * 设置ajax type
+     * @param $ajaxType (默认: "GET") 请求方式 ("POST" 或 "GET")， 默认为 "GET"。注意：其它 HTTP 请求方法，如 PUT 和 DELETE 也可以使用，但仅部分浏览器支持。
+     */
+    function setViewAjaxType()
+    {
+        $this->view->ajaxType = $this->debug['ajax_type'];
+    }
 
     /**
      * 设置调用哪个JQUERY
@@ -86,7 +102,7 @@ class Diana_Controller_Action extends Zend_Controller_Action
      */
     function handleAjax($configHandle)
     {
-        $request = $this->getRequest()->getParams();
+        $request = $configHandle['_input']?$configHandle['_input']:$this->getRequest()->getParams();
         $ajaxPrint = strtolower(trim($request['ajax_print']));//打印方式，如果是json则是json，如果是xml则是xml
         if(empty($ajaxPrint)){
             return false;
@@ -96,7 +112,9 @@ class Diana_Controller_Action extends Zend_Controller_Action
         if(substr_count($ajaxPrint,'json') >= 1){
             $this->getHelper("layout")->disableLayout();//关闭布局
             $this->getHelper("viewRenderer")->setNoRender();//关闭视图
-            //ob_clean();
+            if($this->debug['ajax_ob_clean'] == 1){
+                ob_clean();
+            }
             header('content-type: application/json; charset=utf-8');
             if($ajaxPrint == 'json_1'){
                 $response = array(
@@ -115,7 +133,7 @@ class Diana_Controller_Action extends Zend_Controller_Action
                 if($result){
                     echo json_encode($result);
                 }else{
-                    echo json_encode(array('total' => 0,'rows' => array(),));
+                    echo json_encode(array('msg'=>$this->getMsgs(),'total' => 0,'rows' => array(),));
                 }
             }else{
                 echo json_encode($result);
@@ -133,7 +151,7 @@ class Diana_Controller_Action extends Zend_Controller_Action
         if ($this->getRequest()->isPost()) {
             if($result = $this->decHandle($configHandle)){
                 $this->setMsgs('操作成功');
-                return true;
+                return $result;
             }else{
                 $this->setMsgs('操作失败');
                 return false;
@@ -148,14 +166,13 @@ class Diana_Controller_Action extends Zend_Controller_Action
      */
     function decHandle($configHandle)
     {
-        $request = $this->getRequest()->getParams();
+        $request = $configHandle['_input']?$configHandle['_input']:$this->getRequest()->getParams();
         $reqHandle = strtolower(trim($request['req_handle']));//请求处理的事务
         //如果不是ajax请求，则忽略
         if(empty($reqHandle)){
             $this->setMsgs('没有指定操作类型！');
             return false;
         }
-
         //检查是否有这项配置
         if(empty($configHandle[$reqHandle])){
             $this->setMsgs('你需要确认是否配置成功 - '.$reqHandle);
@@ -166,6 +183,7 @@ class Diana_Controller_Action extends Zend_Controller_Action
         //负责处理的类的方法
         $method = $configHandle[$reqHandle]['method'];
         //判断这个类中是否有这个方法
+        $input = $configHandle[$reqHandle]['input']?$configHandle[$reqHandle]['input']:$request;
 
         if(!method_exists($object,$method)){
             $this->setMsgs('无效的方法 - '.$method);
@@ -173,7 +191,7 @@ class Diana_Controller_Action extends Zend_Controller_Action
         }
 
         //执行查询
-        $result = $object->$method($request);
+        $result = $object->$method($input);
         $this->setMsgs($object->getMsgs());
         return $result;
     }

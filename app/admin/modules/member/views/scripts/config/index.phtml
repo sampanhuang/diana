@@ -1,0 +1,190 @@
+<?php
+$this->headScript()->captureStart();
+$this->headScript()->captureEnd();
+?>
+<script type="text/javascript">
+    $(function(){
+        $('#treegrid_conf').treegrid({
+            singleSelect:false,//允许多行选择
+            toolbar:'#toolbar',
+            rownumbers: true,
+            animate: true,
+            collapsible: true,
+            fitColumns: true,
+            url: '<?php echo $this->url(array('show_ajax' => 'json','data_ajax'=>'treegrid_data'));?>',
+            idField: 'conf_id',
+            treeField: 'conf_label',
+            onClickRow:function(row){
+                if(row.conf_fatherId == 0){
+                    $(this).treegrid('toggle', row.conf_id);
+                }
+            }
+        });
+        //数据列表操作对话框
+        $('#dialog-config-del').dialog({
+            iconCls: 'icon-dell',
+            buttons: '#dialog-buttons',
+            closed:true,
+            modal:true
+        });
+    });
+    /**
+     * 操作请求发送确认
+     */
+    function sendRequest(doit_code,doit_label){
+        var dialog_id = '';//对话框的ID
+        var ids = [];
+        var labels = [];
+        var rows = $('#treegrid_conf').datagrid('getSelections');
+        var iconclass = '';
+        if( rows.length == 0){
+            $.messager.alert('确认请求','请选择要操作的数据','error');
+            return false;
+        }
+        for(var i=0; i<rows.length; i++){
+            ids.push(rows[i].conf_id);
+            labels.push(rows[i].conf_label);
+        }
+        var messagerTitle = doit_label + '确认';
+        var messagerBody = '你确认要' + doit_label + '以下' + rows.length + '条数据吗？<br><br>' + labels.join(' , ');
+        if (doit_code == 'delete' ){
+            dialog_id = 'dialog-config-del';
+            if(doit_code == 'delete'){
+                iconclass = 'icon-delete';
+            }
+            $('#'+dialog_id).dialog({
+                title: messagerTitle,
+                content:messagerBody,
+                closed:false,
+                iconCls:iconclass
+            });
+        }
+        //在弹出对话框后点击确定
+        $('#link_buttons_ok').click(function(){
+            $("#link_buttons_ok").unbind();//删除原来的事件绑定
+            $('#' + dialog_id).dialog('close');//添加新的点击绑定
+            sendReqWithAjax(doit_code,ids);
+        });
+        //在调出对话框后点击取消
+        $('#link_buttons_cancel').click(function(){
+            $("#link_buttons_cancel").unbind();//删除原来的事件绑定
+            $('#' + dialog_id).dialog('close');//添加新的点击绑定
+        });
+    }
+
+    /**
+     * 发送删除、锁定、解税等请求
+     */
+    function sendReqWithAjax(doit_code,ids)
+    {
+        if(ids == '' || ids == null || doit_code == ''){
+            $.messager.alert('确认请求','请确认你发送了参数过来','error');
+            return false;
+        }
+        var returnAjax = false;
+        $.ajax({
+            async:false,
+            type: "GET",
+            dataType: "json",
+            contentType:"utf-8",
+            cache:false,
+            url:"/system/config/handle",
+            data: {conf_id:ids,show_ajax:'json',data_ajax:'delete'},
+            success: function(json) {
+                if (json.stat == 1) {
+                    $.messager.alert('确认请求',json.msgs);
+                    $('#treegrid_conf').treegrid('reload');//重新载入
+                    returnAjax = true;
+                }else{
+                    $.messager.alert('请求结果',json.msgs,'error');
+                }
+            },
+            beforeSend:function(){
+                forbiddenPage();
+            },
+            error: function() {
+                $.messager.alert('警告','发生未知的系统错误!<br>不如联系管理员看看是什么情况！','error');
+            },
+            complete:function(){
+                releasePage();
+                $('#treegrid_conf').treegrid('clearSelections');
+            }
+        });
+        return returnAjax;
+    }
+
+    //全部关闭
+    function collapseAll(){
+        $('#treegrid_conf').treegrid('collapseAll');
+    }
+    //全部打开
+    function expandAll(){
+        $('#treegrid_conf').treegrid('expandAll');
+    }
+    function formatAction(val,row)
+    {
+        var alterLink = '<a href="javascript:addTabWithParent(\'系统管理/会员参数/输入设置\',\'/member/config/alter/conf_key/'+row.conf_key+'\',true)" >设置</a>'
+        var detailLink = '<a href="javascript:addTabWithParent(\'系统管理/会员参数/参数明细\',\'/member/config/detail/conf_key/'+row.conf_key+'\',true)" >明细</a>'
+        return '&nbsp;' +  alterLink  + '&nbsp;' + detailLink;
+    }
+    function openWindowWithUpdate(div_id,conf_id)
+    {
+        $('#'+div_id).dialog({
+            //top:($(window).height() - 690) * 0.5,
+            //left:($(window).width() - 390) * 0.5,
+            closed:false,
+            width:690,
+            height:390,
+            title: '配置修改',
+            href:'/system/config/update/conf_id/' + conf_id
+        });
+    }
+
+</script>
+<!---帮助内容-->
+<div class="div_bg_fa separator_bot">
+    <fieldset border="false" class="fieldset_border separator_bot" >
+        <legend>友情提示</legend>
+        <div id="div_help" class="ul_help">
+            <ul>
+                <li>我们提供了批量删除的操作</li>
+                <li>但是只允许删除没有下级菜单的对象</li>
+                <li>在这个地方，修改与设置是两层意思</li>
+                <li>修改仅仅只是变更配置参数的值</li>
+                <li>设置不光可以变更配置参数的值，还可以修改更多内容</li>
+            </ul>
+        </div>
+    </fieldset>
+    </form>
+</div>
+<!--数据网格-->
+<table id="treegrid_conf" class="easyui-treegrid" title="索引列表" width="100%" height="100%" >
+    <thead>
+        <tr>
+            <th data-options="field:'ck',checkbox:true"></th>
+            <th data-options="field:'conf_label',width:220">变量用途</th>
+            <th data-options="field:'conf_key',width:220">变量名</th>
+            <th data-options="field:'conf_action',width:100" formatter="formatAction">操作</th>
+            <th data-options="field:'conf_default',width:500">默认值</th>
+        </tr>
+    </thead>
+</table>
+<!--删除弹出框-->
+<div id="dialog-config-del" class="easyui-dialog" style="width:400px;height:200px;padding:10px">
+</div>
+<!--删除弹出按钮栏_锁定-->
+<div id="dialog-buttons">
+    <a id="link_buttons_ok" href="javascript:void(0)" class="easyui-linkbutton">确定</a>
+    <a id="link_buttons_cancel" href="javascript:void(0)" class="easyui-linkbutton">取消</a>
+</div>
+<!--数据网格工具栏-->
+<div id="toolbar" style="height:auto;padding:5px;">
+    <a id="linkbotton_grid_tool_select" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-drawings',plain:true" onclick="gridSelectAll(this,'treegrid_conf')">全选</a>
+    <a id="linkbotton_grid_tool_dell" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-delete',plain:true" onclick="sendRequest('delete','删除')">删除</a>
+    <a id="linkbotton_grid_tool_refresh" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-refresh',plain:true" onclick="$('#treegrid_conf').treegrid('reload')">刷新</a>
+    <a id="linkbotton_grid_tool_lock" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-sign-in',plain:true" onclick="expandAll()">全部展开</a>
+    <a id="linkbotton_grid_tool_unlock" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-sign-out',plain:true" onclick="collapseAll()">全部关闭</a>
+</div>
+<!--角色明细-->
+<div id="dialog-config-update" class="easyui-dialog" data-options="modal:false,closed:true,iconCls:'icon-config'" style="padding:5px;">
+</div>

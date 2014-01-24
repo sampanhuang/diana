@@ -116,6 +116,27 @@ $this->headScript()->captureStart();?>
     }
 
     /**
+     * 格式化审核状态
+     * @param val
+     * @param row
+     */
+    function formatRegisterPass(val,row)
+    {
+        var color,label;
+        if(val == 1){
+            color = 'green';
+            label = '<?php echo $this->translate('register_pass_1');?>';
+        }else if(val == 2){
+            color = 'red';
+            label = '<?php echo $this->translate('register_pass_2');?>';
+        }else if(val == 3){
+            color = 'blue';
+            label = '<?php echo $this->translate('register_pass_3');?>';
+        }
+        return '<span style="color: '+color+'">'+label+'</span>';
+    }
+
+    /**
      * 会员字段格式化
      * @param val
      * @param row
@@ -150,7 +171,7 @@ $this->headScript()->captureStart();?>
      */
     function formatWebsiteName(val,row)
     {
-        var detailLink = '<a href="javascript:addTabWithParent(\'业务审批/网站提交/申请明细\',\'/apply/website-register/detail/register_id/' + row.register_id + '\',true)" >' + row.website_name + '</a>';
+        var detailLink = '<a href="javascript:addTabWithParent(\'业务办理/网站提交/申请明细\',\'/apply/website-register/detail/register_id/' + row.register_id + '\',true)" >' + row.website_name + '</a>';
         //var modifyLink = '<a href="javascript:addTabWithParent(\'会员管理/注册会员/会员明细\',\'/apply/website-register/detail/register_id/'+row.register_id+'\',true)" >编辑</a>'
         //return detailLink + '&nbsp;' +  modifyLink ;
         return detailLink;
@@ -174,7 +195,6 @@ $this->headScript()->captureStart();?>
                     <th>锁定状态</th>
                     <td>
                     </td>
-
                 </tr>
             </table>
             <!---表单按钮-->
@@ -206,6 +226,7 @@ $this->headScript()->captureStart();?>
         <th data-options="field:'register_id',width:60">流水号</th>
         <th data-options="field:'website_name',width:120" formatter="formatWebsiteName">网站名称</th>
         <th data-options="field:'website_domain',width:200,align:'left'" >网站域名</th>
+        <th data-options="field:'register_pass',width:70,align:'left'"  formatter="formatRegisterPass">审核状态</th>
         <th data-options="field:'website_areaId',width:120,align:'left'"  formatter="formatWebsiteArea">地区</th>
         <th data-options="field:'website_categoryId',width:120,align:'left'"  formatter="formatWebsiteCategory">类别</th>
         <th data-options="field:'website_memberId',width:120,align:'left'" formatter="formatMember">网站所属</th>
@@ -225,8 +246,6 @@ $this->headScript()->captureStart();?>
 <div id="toolbar" style="height:auto;padding:5px;">
     <a id="linkbotton_grid_tool_select" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-archives',plain:true" onclick="gridSelectAll(this,'datagrid_result')">全选</a>
     <a id="linkbotton_grid_tool_dell" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-delete',plain:true" onclick="sendRequest('delete','删除','icon-delete')">删除</a>
-    <a id="linkbotton_grid_tool_lock" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-greenled',plain:true" onclick="sendRequest('accept','同意通过','icon-greenled')">同意通过</a>
-    <a id="linkbotton_grid_tool_unlock" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-redled',plain:true" onclick="sendRequest('reject','拒绝通过','icon-redled')">拒绝通过</a>
     <a id="linkbotton_grid_tool_refresh" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-refresh',plain:true" onclick="$('#datagrid_result').datagrid('reload');">刷新</a>
 </div>
 <!--操作弹出框工具栏_删除及解锁-->

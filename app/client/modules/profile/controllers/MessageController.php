@@ -190,7 +190,17 @@ class Profile_MessageController extends Client_Controller_ActionDec
      */
     function sendAction()
     {
-        $this->view->dataGet = $dataGet = $this->getRequest()->getParams();
+        $this->view->queryGridOfDest = $queryGridOfDest = array('ajax_print' => 'json','req_handle' => 'combotree-dest');
+        $this->view->dataGet = $dataGet = $input = $this->getRequest()->getParams();
+        //处理AJAX
+        $configHandleAjax = array(
+            'combotree-dest' => array(
+                'object' => new Diana_Service_MemberFriend(),
+                'method' => 'makeTree',
+                'input'  => array_merge($input,array('friend_master_memberId' => $this->currentMemberId)),
+            ),
+        );
+
         $serviceMemberMsg = new Client_Service_MemberMsg();
         //有无提交post，如果提交了，就保存
         if ($this->getRequest()->isPost()) {
@@ -216,7 +226,9 @@ class Profile_MessageController extends Client_Controller_ActionDec
                 }
             }
         }
-        if(empty($dataGet['data_ajax'])){
+
+        $this->handleAjax($configHandleAjax);
+        if(empty($dataGet['req_handle'])){
             $this->view->outboxId = $outboxId = $dataGet['outbox_id'];
             if(!empty($outboxId)){
                 if($detailMemberMsgOutbox = $serviceMemberMsg->readFromOutbox($outboxId)){
@@ -227,11 +239,6 @@ class Profile_MessageController extends Client_Controller_ActionDec
                     $this->setMsgs('消息草稿读取失败');
                     $this->setMsgs($serviceMemberMsg->getMsgs());
                 }
-            }
-        }elseif ($dataGet['data_ajax'] == 'msg_dest') {//收件人树状菜单
-            $serviceMember = new Client_Service_Member();
-            if($treeMember = $serviceMember->makeTree()){
-                echo json_encode($treeMember);
             }
         }
     }

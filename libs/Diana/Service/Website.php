@@ -46,9 +46,9 @@ class Diana_Service_Website extends Diana_Service_Abstract
     {
         $page = $request['page'];
         $pageSize = $request['rows'];
-        $format = array('website_id','website_name','website_domain','wait_pass');
+        $format = array('website_id','website_name','website_domain','wait_pass','website_memberId');
         $condition = $this->filterColumns(array($request),$format);
-        return $this->pageByCondition($page,$pageSize,$condition);
+        return $this->pageByCondition($page,$pageSize,$condition[0]);
 
     }
 

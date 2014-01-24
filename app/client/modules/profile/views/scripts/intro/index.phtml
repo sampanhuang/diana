@@ -94,30 +94,29 @@
 
             </tr>
             <tr>
-                <th width="10%">角色状态</th>
-                <td width="23%">
-                    <?php
-                    if ($this->currentMemberDetail['role_lock_stat'] == 1) {
-                        echo '<span style="color:red;">已锁定<span>';
+                <th>锁定状态</th>
+                <td><?php
+                    if( $this->currentMemberDetail['role_lock_time'] > time()){
+                        echo '<span style="color:red;">已锁定<span>';                    ;
                     }else{
                         echo '<span style="color:green;">未锁定<span>';
                     }
-                    ?>
-                </td>
-                <th width="10%">解锁时间</th>
-                <td width="23%"><?php echo $this->formatDate("Y-m-d H:i",$this->currentMemberDetail['role_lock_time']);?></td>
-                <th width="10%">解锁备注</th>
-                <td width="23%">
+                    ?></td>
+                <th><?php if(!empty($this->currentMemberDetail['role_lock_time'])){echo '解锁时间';}?></th>
+                <td><?php echo $this->formatDate("Y-m-d H:i:s",$this->currentMemberDetail['role_lock_time']);?></td>
+                <th><?php if(!empty($this->currentMemberDetail['role_lock_time'])){echo '备注';}?></th>
+                <td>
                     <?php
-                    echo $this->formatSecond($this->currentMemberDetail['role_lock_second']);
-                    if ($this->currentMemberDetail['role_lock_stat'] == 0) {
-                        echo '之前';
-                    }else{
-                        echo '之后';
+                    if( $this->currentMemberDetail['role_lock_time'] > 0){
+                        if( $this->currentMemberDetail['role_lock_time'] > time()){
+                            echo $this->formatsecond($this->currentMemberDetail['role_lock_time'] - time());
+                            echo '后解锁';
+                        }else{
+                            echo $this->formatsecond(time() - $this->currentMemberDetail['role_lock_time']);
+                            echo '前解锁';
+                        }
                     }
-                    echo '解锁';
-                    ?>
-                </td>
+                    ?></td>
             </tr>
             <tr>
                 <th width="10%">创建时间</th>

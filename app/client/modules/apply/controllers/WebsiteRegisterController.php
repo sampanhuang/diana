@@ -17,6 +17,7 @@ class Apply_WebsiteRegisterController extends Client_Controller_ActionDec
     function indexAction()
     {
         $request = $this->view->request = $this->getRequest()->getParams();
+        $request['website_memberId'] = $this->currentMemberId;
         $queryGrid = array('ajax_print' => 'json_2','req_handle' => 'datagrid-result');
         $queryGrid = array_merge($queryGrid,$request);
         $serviceWebsiteApplyRegister = new Diana_Service_WebsiteApplyRegister();
@@ -27,6 +28,7 @@ class Apply_WebsiteRegisterController extends Client_Controller_ActionDec
             'datagrid-result' => array(
                 'object' => $serviceWebsiteApplyRegister,
                 'method' => 'makeDataGrid',
+                'input' => $request,
             ),
         );
         $this->handleAjax($configHandle);
@@ -50,7 +52,7 @@ class Apply_WebsiteRegisterController extends Client_Controller_ActionDec
             }
         }
         if((empty($detailMember))&&(!empty($request['register_id']))){
-            if(!$detailMember = $serviceWebsiteApplyRegister->getDetail('id',$request['register_id'])){
+            if(!$detailMember = $serviceWebsiteApplyRegister->getDetail('register_id',$request['register_id'])){
                 $this->setMsgs('查询失败');
                 $this->setMsgs($serviceWebsiteApplyRegister->getMsgs());
             }
@@ -59,6 +61,35 @@ class Apply_WebsiteRegisterController extends Client_Controller_ActionDec
         $this->view->detail = $detailMember;
         $this->view->request = $request;
 
+    }
+
+    /**
+     * 提交申请
+     */
+    function postAction()
+    {
+        //获取提交数据
+        $this->view->request = $this->view->detail = $request = $this->getRequest()->getParams();
+        //获取网站分类代码
+        $serviceWebsiteCategory = new Diana_Service_WebsiteCategory();
+        $this->view->optionsFatherOfCategory = $optionsFatherOfCategory =  $serviceWebsiteCategory->getOptionsWithFather();
+        $this->view->optionsSonOfCategory = $optionsSonOfCategory =  $serviceWebsiteCategory->getOptionsWithSon();
+        //获取网站地区代码
+        $serviceWebsiteArea = new Diana_Service_WebsiteArea();
+        $this->view->optionsFatherOfArea = $optionsFatherOfArea =  $serviceWebsiteArea->getOptionsWithFather();
+        $this->view->optionsSonOfArea = $optionsSonOfArea =  $serviceWebsiteArea->getOptionsWithSon();
+        //处理提交请求
+        if ($this->getRequest()->isPost()) {
+            //提交网站注册申请
+            $request['website_memberEmail'] = $this->currentMemberEmail;
+            $serviceWebsiteApplyRegister = new Diana_Service_WebsiteApplyRegister();
+            if($serviceWebsiteApplyRegister->postApply($request)){
+                $this->setMsgs('提交成功，我会们在你的网站审核成功后以电子邮件的形式通知你');
+                unset($this->view->request);
+            }else{
+                $this->setMsgs($serviceWebsiteApplyRegister->getMsgs());
+            }
+        }
     }
 
     /**

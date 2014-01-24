@@ -17,7 +17,7 @@ abstract class Client_Service_Abstract extends Diana_Service_Abstract
     {
         if (empty($this->sessionMember)) {
             //判断各项session不能为空
-            $sessionMember = new Zend_Session_Namespace(DIANA_TAG_SESSIONNAMESPAN_MANAGER);
+            $sessionMember = new Zend_Session_Namespace(DIANA_TAG_SESSIONNAMESPAN_MEMBER);
             if (empty($sessionMember->id) || empty($sessionMember->email) || empty($sessionMember->name)) {
                 //$this->setMsgs('会话超时！你需要重新登录');
                 return false;

@@ -117,7 +117,7 @@ class Admin_Service_Config extends Admin_Service_Abstract
             'conf_fatherId'   => array(new Zend_Validate_Int(),'allowEmpty' => true),
             'conf_key'   => array(new Zend_Validate_StringLength(1,128)),
             'conf_label'   => array(new Zend_Validate_StringLength(1,128)),
-            'conf_value'   => array(new Zend_Validate_StringLength(1,512),'allowEmpty' => true),
+            'conf_value'   => array(new Zend_Validate_StringLength(1,512)),
             'conf_default'   => array(new Zend_Validate_StringLength(1,512),'allowEmpty' => true),
             'conf_input_type'   => array(new Zend_Validate_Alpha()),
             'conf_options'   => array(new Zend_Validate_StringLength(1,1024),'allowEmpty' => true),

@@ -8,6 +8,10 @@
  */
 return array(
     'model_website_id' => '网站ID',
+    'register_pass' => '申请审核状态',
+    'register_pass_1' => '已通过',
+    'register_pass_2' => '未通过',
+    'register_pass_3' => '未审核',
     'model_keyword_count_enter' => '关键字搜索次数',
     'model_keyword_insert_time' => '关键字初次搜索时间',
     'model_keyword_update_time' => '关键字最后搜索时间',

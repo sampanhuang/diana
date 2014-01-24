@@ -84,14 +84,14 @@ class Member_IndexController extends Admin_Controller_ActionDec
             }
         }
         if((empty($detailMember))&&(!empty($request['member_id']))){
-            $request['query_column'] = 'id';
+            $request['query_column'] = 'member_id';
             $request['query_key'] = $request['member_id'];
             if(!$detailMember = $serviceMember->getDetail('id',$request['member_id'])){
                 $this->setMsgs('查询失败');
                 $this->setMsgs($serviceMember->getMsgs());
             }
         }
-        $this->view->queryColumns = array('id','name','email');
+        $this->view->queryColumns = array('member_id','member_name','member_email');
         $this->view->detail = $detailMember;
         $this->view->request = $request;
     }

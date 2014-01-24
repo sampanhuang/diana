@@ -55,7 +55,13 @@ class Admin_Controller_Action extends Diana_Controller_Action
         $this->view->headTitle("[".implode("::",array_filter(array($this->currentManagerEmail,$this->currentManagerName)))."]");
         $this->view->headTitle("--".DIANA_WEBSITE_TITLE);
 
+
+        $serviceConfig = new Diana_Service_Config();
+        $this->debug['ajax_type'] = $serviceConfig->getValueByKey('debug_ajax_type_admin');
+        $this->debug['ajax_on_clean'] = $serviceConfig->getValueByKey('debug_ajax_ob_clean_admin');
+
     }
+
 
     public function postDispatch()
     {

@@ -59,12 +59,15 @@ class Diana_Service_WebsiteArea extends Diana_Service_Abstract
     {
         $options = array();
         $modelWebsiteArea = new Diana_Model_WebsiteArea();
-        if(!$rwsFather = $modelWebsiteArea->getRowsByFather(null,0)){
+        if(!$rows = $modelWebsiteArea->getRowsByCondition(null)){
             return false;
         }
-        foreach($rwsFather as $rowFather){
-            $areaId = $rowFather['area_id'];
-            $options[$areaId] = $rowFather['area_name_'.DIANA_TRANSLATE_DEFAULT];
+        foreach($rows as $row){
+            $tmpFatherId = $row['area_fatherId'];
+            $tmpRowSonId = $row['area_id'];
+            if($tmpFatherId == 0){
+                $options[$tmpRowSonId] = $row['area_name_'.DIANA_TRANSLATE_DEFAULT];
+            }
         }
         return $options;
     }
@@ -75,21 +78,19 @@ class Diana_Service_WebsiteArea extends Diana_Service_Abstract
      */
     function getOptionsWithSon()
     {
-        $rowsSon = array();
+        $options = array();
         $modelWebsiteArea = new Diana_Model_WebsiteArea();
-        if(!$rowsFather = $modelWebsiteArea->getRowsByFather(null,0)){
+        if(!$rows = $modelWebsiteArea->getRowsByCondition(null)){
             return false;
         }
-        foreach($rowsFather as $rowFather){
-            $tmpFatherId = $rowFather['area_id'];
-            if($tmpRowsSon = $this->getRowsByFather($tmpFatherId)){
-                foreach($tmpRowsSon as $tmpRowSon){
-                    $tmpRowSonId = $tmpRowSon['area_id'];
-                    $rowsSon[$tmpFatherId][$tmpRowSonId] = $tmpRowSon['area_name_'.DIANA_TRANSLATE_DEFAULT];
-                }
+        foreach($rows as $row){
+            $tmpFatherId = $row['area_fatherId'];
+            $tmpRowSonId = $row['area_id'];
+            if($tmpFatherId > 0){
+                $options[$tmpFatherId][$tmpRowSonId] = $row['area_name_'.DIANA_TRANSLATE_DEFAULT];
             }
         }
-        return $rowsSon;
+        return $options;
     }
 
     /**

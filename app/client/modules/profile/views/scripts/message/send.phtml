@@ -4,61 +4,61 @@ $this->headScript()->appendFile("/static/kindeditor-4.1.7/kindeditor.js");
 $this->headScript()->appendFile("/static/kindeditor-4.1.7/lang/zh_CN.js");
 $this->headScript()->captureStart();?>
 $(function(){
-    $('#select_msg_dest').combotree({
-        onlyLeafCheck:true,
-        method:'get',
-        url:'<?php echo $this->url(array('show_ajax' => 'json' ,'data_ajax' => 'msg_dest' ));?>'
-    });
-    <?php
-    if(!empty($this->detail['msg_dest'])){
-        echo '$(\'#select_msg_dest\').combotree(\'setValues\',\''.implode(',',$this->detail['msg_dest']).'\'.split(\',\'));';
-        //echo '$(\'#input_log_typeLabel\').combobox(\'setText\',\''.$this->datapost['log_typeLabel'].'\');';
-    }
-    ?>
-    var editor;
-    KindEditor.ready(function(K) {
-        editor = K.create('#msg_content', {
+$('#select_msg_dest').combotree({
+onlyLeafCheck:true,
+method:'get',
+url:'<?php echo $this->url($this->queryGridOfDest);?>'
+});
+<?php
+if(!empty($this->detail['msg_dest'])){
+    echo '$(\'#select_msg_dest\').combotree(\'setValues\',\''.implode(',',$this->detail['msg_dest']).'\'.split(\',\'));';
+    //echo '$(\'#input_log_typeLabel\').combobox(\'setText\',\''.$this->datapost['log_typeLabel'].'\');';
+}
+?>
+var editor;
+KindEditor.ready(function(K) {
+editor = K.create('#msg_content', {
 
-            resizeType : 1,
-            allowPreviewEmoticons : false,
-            allowImageUpload : false,
-            items : [
-            'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
-            'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
-            'insertunorderedlist', '|', 'emoticons', 'image', 'link'],
-            afterBlur: function(){this.sync();}
-        });
-    });
-    //表单内点击按钮提交
-    $('#linkbtn_send').click(function(){
-        formSubmit();
-    });
-    $('#linkbtn_save').click(function(){
-        $('#input_handle_type').val('save');
-        formSubmit();
-    });
-    //表单内回车提交
-    $("#form_manager_msg_send").keydown(function(event){
-        if(event.keyCode==13){formSubmit();}
-    });
+resizeType : 1,
+allowPreviewEmoticons : false,
+allowImageUpload : false,
+items : [
+'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+'insertunorderedlist', '|', 'emoticons', 'image', 'link'],
+afterBlur: function(){this.sync();}
+});
+});
+//表单内点击按钮提交
+$('#linkbtn_send').click(function(){
+formSubmit();
+});
+$('#linkbtn_save').click(function(){
+$('#input_handle_type').val('save');
+formSubmit();
+});
+//表单内回车提交
+$("#form_member_msg_send").keydown(function(event){
+if(event.keyCode==13){formSubmit();}
+});
 
 });
 <?php $this->headScript()->captureEnd();?>
 <script type="text/javascript">
     //表单提交
     function formSubmit() {
-        $("#form_manager_msg_send").submit();
+        $("#form_member_msg_send").submit();
     }
 
 </script>
 <div class="div_bg_fa separator_bot">
-    <form id="form_manager_msg_send" name="form_manager_msg_send" method="post">
+    <form id="form_member_msg_send" name="form_member_msg_send" method="post">
         <fieldset border="false"  class="fieldset_border separator_bot" >
             <legend>发送消息</legend>
             <table width="100%" border="0" cellspacing="1" cellpadding="5"  class="table_border separator_top separator_bot">
                 <tr>
                     <th width="10%">发件人</th>
-                    <td><?php echo $this->currentManagerName;?>&lt;<?php echo $this->currentManagerEmail;?>&gt;<span id="span_notice_msg_source"></span></td>
+                    <td><?php echo $this->currentMemberName;?>&lt;<?php echo $this->currentMemberEmail;?>&gt;<span id="span_notice_msg_source"></span></td>
                 </tr>
                 <tr>
                     <th width="10%">收件人</th>

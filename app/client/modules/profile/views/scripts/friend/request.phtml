@@ -1,0 +1,240 @@
+<?php
+$this->headScript()->appendFile("/static/custom/script/date.js");
+$this->headScript()->appendFile("/static/custom/script/common.js");
+$this->headScript()->appendFile("/static/custom/script/formatter.js");
+$this->headScript()->captureStart();?>
+<?php $this->headScript()->captureEnd();?>
+<script type="text/javascript">
+    $(function(){
+        $('#div_check_delete').hide();
+        //提交查询表单
+        $('#linkbtn_submit').click(function(){
+            $("#form_query").submit();
+        });
+        //隐藏提示
+        $("#div_help").hide();
+        //查询帮助
+        $('#linkbtn_help').click(function(){
+            $("#div_help").toggle();
+        });
+        //数据列表
+        $('#datagrid_result').datagrid({
+            singleSelect:false,//允许多行选择
+            toolbar:'#toolbar',
+            rownumbers:true,
+            cache:false,
+            pagination:true,
+            pageSize:<?php echo $this->pagesize;?>,
+            url:'<?php echo $this->url($this->queryGrid);?>'
+        });
+        //数据列表操作对话框
+        $('#dialog_apply_handle').dialog({
+            iconCls: 'icon-dell',
+            buttons: '#dialog-buttons',
+            closed:true,
+            modal:true
+        });
+    });
+    /**
+     * 操作请求发送确认
+     */
+    function sendRequest(handle,handle_label,iconclass){
+        var req_del = '';
+        var apply_lock_time = '';//锁定时间
+        var dialog_id = '';//对话框的ID
+        var ids = [];
+        var labels = [];
+        var rows = $('#datagrid_result').datagrid('getSelections');
+        if( rows.length == 0){
+            $.messager.alert('确认请求','请选择要操作的数据','error');
+            return false;
+        }
+        for(var i=0; i<rows.length; i++){
+            ids.push(rows[i].request_id);
+            labels.push(rows[i].request_source_memberName + '&lt;'+ rows[i].request_source_memberEmail +'&gt;' );
+        }
+        var messagerTitle = handle_label + '确认';
+        var messagerBody = '你确认要' + handle_label + '以下' + rows.length + '条添加好友申请吗？<br><br>' + labels.join(' , ');
+        apply_lock_time = 0;
+        if(handle == 'delete'){
+            $('#div_check_delete').hide();
+        }else{
+            $('#div_check_delete').show();
+        }
+        dialog_id = 'dialog_apply_handle';
+        $('#'+dialog_id).dialog({
+            title: messagerTitle,
+            content:messagerBody,
+            closed:false,
+            iconCls:iconclass
+        });
+        //在弹出对话框后点击确定
+        $('#link_buttons_ok').click(function(){
+            $("#link_buttons_ok").unbind();//删除原来的事件绑定
+            $('#' + dialog_id).dialog('close');//添加新的点击绑定
+            req_del = $('#div_check_delete').val();
+            sendReqWithAjax(handle,ids,apply_lock_time,req_del);
+        });
+        //在调出对话框后点击取消
+        $('#link_buttons_cancel').click(function(){
+            $("#link_buttons_cancel").unbind();//删除原来的事件绑定
+            $('#' + dialog_id).dialog('close');//添加新的点击绑定
+        });
+    }
+
+    /**
+     * 发送删除、锁定、解税等请求
+     */
+    function sendReqWithAjax(handle,ids,lock_time,req_del)
+    {
+        if(ids == '' || ids == null || handle == ''){
+            $.messager.alert('确认请求','请确认你发送了参数过来','error');
+            return false;
+        }
+        var returnAjax = false;
+        $.ajax({
+            async:false,
+            type: "get",
+            dataType: "json",
+            contentType:"utf-8",
+            cache:false,
+            url:"/profile/friend/request-handle/",
+            data: {ajax_print:'json_1',req_handle:handle,request_id:ids,req_del:req_del},
+            success: function(json) {
+                if (json.stat == 1) {
+                    $.messager.alert('确认请求',json.msgs);
+                    $('#datagrid_result').datagrid('reload');//重新载入
+                    returnAjax = true;
+                }else{
+                    $.messager.alert('请求结果',json.msgs,'error');
+                }
+            },
+            beforeSend:function(){
+                forbiddenPage();
+            },
+            error: function() {
+                $.messager.alert('警告','你并没有进行当前操作的权限！','error');
+            },
+            complete:function(){
+                releasePage();
+            }
+        });
+
+        return returnAjax;
+    }
+
+    /**
+     * 格式化审核状态
+     * @param val
+     * @param row
+     */
+    function formatPass(val,row)
+    {
+        var color,label;
+        if(val == 1){
+            color = 'green';
+            label = '<?php echo $this->translate('model_request_pass_1');?>';
+        }else if(val == 2){
+            color = 'red';
+            label = '<?php echo $this->translate('model_request_pass_2');?>';
+        }else if(val == 3){
+            color = 'blue';
+            label = '<?php echo $this->translate('model_request_pass_3');?>';
+        }else{
+            label = val;
+        }
+        return '<span style="color: '+color+'">'+label+'</span>';
+    }
+
+    /**
+     * 格式化操作选项
+     */
+    function formatWebsiteName(val,row)
+    {
+        var detailLink = '<a href="javascript:addTabWithParent(\'业务办理/网站提交/申请明细\',\'/apply/website-register/detail/register_id/' + row.register_id + '\',true)" >' + row.website_name + '</a>';
+        //var modifyLink = '<a href="javascript:addTabWithParent(\'会员管理/注册会员/会员明细\',\'/apply/website-register/detail/register_id/'+row.register_id+'\',true)" >编辑</a>'
+        //return detailLink + '&nbsp;' +  modifyLink ;
+        return detailLink;
+    }
+</script>
+<div class="div_bg_fa separator_bot">
+    <form id="form_query" name="form_query" method="POST">
+        <fieldset border="false" class="fieldset_border separator_bot" >
+            <legend>好友查询</legend>
+            <!---表单输入项-->
+            <table width="100%" border="0" cellspacing="1" cellpadding="5" class="table_border separator_top separator_bot">
+                <tr>
+                    <th width="10%">流水号</th>
+                    <td width="40%"><input type="text" name="register_id" id="input_register_id" style="width:195px;" value="<?php echo $this->datapost['register_id'];?>" />&nbsp;多个流水号请用逗号隔开</td>
+                    <th width="10%"></th>
+                    <td width="40%"></td>
+                </tr>
+                <tr>
+                    <th>好友帐号</th>
+                    <td><input type="text" name="website_domain" id="input_website_domain"  style="width:195px;"  value="<?php echo $this->datapost['website_domain'];?>" /></td>
+                    <th>好友邮箱</th>
+                    <td>
+                    </td>
+                </tr>
+            </table>
+            <!---表单按钮-->
+            <div border="false" class="div_btn">
+                <a id="linkbtn_submit" class="easyui-linkbutton" iconCls="icon-search">查询</a>
+                <a id="linkbtn_clear" href="/apply/website-register/" class="easyui-linkbutton" iconCls="icon-cut">清空查询条件</a>
+                <a id="linkbtn_help" class="easyui-linkbutton" iconCls="icon-help">查看查询提示</a>
+
+            </div>
+            <!---帮助内容-->
+            <div id="div_help" class="ul_help">
+                提示：
+                <ul>
+                    <li>多个查询内容请用英文输入法的逗号,隔开，例如多个流水号请这样输入1,2,3,4,5</li>
+                    <li>同一查询条件下多个查询内容，查询结果只需要符合其中一项查询内容</li>
+                    <li>多个查询条件下，我们只会返回同时符合这多个条件下的数据，而不是只符合多个条件下其中一项的数据</li>
+                    <li>例如流水号为1,2,3，状态为锁定条件下，假设没有流水号为1的数据，那么系统将返回状态为锁定且ID为2，3的数据</li>
+                </ul>
+            </div>
+        </fieldset>
+    </form>
+</div>
+<?php //echo '<a href="'.$this->url($this->queryGrid).'"  target="_blank">'.$this->url($this->queryGrid).'</a><br><br>';?>
+<!---数据网格内容-->
+<table id="datagrid_result"  title="查询结果" width="100%" hight="100%" >
+    <thead data-options="frozen:true">
+    <tr>
+        <th data-options="field:'ck',checkbox:true"></th>
+        <th data-options="field:'request_id',width:50">流水号</th>
+        <th data-options="field:'request_pass',width:50" formatter="formatPass">状态</th>
+        <th data-options="field:'request_source_memberName',width:100,align:'left'" >对方帐号</th>
+        <th data-options="field:'request_source_memberEmail',width:150,align:'left'" >对方邮箱</th>
+        <th data-options="field:'request_insert_time',width:120,align:'left'"  formatter="formatTimeStamp">接收时间</th>
+        <th data-options="field:'request_pass_time',width:120,align:'left'"  formatter="formatTimeStamp">处理时间</th>
+    </tr>
+    </thead>
+    <thead>
+        <th data-options="field:'request_remark',width:400,align:'left'">留言内容</th>
+    </thead>
+</table>
+<!--数据网格工具栏-->
+<div id="toolbar" style="height:auto;padding:5px;">
+    <a id="linkbotton_grid_tool_select" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-archives',plain:true" onclick="gridSelectAll(this,'datagrid_result')">全选</a>
+    <a id="linkbotton_grid_tool_accept" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-greenled',plain:true" onclick="sendRequest('accept','同意','icon-greenled')">同意</a>
+    <a id="linkbotton_grid_tool_reject" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-redled',plain:true" onclick="sendRequest('reject','拒绝','icon-redled')">拒绝</a>
+    <a id="linkbotton_grid_tool_dell" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-delete',plain:true" onclick="sendRequest('delete','删除','icon-delete')">删除</a>
+    <a id="linkbotton_grid_tool_refresh" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-refresh',plain:true" onclick="$('#datagrid_result').datagrid('reload');">刷新</a>
+</div>
+<!--操作弹出框工具栏_删除及解锁-->
+<div id="dialog_apply_handle" class="easyui-dialog" style="width:400px;height:200px;padding:10px">
+</div>
+<!--操作弹出按钮栏_锁定-->
+<div id="dialog-buttons">
+    <?php
+    $tmpTagChecked = '';
+    if($this->config_FriendRequestDeleteAfterHand == 1){
+        $tmpTagChecked = ' checked="checked" ';
+    }
+    ?>
+    <div id="div_check_delete" style="float: left;"><label><input type="checkbox" name="checkbox_delete" id="checkbox_delete"  value="1" <?php echo $tmpTagChecked;?> />同时删除好友申请</label></div>
+    <a id="link_buttons_ok" href="javascript:void(0)" class="easyui-linkbutton">确定</a>
+    <a id="link_buttons_cancel" href="javascript:void(0)" class="easyui-linkbutton">取消</a>
+</div>

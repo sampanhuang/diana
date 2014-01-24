@@ -179,7 +179,6 @@ class Admin_Service_Manager extends Admin_Service_Abstract
             //return false;//日志更新失败不鸟他
         }
         return $detailManager;
-
     }
 
     /**
