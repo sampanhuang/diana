@@ -14,19 +14,6 @@ class Diana_Service_Website extends Diana_Service_Abstract
     }
 
     /**
-     * 刷新首页
-     */
-    function flushHtmlIndex()
-    {
-        $contentIndex = file_get_contents('http://'.DIANA_DOMAIN_CURRENT.'/default/website/index');
-        $contentIndex = $contentIndex.'<!--make time '.date('Y-m-d H:i:s').' , from '.$_SERVER['SERVER_ADDR'].'-->';
-        if(!file_put_contents(DIANA_DIR_WWW_PUBLIC.'/index.htm',$contentIndex)){
-            return false;
-        }
-        return $contentIndex;
-    }
-
-    /**
      * 获取网站列表
      * @param $counter
      * @param array $condition

@@ -57,6 +57,11 @@ class Diana_Model_DbTable_MemberLog extends Diana_Model_DbTable_Abstract
             $tmpWheres = $this->getWhereByCondition("log_time",$condition["log_time_max"],3);
             $wheres = array_merge($wheres,$tmpWheres);
         }
+        if (!empty($condition["log_ip"])) {//IP
+            $tmpWheres = array();
+            $tmpWheres = $this->getWhereByCondition("log_ip",$condition["log_ip"],2);
+            $wheres = array_merge($wheres,$tmpWheres);
+        }
         if (!empty($condition["log_sessionId"])) {//sessionID
             $tmpWheres = array();
             $tmpWheres = $this->getWhereByCondition("log_sessionId",$condition["log_sessionId"],2);

@@ -27,25 +27,30 @@ class Profile_IntroController extends Client_Controller_ActionDec
      */
     function logAction()
     {
-        $this->view->request = $request = $this->view->dataget = $this->getRequest()->getParams();
         $serviceMemberLog = new Diana_Service_MemberLog();
+        $this->view->request = $request = $this->view->dataget = $this->getRequest()->getParams();
+        $this->view->queryGrid = $queryGrid = array_merge(array('ajax_print' => 'json','req_handle' => 'datagrid_result'),$serviceMemberLog->filterFormSearch($request));
         //ajax处理配置
-        $configHandle = array(
+        $configAjax = array(
             'datagrid_result' => array(//查询
                 'object' => $serviceMemberLog,
                 'method' => 'makeDataGrid',
+                '_input' => $request,
             ),
             'combobox_log-type' => array(
                 'object' => $serviceMemberLog,
                 'method' => 'makeLogTypeCombobox',
-            ),
+            ),            
+        );
+        $configHandle = array(
             'detail' => array(//明细
                 'object' => $serviceMemberLog,
                 'method' => 'getDetailById',
             ),
         );
         //ajax处理
-        $this->handleAjax($configHandle);
+        $this->handleAjax($configAjax);
+        $this->view->detailMemberLog = $this->decHandle($configHandle);
     }
 
 }

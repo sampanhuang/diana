@@ -100,7 +100,7 @@ $this->headScript()->captureEnd();
                 data: { email: email, passwd: hex_md5(passwd) , captcha: captcha },
                 success: function(json) {
                     if (json.stat == 1) {
-                        window.location.href = "/";
+                        window.location.href = "<?php echo $this->urlTarget;?>";
                     }else {
                         if(json.focus == 1){
                             $("#help_email").css({ color: "#B94A48"});

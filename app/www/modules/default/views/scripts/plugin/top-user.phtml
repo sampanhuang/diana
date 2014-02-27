@@ -1,0 +1,23 @@
+<?php
+if(empty($this->detailMember)){
+    ?>
+document.write("<p style=\"line-height: 80px;\">");
+document.write("    <a href=\"/member/guest/register\" title=\"<?php echo $this->translate("member_register");?>\" target=\"_blank\"><?php echo $this->translate("member_register");?></a>");
+document.write("    <a href=\"/member/guest/login\" title=\"<?php echo $this->translate("member_login");?>\" target=\"_blank\"><?php echo $this->translate("member_login");?></a>");
+document.write("    <a href=\"/member/guest/forgetpwd\" title=\"<?php echo $this->translate("member_forgetpwd");?>\" target=\"_blank\"><?php echo $this->translate("member_forgetpwd");?></a>");
+document.write("    <a href=\"/default/website/apply\" title=\"<?php echo $this->translate("member_post_apply_website");?>\" target=\"_blank\"><?php echo $this->translate("member_post_apply_website");?></a>");
+document.write("    <a href=\"/member/website\" title=\"<?php echo $this->translate("member_mywebsite");?>\" target=\"_blank\"><?php echo $this->translate("member_mywebsite");?></a>");
+document.write("</p>");
+<?php
+}else{
+    ?>
+document.write("<p style=\"line-height: 80px;\">");
+document.write("    欢迎光临，<a href=\"/member/profile/index\" title=\"<?php echo $this->detailMember['member_name'];?>\" target=\"_blank\"><?php echo $this->detailMember['member_name'];?></a>");
+document.write("    <a href=\"/default/website/apply\" title=\"<?php echo $this->translate("member_post_apply_website");?>\" target=\"_blank\"><?php echo $this->translate("member_post_apply_website");?></a>");
+document.write("    <a href=\"/member/website/index\" title=\"<?php echo $this->translate("member_mywebsite");?>\" target=\"_blank\"><?php echo $this->translate("member_mywebsite");?></a>");
+document.write("    <a href=\"/member/safe/resetpwd\" title=\"<?php echo $this->translate("member_resetpwd");?>\" target=\"_blank\">修改密码</a>");
+document.write("    <a href=\"/member/guest/logout\" title=\"<?php echo $this->translate("member_logout");?>\" >注销登录</a>");
+document.write("</p>");
+<?php
+}
+?>

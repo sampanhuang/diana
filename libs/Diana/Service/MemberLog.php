@@ -106,7 +106,7 @@ class Diana_Service_MemberLog extends Admin_Service_Abstract
             110 => '修改个人资料',
             120 => '修改密保邮箱',
             130 => '修改登录帐号',
-            210 => '管理员登录',
+            210 => '会员登录',
             221 => '发送密保邮件',
             222 => '通过密保邮件取回密码',
             223 => '通过后台修改密码',
@@ -205,10 +205,12 @@ class Diana_Service_MemberLog extends Admin_Service_Abstract
         //开始时间
         if (!empty($formData['log_date_min'])) {
             $condition['log_time_min'] = strtotime($formData['log_date_min']);
+            unset($condition['log_date_min']);
         }
         //结束时间
         if (!empty($formData['log_date_max'])) {
             $condition['log_time_max'] = strtotime($formData['log_date_max']);
+            unset($condition['log_date_max']);
         }
         return $condition;
     }

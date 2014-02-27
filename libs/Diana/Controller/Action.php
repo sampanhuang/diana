@@ -39,6 +39,12 @@ class Diana_Controller_Action extends Zend_Controller_Action
 	}
 
 
+    function getTranslateCurrent()
+    {
+
+    }
+
+
     /**
      * 设置ajax type
      * @param $ajaxType (默认: "GET") 请求方式 ("POST" 或 "GET")， 默认为 "GET"。注意：其它 HTTP 请求方法，如 PUT 和 DELETE 也可以使用，但仅部分浏览器支持。
@@ -170,7 +176,7 @@ class Diana_Controller_Action extends Zend_Controller_Action
         $reqHandle = strtolower(trim($request['req_handle']));//请求处理的事务
         //如果不是ajax请求，则忽略
         if(empty($reqHandle)){
-            $this->setMsgs('没有指定操作类型！');
+            //$this->setMsgs('没有指定操作类型！');
             return false;
         }
         //检查是否有这项配置
@@ -196,7 +202,10 @@ class Diana_Controller_Action extends Zend_Controller_Action
         return $result;
     }
 
-	public function postDispatch() {
+    /**
+     * 最后执行
+     */
+    public function postDispatch() {
 		parent::postDispatch();
         $this->view->pageCostMicrotime = microtime_float() - DIANA_MICROTIME_START;
 		$this->view->msgs = $this->getMsgs();

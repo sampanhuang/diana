@@ -15,7 +15,7 @@ class Www_Controller_Action extends Diana_Controller_Action
     {
         parent::init();
         $translate = Zend_Registry::get('Zend_Translate');
-        $this->setHeadTitle('['.$translate->_('www_title').' - '.$translate->_('www_title_subtitle').']');
+        $this->setHeadTitle(''.$translate->_('www_title').' ['.$translate->_('www_title_subtitle').']');
         $this->setHeadMetaKeywords($translate->_('www_title'));
         $this->setChannels();
         /*

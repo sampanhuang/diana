@@ -432,6 +432,8 @@ class Client_Service_MemberMsg extends Client_Service_Abstract
         return $rowMemberMsgOutbox;
     }
 
+
+
     /**
      * 发件箱
      * @param int $page 当前页
@@ -527,6 +529,16 @@ class Client_Service_MemberMsg extends Client_Service_Abstract
             $rowMemberMsgInbox['msg_source_email'] = $rowsMember[0]['member_email'];
         }
         return $rowMemberMsgInbox;
+    }
+
+    function getUnreadWithInbox($manId)
+    {
+        $condition = array(
+            'inbox_manId' => $manId,
+            'inbox_msg_read_time_max' => 1,
+        );
+        $modelMemberMsgInbox = new Diana_Model_MemberMsgInbox();
+        return (int)$modelMemberMsgInbox->getCountByCondition(null,$condition);
     }
 
     /**

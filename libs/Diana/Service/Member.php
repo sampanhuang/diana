@@ -200,14 +200,14 @@ class Diana_Service_Member extends Diana_Service_Abstract
      * @param $input 外部输入
      * @param $type 类型 1帐号，2邮箱
      */
-    function updateNameEmail($id,$input,$type)
+    function updateNameEmail($id,$input,$type,$password)
     {
         //确认外部参数是否正确
-        if (empty($id)||empty($input)||empty($type)) {
+        if (empty($id)||empty($input)||empty($type)||empty($password)) {
             $this->setMsgs('各项参数不能为空');
             return false;
         }
-        if ((!is_numeric($id))||(!is_string($input))||(!is_string($type))) {
+        if ((!is_numeric($id))||(!is_string($input))||(!is_string($type))||(!is_string($password))) {
             $this->setMsgs('各项参数必须为标量');
             return false;
         }
@@ -217,12 +217,18 @@ class Diana_Service_Member extends Diana_Service_Abstract
             $this->setMsgs('错误的用户ID');
             return false;
         }
-        $managerName = $rowsMember[0]['manager_name'];
-        $managerEmail = $rowsMember[0]['manager_email'];
+        $memberName = $rowsMember[0]['member_name'];
+        $memberEmail = $rowsMember[0]['member_email'];
+        $memberPasswd = $rowsMember[0]['member_passwd'];
         $logType = 0;//日志类型
+        //判断密码是否正确
+        if($memberPasswd <> $password){
+            $this->setMsgs('密码输入错误');
+            return false;
+        }
         $logRemark = array('old'=>'','new' => $input);//日志备注
         if($type == 'name'){//帐号判断
-            if(strtolower($input) == strtolower($managerName)){
+            if(strtolower($input) == strtolower($memberName)){
                 $this->setMsgs('未进行任何帐号变更操作');
                 return false;
             }
@@ -231,10 +237,10 @@ class Diana_Service_Member extends Diana_Service_Abstract
                 return false;
             }
             $logType =130;
-            $logRemark['old'] = $managerName;
-            $dataUpdate = array('manager_name' => $input);
+            $logRemark['old'] = $memberName;
+            $dataUpdate = array('member_name' => $input);
         }elseif($type == 'email'){//邮箱判官
-            if(strtolower($input) == strtolower($managerEmail)){
+            if(strtolower($input) == strtolower($memberEmail)){
                 $this->setMsgs('未进行任何邮箱变更操作');
                 return false;
             }
@@ -243,15 +249,15 @@ class Diana_Service_Member extends Diana_Service_Abstract
                 return false;
             }
             $logType =120;
-            $logRemark['old'] = $managerEmail;
-            $dataUpdate = array('manager_email' => $input);
+            $logRemark['old'] = $memberEmail;
+            $dataUpdate = array('member_email' => $input);
 
         }else{
             $this->setMsgs('无效的参数Type');
             return false;
         }
         //更新数据
-        if(!$modelMember->saveData(2,$dataUpdate,array('manager_id' => $id))){
+        if(!$modelMember->saveData(2,$dataUpdate,array('member_id' => $id))){
             $this->setMsgs('数据保存失败!');
             return false;
         }
@@ -263,9 +269,9 @@ class Diana_Service_Member extends Diana_Service_Abstract
         $serviceDoorkeeper = new Client_Service_Doorkeeper();
         $serviceDoorkeeper->writeSession($detailMember);
         //更新日志
-        $serviceMemberLog = new Client_Service_MemberLog();
-        if (!$serviceMemberLog->write($logType,$id,$detailMember['manager_email'],$detailMember['manager_name'],$logRemark)) {
-            $this->setMsgs('当前用户【'.$detailMember['manager_email'].'】密码变更日志写入失败');
+        $serviceMemberLog = new Diana_Service_MemberLog();
+        if (!$serviceMemberLog->write($logType,$id,$detailMember['member_email'],$detailMember['member_name'],$logRemark)) {
+            $this->setMsgs('当前用户【'.$detailMember['member_email'].'】密码变更日志写入失败');
             //return false;//日志更新失败不鸟他
         }
         return $detailMember;
@@ -291,7 +297,7 @@ class Diana_Service_Member extends Diana_Service_Abstract
             if (empty($id)) {
                 return false;
             }else{
-                if ($rows[0]['manager_id'] <> $id) {
+                if ($rows[0]['member_id'] <> $id) {
                     return false;
                 }
             }
@@ -319,7 +325,7 @@ class Diana_Service_Member extends Diana_Service_Abstract
             if (empty($id)) {
                 return false;
             }else{
-                if ($rows[0]['manager_id'] <> $id) {
+                if ($rows[0]['member_id'] <> $id) {
                     return false;
                 }
             }

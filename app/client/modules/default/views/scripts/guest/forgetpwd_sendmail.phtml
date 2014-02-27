@@ -58,24 +58,29 @@ $(function(){
             url: "<?php echo $this->url(array("show_ajax" => "json","show_data"=>"sendmail"));?>",
             data: { email: email, captcha: captcha },
             success: function(json) {
+                $.messager.progress('close');
+                refreshCaptcha(imgcaptcha,urlcaptcha);     
+                $("#linkbtn_submit").bind( "click" ,forgetpwd );
                 if (json.stat == 1) {
                     $.messager.alert('邮件发送成功',"邮件发送成功，请查收（邮件有效期为48小时！）!");
+                }else{
+                    $.messager.alert(json.msgs);
                 }
             },
             beforeSend: function (){
                 $.messager.progress({
                     title: '邮件发送中',
                     msg: '新密码确认邮件正在发送中，请耐心等待...'
-                });
-                $("#linkbtn_submit").unbind( "click" ,forgetpwd );
+                });                
             },
             error: function() {
+                $.messager.progress('close');
+                refreshCaptcha(imgcaptcha,urlcaptcha);     
+                $("#linkbtn_submit").bind( "click" ,forgetpwd );
                 $.messager.alert('获取账号信息失败','获取账号信息失败...请联系管理员!');
             },
             complete:function (){
-                $.messager.progress('close');
-                refreshCaptcha(imgcaptcha,urlcaptcha);
-                $("#linkbtn_submit").bind( "click" ,forgetpwd );
+                $("#linkbtn_submit").unbind( "click" ,forgetpwd );                           
             }
         });
     }

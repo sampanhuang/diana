@@ -57,13 +57,17 @@ class GuestController extends Diana_Controller_Action
             $this->view->emailLasttime = $cookieValue;
             $this->view->cookieNameWithEmail = $cookieName;
         }
-        $dataget = array_map("trim",array_filter($this->getRequest()->getParams()));
-        if (!empty($dataget["show_data"])) {
+        $requestInput = array_map("trim",array_filter($this->getRequest()->getParams()));
+        $this->view->urlTarget = '/';
+        if(!empty($requestInput['url_redirect'])){
+            $this->view->urlTarget = '/?url_redirect='.urlencode($requestInput['url_redirect']);
+        }
+        if (!empty($requestInput["show_data"])) {
             $this->getHelper("layout")->disableLayout();//关闭布局
             $this->getHelper("viewRenderer")->setNoRender();//关闭视图
             $show = array("stat" => 0,"msgs" => "");
-            if ($dataget["show_data"] == "login") {
-                if ($detailMember = $serviceDoorkeeper->login($dataget["email"],$dataget["passwd"],$dataget["captcha"])) {
+            if ($requestInput["show_data"] == "login") {
+                if ($detailMember = $serviceDoorkeeper->login($requestInput["email"],$requestInput["passwd"],$requestInput["captcha"])) {
                     setcookie($cookieName, $detailMember['manager_email'], time()+311040000, "/", $_SERVER['SERVER_NAME']);
                     $show["stat"] = 1;
                 }else{

@@ -17,14 +17,22 @@ class IndexController extends Www_Controller_Action
 	 */
 	function indexAction()
 	{
+        /*
+        $this->redirect('/default/website');
+        */
         $this->getHelper("layout")->disableLayout();//关闭布局
         $this->getHelper("viewRenderer")->setNoRender();//关闭视图
-        $service = new Diana_Service_Website();
-        if($content = $service->flushHtmlIndex()){
-            echo $content;
+        if(DIANA_TRANSLATE_CURRENT == 'en-us'){
+            $domain = DIANA_DOMAIN_WWW_US;
+        }elseif(DIANA_TRANSLATE_CURRENT == 'zh-tw'){
+            $domain = DIANA_DOMAIN_WWW_TW;
         }else{
-            $this->redirect('/default/website');
+            $domain = DIANA_DOMAIN_WWW_CN;
         }
+        $contentIndex = file_get_contents('http://'.$domain.'/default/website/index');
+        echo $contentIndex.chr(10).chr(13).'<!--form '.$domain.'-->';
+
+
 	}
 	
 	function testAction()

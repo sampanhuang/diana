@@ -18,9 +18,8 @@ class Profile_SafeController extends Client_Controller_ActionDec
      * 密码更新
      */
     function resetpwdAction(){
-        $request = $this->getRequest()->getParams();
-        if($request->isPost()) {
-            $post = $request->getPost();
+        if ($this->getRequest()->isPost()) {        
+            $post = $this->getRequest()->getPost();
             $serviceCaptcha = new Diana_Service_Captcha();
             if ($serviceCaptcha->checkCaptchaWord($post['captcha'],"client-member-resetpwd")) {
                 $serviceMemberPassword = new Client_Service_MemberPassword();
@@ -42,7 +41,7 @@ class Profile_SafeController extends Client_Controller_ActionDec
      */
     function updateAction()
     {
-        $request = $this->getRequest()->getParams();
+        $request = $this->getRequest();
         $serviceMember = new Diana_Service_Member();
         $condition = array('log_memberId' => $this->currentMemberId);//日志查询条件
         //处理get提交
@@ -60,11 +59,11 @@ class Profile_SafeController extends Client_Controller_ActionDec
             return false;
         }
         //处理POST提交
-        if($request->isPost()) {
-            $post = $request->getPost();
+        if ($this->getRequest()->isPost()) {        
+            $post = $this->getRequest()->getPost();
             $serviceCaptcha = new Diana_Service_Captcha();
             if ($serviceCaptcha->checkCaptchaWord($post['captcha'],$captchaKey)) {
-                if($detailMember = $serviceMember->updateNameEmail($this->currentMemberId,$post['value_new'],$updateType)){
+                if($detailMember = $serviceMember->updateNameEmail($this->currentMemberId,$post['value_new'],$updateType,$post['password'])){
                     $this->setMsgs('更新成功');
                 }else{
                     $this->setMsgs('更新失败');
@@ -78,7 +77,7 @@ class Profile_SafeController extends Client_Controller_ActionDec
             $detailMember = $serviceMember->getMemberById($this->currentMemberId);
         }
         $this->view->detailMember = $detailMember;
-        $serviceMemberLog = new Client_Service_MemberLog();
+        $serviceMemberLog = new Diana_Service_MemberLog();
         if($state = $serviceMemberLog->getState($condition)){
             $this->view->state = $state;
         }

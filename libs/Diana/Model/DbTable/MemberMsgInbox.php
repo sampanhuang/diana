@@ -47,24 +47,29 @@ class Diana_Model_DbTable_MemberMsgInbox extends Diana_Model_DbTable_Abstract
             $tmpWheres = $this->getWhereByCondition("inbox_msgId",$condition["inbox_msgId"],1);
             $wheres = array_merge($wheres,$tmpWheres);
         }
-        if (!empty($condition["inbox_memberId"])) {//根据收件人来查询
+        if (!empty($condition["inbox_manId"])) {//根据收件人来查询
             $tmpWheres = array();
             $tmpWheres = $this->getWhereByCondition("inbox_manId",$condition["inbox_manId"],1);
             $wheres = array_merge($wheres,$tmpWheres);
         }
-        if (!empty($condition["inbox_msg_accept_time_min"])) {//查看时间查询
+        if (!empty($condition["inbox_msg_accept_time_min"])) {//接收时间查询
             $tmpWheres = array();
             $tmpWheres = $this->getWhereByCondition("inbox_msg_accept_time",$condition["inbox_msg_accept_time_min"],4);
             $wheres = array_merge($wheres,$tmpWheres);
         }
-        if (!empty($condition["inbox_msg_accept_time_max"])) {//查看时间查询
+        if (!empty($condition["inbox_msg_accept_time_max"])) {//接收时间查询
             $tmpWheres = array();
             $tmpWheres = $this->getWhereByCondition("inbox_msg_accept_time",$condition["inbox_msg_accept_time_max"],3);
             $wheres = array_merge($wheres,$tmpWheres);
         }
-        if (!empty($condition["inbox_msg_read_time"])) {//查看时间查询
+        if (!empty($condition["inbox_msg_read_time_min"])) {//查看时间查询
             $tmpWheres = array();
-            $tmpWheres = $this->getWhereByCondition("inbox_msg_read_time",$condition["inbox_msg_read_time"],1);
+            $tmpWheres = $this->getWhereByCondition("inbox_msg_read_time",$condition["inbox_msg_read_time_min"],4);
+            $wheres = array_merge($wheres,$tmpWheres);
+        }
+        if (!empty($condition["inbox_msg_read_time_max"])) {//查看时间查询
+            $tmpWheres = array();
+            $tmpWheres = $this->getWhereByCondition("inbox_msg_read_time",$condition["inbox_msg_read_time_max"],3);
             $wheres = array_merge($wheres,$tmpWheres);
         }
         return $wheres;

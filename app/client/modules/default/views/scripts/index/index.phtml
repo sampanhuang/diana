@@ -13,6 +13,11 @@
         $(function(){
             $('#loading-mask').fadeOut();
             addTab('Welcome','/default/index/welcome');
+            <?php
+            if(!empty($this->tagAuto)){
+                echo "addTab('".$this->tagAuto['label']."','".$this->tagAuto['link']."');";
+            }
+            ?>
             //树状菜单
             $('#west_menu_tree').tree({
                 animate:true,

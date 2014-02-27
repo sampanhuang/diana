@@ -26,9 +26,9 @@ if(!empty($this->indexContent)){
                 }
                 echo '<td width="20%">';
                 if(!empty($continentContent['website']['new'][$i])){
-                    echo '<h5>'.$this->utf8Substr($continentContent['website']['new'][$i]['website_name'],10).'</h5>';
+                    echo '<a href="'.$this->url(array("action" => "detail","website_id" => $continentContent['website']['new'][$i]['website_id'])).'"  title="'.$continentContent['website']['new'][$i]['website_name'].'" target="_blank"><h5>'.$this->utf8Substr($continentContent['website']['new'][$i]['website_name'],10).'</h5></a>';
                     echo '<span class="muted">'.$this->allWebsiteArea[$continentContent['website']['new'][$i]['website_areaId']]['area_name_'.DIANA_TRANSLATE_CURRENT].'&nbsp;&nbsp;'.$this->allWebsiteCategory[$continentContent['website']['new'][$i]['website_categoryId']]['category_name_'.DIANA_TRANSLATE_CURRENT].'</span><br>';
-                    echo '<a href="'.$this->url(array("action" => "detail","website_id" => $continentContent['website']['new'][$i]['website_id'])).'"  title="'.$continentContent['website']['new'][$i]['website_name'].'" target="_blank">'.$this->utf8Substr($continentContent['website']['new'][$i]['website_domain'],32).'</a>';
+                    echo '<span class="muted">'.$this->utf8Substr($continentContent['website']['new'][$i]['website_domain'],32).'</span>';
                 }
                 echo '</td>';
             }

@@ -18,16 +18,20 @@ class Client_Controller_Action extends Diana_Controller_Action
         parent::init();
         //设置jquery
         $this->setJqueryLang();
-
+        //请求参数
+        $requestInput = $this->getRequest()->getParams();
         //判断是否为已登录用户，且达到条件进入这个功能模块模块
         $serviceDoorkeeper = new Client_Service_Doorkeeper();
         if (!$sessionMemberId = $serviceDoorkeeper->checkSession()) {
-            $this->redirect('/default/guest/login/check/fail');
+            $urlRedirect = '';
+            if($requestInput['module'] <> 'default'){
+                $urlRedirect = urlencode($_SERVER['REQUEST_URI']);
+            }
+            $this->redirect('/default/guest/login/check/fail/?url_redirect='.$urlRedirect);
             exit();
         }
         if (!$detailMember = $serviceDoorkeeper->checkPower($this->currentModuleName,$this->currentControllerName,$this->currentActionName,$sessionMemberId)) {
-            $dataget = $this->getRequest()->getParams();
-            if ((!empty($dataget['ajax_print']))&&(!empty($dataget['req_handle']))){
+            if ((!empty($requestInput['ajax_print']))&&(!empty($requestInput['req_handle']))){
                 $tmpJsonPower = array(
                     'stat' => 0,
                     'msgs' => '很可惜啊，你没有权限进行当前操作!<br>如果有需要，请联系管理员吧<br>'.implode(';',$serviceDoorkeeper->getMsgs()),

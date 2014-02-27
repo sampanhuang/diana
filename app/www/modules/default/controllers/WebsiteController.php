@@ -130,23 +130,12 @@ class WebsiteController extends Www_Controller_Action
         $condition = array();
         //搜索条件
         $condition = array();
-        //如果二级区域ID不为空
-        if(!empty($area)){
-        	//开始SEO
-        	$this->setHeadTitle($allWebsiteArea[$area]['area_name_'.DIANA_TRANSLATE_CURRENT]);
-            $this->setHeadMetaDescription($allWebsiteArea[$area]['area_name_'.DIANA_TRANSLATE_CURRENT]);
-            foreach($arrSuffixHeadKeyWork as $valSuffixHeadKeyWork){
-                $this->setHeadMetaKeywords($allWebsiteArea[$area]['area_name_'.DIANA_TRANSLATE_CURRENT].$valSuffixHeadKeyWork);
-            }
-            $areaFather = $allWebsiteArea[$area]['area_fatherId'];
-            $condition['website_areaId'] = $area;
-        }
         //如果一级区域ID不为空
         if(!empty($areaFather)){
             //开始SEO
             $this->setHeadTitle($allWebsiteArea[$areaFather]['area_name_'.DIANA_TRANSLATE_CURRENT]);
-            $this->setHeadMetaDescription($allWebsiteArea[$areaFather]['area_name_'.DIANA_TRANSLATE_CURRENT]);
             foreach($arrSuffixHeadKeyWork as $valSuffixHeadKeyWork){
+                $this->setHeadMetaDescription($allWebsiteArea[$areaFather]['area_name_'.DIANA_TRANSLATE_CURRENT].$valSuffixHeadKeyWork);
                 $this->setHeadMetaKeywords($allWebsiteArea[$areaFather]['area_name_'.DIANA_TRANSLATE_CURRENT].$valSuffixHeadKeyWork);
             }
             //获取二级地区信息
@@ -160,6 +149,17 @@ class WebsiteController extends Www_Controller_Action
             $this->view->rowWebsiteAreaSon = $rowWebsiteAreaSon;
             $condition['website_areaId'] = array_keys($rowWebsiteAreaSon);
         }
+        //如果二级区域ID不为空
+        if(!empty($area)){
+            //开始SEO
+            $this->setHeadTitle($allWebsiteArea[$area]['area_name_'.DIANA_TRANSLATE_CURRENT]);
+            foreach($arrSuffixHeadKeyWork as $valSuffixHeadKeyWork){
+                $this->setHeadMetaDescription($allWebsiteArea[$area]['area_name_'.DIANA_TRANSLATE_CURRENT].$valSuffixHeadKeyWork);
+                $this->setHeadMetaKeywords($allWebsiteArea[$area]['area_name_'.DIANA_TRANSLATE_CURRENT].$valSuffixHeadKeyWork);
+            }
+            $areaFather = $allWebsiteArea[$area]['area_fatherId'];
+            $condition['website_areaId'] = $area;
+        }
 
         foreach($allWebsiteCategory as $rowWebsiteCategory){
             if(($rowWebsiteCategory['category_fatherId'] == $areaFather)&&($rowWebsiteCategory['category_count_website'] > 0)){
@@ -168,10 +168,10 @@ class WebsiteController extends Www_Controller_Action
         }
         //网站分类不能为空
         if(!empty($category)){
-            $this->setHeadTitle($this->allWebsiteCategory[$category]['category_name_'.DIANA_TRANSLATE_CURRENT]);
-            $this->setHeadMetaDescription($this->allWebsiteCategory[$category]['category_name_'.DIANA_TRANSLATE_CURRENT]);
+            $this->setHeadTitle($allWebsiteCategory[$category]['category_name_'.DIANA_TRANSLATE_CURRENT]);
+            $this->setHeadMetaDescription($allWebsiteCategory[$category]['category_name_'.DIANA_TRANSLATE_CURRENT]);
             foreach($arrSuffixHeadKeyWork as $valSuffixHeadKeyWork){
-                $this->setHeadMetaKeywords($this->allWebsiteCategory[$category]['category_name_'.DIANA_TRANSLATE_CURRENT].$valSuffixHeadKeyWork);
+                $this->setHeadMetaKeywords($allWebsiteCategory[$category]['category_name_'.DIANA_TRANSLATE_CURRENT].$valSuffixHeadKeyWork);
             }
             $condition['website_categoryId'] = $category;
         }
@@ -181,6 +181,12 @@ class WebsiteController extends Www_Controller_Action
         if($paginator['total'] > 0){
             $servicePageNum = new Diana_Service_PageNum($paginator['total'],$pagesize,$page);
             $this->view->pagenum = $pagenum = $servicePageNum->getPageNum();
+        }
+        //再次SEO
+        if(!empty($paginator['rows'])){
+            foreach($paginator['rows'] as $tmpWebsite){
+                $this->setHeadMetaDescription($tmpWebsite['website_name']);
+            }
         }
     }
 
@@ -196,14 +202,27 @@ class WebsiteController extends Www_Controller_Action
         //获取地区信息
         $serviceWebsiteArea = new Diana_Service_WebsiteArea();
         $this->view->allWebsiteArea = $allWebsiteArea = $serviceWebsiteArea->getAll();
+        //取得多国语言
+        $translate = Zend_Registry::get('Zend_Translate');
+        $arrSuffixHeadKeyWork = explode(",",$translate->_('www_seo_keyword'));
         //获取网站信息
         $serviceWebsite = new Diana_Service_Website();
         if($detailWebsite = $serviceWebsite->getWebsiteById($websiteId,true)){
+            //开始SEO
             $this->setHeadTitle($allWebsiteCategory[$detailWebsite['website_categoryId']]['category_name_'.DIANA_TRANSLATE_CURRENT]);
             $this->setHeadTitle($allWebsiteArea[$detailWebsite['website_country']]['area_name_'].DIANA_TRANSLATE_CURRENT);
             $this->setHeadTitle($detailWebsite['website_name']);
             $this->setHeadMetaKeywords($detailWebsite['website_meta_keywords']);
             $this->setHeadMetaDescription($detailWebsite['website_meta_description']);
+            foreach($arrSuffixHeadKeyWork as $valSuffixHeadKeyWork){
+                //SEO地区
+                $this->setHeadMetaDescription($allWebsiteArea[$detailWebsite['website_areaId']]['area_name_'.DIANA_TRANSLATE_CURRENT].$valSuffixHeadKeyWork);
+                $this->setHeadMetaKeywords($allWebsiteArea[$detailWebsite['website_areaId']]['area_name_'.DIANA_TRANSLATE_CURRENT].$valSuffixHeadKeyWork);
+                //SEO类别
+                $this->setHeadMetaDescription($allWebsiteCategory[$detailWebsite['website_categoryId']]['category_name_'.DIANA_TRANSLATE_CURRENT].$valSuffixHeadKeyWork);
+                $this->setHeadMetaKeywords($allWebsiteCategory[$detailWebsite['website_categoryId']]['category_name_'.DIANA_TRANSLATE_CURRENT].$valSuffixHeadKeyWork);
+            }
+
             $this->view->detailWebsite = $detailWebsite;
             //猜你喜欢
             //$conditionLike = array("website_categoryId" => $detailWebsite["website_categoryId"],"website_continent" => $detailWebsite["website_continent"]);

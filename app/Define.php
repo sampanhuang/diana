@@ -32,8 +32,9 @@ define('DIANA_DOMAIN_ADMIN_CN',"admin-cn.".DIANA_DOMAIN_ROOT);//
 define('DIANA_DOMAIN_ADMIN_TW',"admin-tw.".DIANA_DOMAIN_ROOT);//
 define('DIANA_DOMAIN_ADMIN_US',"admin-us.".DIANA_DOMAIN_ROOT);//
 
-define('DIANA_DOMAIN_CURRENT',$_SERVER['SERVER_NAME']);
-
+define('DIANA_DOMAIN_CURRENT',$_SERVER['HTTP_HOST']);
+list($tmpPreDomain) = explode('.',DIANA_DOMAIN_CURRENT);
+define('DIANA_DOMAIN_CURRENT_PRE',$tmpPreDomain);
 
 define('DIANA_WEBSITE_VERSION','beate 1');//网站版本
 

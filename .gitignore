@@ -5,3 +5,4 @@ temp/*
 data/configs/*
 data/filter_word/*
 app/www/public/index.htm
+/nbproject/private/

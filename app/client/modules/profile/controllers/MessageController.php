@@ -33,7 +33,7 @@ class Profile_MessageController extends Client_Controller_ActionDec
         $this->view->pagesize = $dataGet['rows'];
         //取数据源
         if ($dataGet['data_ajax'] == 'datagrid_msg') {
-            $dataGet['inbox_memberId'] = $this->currentMemberId;
+            $dataGet['inbox_manId'] = $this->currentMemberId;
             if($dataGrid = $serviceMemberMsg->makeDataGridWIthInbox($dataGet['page'],$dataGet['rows'],$dataGet)){
                 echo json_encode($dataGrid);
             }
@@ -97,7 +97,7 @@ class Profile_MessageController extends Client_Controller_ActionDec
         $this->view->pagesize = $dataGet['rows'];
         //取数据源
         if ($dataGet['data_ajax'] == 'datagrid_msg') {
-            $dataGet['outbox_memberId'] = $this->currentMemberId;
+            $dataGet['outbox_manId'] = $this->currentMemberId;
             $dataGet['outbox_send_stat'] = 1;//1是已发送，2是草稿
             if($dataGrid = $serviceMemberMsg->makeDataGridWIthOutbox($dataGet['page'],$dataGet['rows'],$dataGet)){
                 echo json_encode($dataGrid);
@@ -154,7 +154,7 @@ class Profile_MessageController extends Client_Controller_ActionDec
         $this->view->pagesize = $dataGet['rows'];
         //取数据源
         if ($dataGet['data_ajax'] == 'datagrid_msg') {
-            $dataGet['outbox_memberId'] = $this->currentMemberId;
+            $dataGet['outbox_manId'] = $this->currentMemberId;
             $dataGet['outbox_send_stat'] = 2;//1是已发送，2是草稿
             if($dataGrid = $serviceMemberMsg->makeDataGridWithOutbox($dataGet['page'],$dataGet['rows'],$dataGet)){
                 echo json_encode($dataGrid);

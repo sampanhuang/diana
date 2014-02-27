@@ -35,6 +35,24 @@ if(in_array($_SERVER["HTTP_HOST"],array(DIANA_DOMAIN_ADMIN_US,DIANA_DOMAIN_CLIEN
         $tmpTranslateCurrent = 'en-us';
     }
 }
+
+if($tmpTranslateCurrent == 'en-us'){
+    define('DIANA_DOMAIN_WWW_CURRENT',DIANA_DOMAIN_WWW_US);
+    define('DIANA_DOMAIN_ADMIN_CURRENT',DIANA_DOMAIN_ADMIN_US);
+    define('DIANA_DOMAIN_CLIENT_CURRENT',DIANA_DOMAIN_CLIENT_US);
+}elseif($tmpTranslateCurrent == 'zh-tw'){
+    define('DIANA_DOMAIN_WWW_CURRENT',DIANA_DOMAIN_WWW_TW);
+    define('DIANA_DOMAIN_ADMIN_CURRENT',DIANA_DOMAIN_ADMIN_TW);
+    define('DIANA_DOMAIN_CLIENT_CURRENT',DIANA_DOMAIN_CLIENT_TW);
+}else{
+    define('DIANA_DOMAIN_WWW_CURRENT',DIANA_DOMAIN_WWW_CN);
+    define('DIANA_DOMAIN_ADMIN_CURRENT',DIANA_DOMAIN_ADMIN_CN);
+    define('DIANA_DOMAIN_CLIENT_CURRENT',DIANA_DOMAIN_CLIENT_CN);
+}
+session_start();
+//$_SESSION['aaaa'] = 'aaa';
+echo '$_SESSION';
+print_r($_SESSION);
 define('DIANA_TRANSLATE_CURRENT',$tmpTranslateCurrent);//zh-cn 简体中文件 zh-tw 繁体中文 en-us 英文
 define('DIANA_DIR_DATA_TRANSLATE_CURRENT', DIANA_DIR_DATA_TRANSLATE."/".DIANA_TRANSLATE_CURRENT);//语言包目录
 

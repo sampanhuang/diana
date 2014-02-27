@@ -1,4 +1,7 @@
-<?php $this->headScript()->captureStart();?>
+<?php
+$this->headScript()->appendFile("/static/custom/script/md5.js");
+$this->headScript()->captureStart();
+?>
 $(function(){
 var urlcaptcha = "/default/guest/captcha/key/<?php echo $this->captchaKey;?>";
 var imgcaptcha = "#img_captcha";
@@ -19,6 +22,7 @@ $(imgcaptcha).bind('click',function(){refreshCaptcha(imgcaptcha,urlcaptcha);});
     function submitForm()
     {
         var value_new = $("#input_value_new").val();
+        var password = $("#input_password").val();
         var captcha = $("#input_captcha").val();
 
         if(value_new == ""){
@@ -36,6 +40,21 @@ $(imgcaptcha).bind('click',function(){refreshCaptcha(imgcaptcha,urlcaptcha);});
             $("#help_value_new").html("新<?php echo $this->typeLabel?>输入正常");
         }
 
+        if(password == ""){
+            $("#input_password").focus();
+            $("#input_password").css({ color: "#B94A48"});
+            $("#input_password").html("请输入验证密码");
+            return false;
+        }else if(password.length > 32 || password.length < 2){
+            $("#input_password").focus();
+            $("#input_password").css({ color: "#B94A48"});
+            $("#input_password").html("验证密码长度必须在2~32个字符之间");
+            return false;
+        }else{
+            $("#input_password").css({ color: "#468847"});
+            $("#input_password").html("新<?php echo $this->typeLabel?>输入正常");
+        }
+
         if(captcha == ""){
             $("#input_captcha").focus();
             $("#help_captcha").css({ color: "#B94A48"});
@@ -50,6 +69,7 @@ $(imgcaptcha).bind('click',function(){refreshCaptcha(imgcaptcha,urlcaptcha);});
             $("#help_captcha").css({ color: "#468847"});
             $("#help_captcha").html("验证码输入正常");
         }
+        $("#input_password").val(hex_md5(password));
         $("#form-update-name").submit();
     }
     //验证码
@@ -72,11 +92,11 @@ $(imgcaptcha).bind('click',function(){refreshCaptcha(imgcaptcha,urlcaptcha);});
             <table width="100%" border="0" cellspacing="1" cellpadding="5" class="table_border">
                 <tr>
                     <th width="10%">当前用户ID</th>
-                    <td width="23%"><?php echo $this->detailManager['manager_id'];?></td>
+                    <td width="23%"><?php echo $this->detailMember['member_id'];?></td>
                     <th width="10%">当前用户姓名</th>
-                    <td width="23%"><?php echo $this->detailManager['manager_name'];?></td>
+                    <td width="23%"><?php echo $this->detailMember['member_name'];?></td>
                     <th width="10%">当前用户邮箱</th>
-                    <td width="23%"><?php echo $this->detailManager['manager_email'];?></td>
+                    <td width="23%"><?php echo $this->detailMember['member_email'];?></td>
                 </tr>
                 <tr>
                     <th><?php echo $this->typeLabel?>变更次数</th>
@@ -95,8 +115,15 @@ $(imgcaptcha).bind('click',function(){refreshCaptcha(imgcaptcha,urlcaptcha);});
                 <tr>
                     <th width="10%">新<?php echo $this->typeLabel?></th>
                     <td width="90%">
-                        <input type="name" id="input_value_new" name="value_new" tabindex="2" class="span4" placeholder="新<?php echo $this->typeLabel?>" class="easyui-validatebox" data-options="required:true"   style="width:350px;">
+                        <input type="name" id="input_value_new" name="value_new" tabindex="1" class="span4" placeholder="新<?php echo $this->typeLabel?>" class="easyui-validatebox" data-options="required:true"   style="width:350px;">
                         <span class="help-inline" id="help_value_new">必填选，新<?php echo $this->typeLabel?>不能为空</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th width="10%">密码</th>
+                    <td width="90%">
+                        <input type="password" id="input_password" name="password" tabindex="2" class="span4" placeholder="验证密码" class="easyui-validatebox" data-options="required:true"   style="width:350px;">
+                        <span class="help-inline muted" id="help_password_old">需要输入密码验证当前操作者的正确性</span>
                     </td>
                 </tr>
                 <tr>

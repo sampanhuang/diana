@@ -109,21 +109,21 @@ $(imgcaptcha).bind('click',function(){refreshCaptcha(imgcaptcha,urlcaptcha);});
         <table width="100%" border="0" cellspacing="1" cellpadding="5" class="table_border">
             <tr>
                 <th width="10%">当前用户姓名</th>
-                <td width="40%"><?php echo $this->currentManagerName;?></td>
+                <td width="40%"><?php echo $this->currentMemberName;?></td>
                 <th width="10%">当前用户邮箱</th>
-                <td width="40%"><?php echo $this->currentManagerEmail;?></td>
+                <td width="40%"><?php echo $this->currentMemberEmail;?></td>
             </tr>
             <tr>
                 <th width="10%">密码变更次数</th>
-                <td width="40%"><?php echo $this->currentManagerDetail['manager_passwd_change_count'];?></td>
+                <td width="40%"><?php echo $this->currentMemberDetail['member_passwd_change_count'];?></td>
                 <th width="10%"></th>
                 <td width="40%"></td>
             </tr>
             <tr>
                 <th width="10%">最后变更时间</th>
-                <td width="40%"><?php echo $this->formatDate('Y-m-d H:i',$this->currentManagerDetail['manager_passwd_change_time']);?></td>
+                <td width="40%"><?php echo $this->formatDate('Y-m-d H:i',$this->currentMemberDetail['member_passwd_change_time']);?></td>
                 <th width="10%">最后变更IP</th>
-                <td width="40%"><?php echo $this->currentManagerDetail['manager_passwd_change_ip'];?></td>
+                <td width="40%"><?php echo $this->currentMemberDetail['member_passwd_change_ip'];?></td>
             </tr>
         </table>
     </fieldset>
