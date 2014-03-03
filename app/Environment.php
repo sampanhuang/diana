@@ -27,9 +27,9 @@ if(in_array($_SERVER["HTTP_HOST"],array(DIANA_DOMAIN_ADMIN_US,DIANA_DOMAIN_CLIEN
 }elseif(in_array($_SERVER["HTTP_HOST"],array(DIANA_DOMAIN_ADMIN_CN,DIANA_DOMAIN_CLIENT_CN,DIANA_DOMAIN_WWW_CN))){
     $tmpTranslateCurrent = 'zh-cn';
 }else{
-    if (strtolower($_SERVER['HTTP_ACCEPT_LANGUAGE']) == 'zh-tw') {
+    if (strpos(strtolower($_SERVER['HTTP_ACCEPT_LANGUAGE']) , 'zh-tw') !== false) {
         $tmpTranslateCurrent = 'zh-tw';
-    }elseif(strtolower($_SERVER['HTTP_ACCEPT_LANGUAGE']) == 'zh-cn'){
+    }elseif(strpos(strtolower($_SERVER['HTTP_ACCEPT_LANGUAGE']) , 'zh-cn') !== false){
         $tmpTranslateCurrent = 'zh-cn';
     }else{
         $tmpTranslateCurrent = 'en-us';
@@ -49,10 +49,6 @@ if($tmpTranslateCurrent == 'en-us'){
     define('DIANA_DOMAIN_ADMIN_CURRENT',DIANA_DOMAIN_ADMIN_CN);
     define('DIANA_DOMAIN_CLIENT_CURRENT',DIANA_DOMAIN_CLIENT_CN);
 }
-session_start();
-//$_SESSION['aaaa'] = 'aaa';
-echo '$_SESSION';
-print_r($_SESSION);
 define('DIANA_TRANSLATE_CURRENT',$tmpTranslateCurrent);//zh-cn 简体中文件 zh-tw 繁体中文 en-us 英文
 define('DIANA_DIR_DATA_TRANSLATE_CURRENT', DIANA_DIR_DATA_TRANSLATE."/".DIANA_TRANSLATE_CURRENT);//语言包目录
 

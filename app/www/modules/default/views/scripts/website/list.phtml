@@ -26,7 +26,7 @@
                 if($rowsAreaSon['area_count_website'] > 0){
                     $tmpWebsiteCount = '<small class="muted">['.$rowsAreaSon['area_count_website'].']</small>';
                 }
-                $htmlCountry[] = '<li><a href="'.$this->url(array("area" => $rowsAreaSon['area_id'])).'">'.$rowsAreaSon['area_name_'.DIANA_TRANSLATE_CURRENT].'</a>'.$tmpWebsiteCount.'</li>';
+                $htmlCountry[] = '<li><a href="'.$this->url(array("area" => $rowsAreaSon['area_id'])).'" title="'.$rowsAreaSon['area_name_'.DIANA_TRANSLATE_CURRENT].'">'.$rowsAreaSon['area_name_'.DIANA_TRANSLATE_CURRENT].'</a>'.$tmpWebsiteCount.'</li>';
             }
             echo '<li><strong class="muted">国家：</strong></li>'.implode('',$htmlCountry);
         }
@@ -38,7 +38,7 @@
             $htmlCategory = array();
             $htmlCategory[] =  '<li><a href="'.$this->url(array("category" => null)).'">全部</a></li>';
             foreach($this->allWebsiteCategory as $rowWebsiteCategory){
-                $htmlCategory[] =  '<li><a href="'.$this->url(array("category" => $rowWebsiteCategory['category_id'])).'">'.$rowWebsiteCategory['category_name_'.DIANA_TRANSLATE_CURRENT].'</a></li>';
+                $htmlCategory[] =  '<li><a href="'.$this->url(array("category" => $rowWebsiteCategory['category_id'])).'" title="'.$rowWebsiteCategory['category_name_'.DIANA_TRANSLATE_CURRENT].'">'.$rowWebsiteCategory['category_name_'.DIANA_TRANSLATE_CURRENT].'</a></li>';
             }
             echo '<li><strong class="muted">类别：</strong></li>'.implode('',$htmlCategory);
         }

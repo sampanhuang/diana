@@ -144,7 +144,7 @@ $this->headScript()->captureEnd();
         }
 //刷新验证码
         function refreshCaptcha(img,url){
-            url = url + "?rand=" + Math.random()
+            url = url + "?rand=" + Math.random();
             $(img).attr("src",url);
         }
 //删除cookie

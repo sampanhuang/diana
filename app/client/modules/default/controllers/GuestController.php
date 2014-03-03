@@ -13,7 +13,7 @@ class GuestController extends Diana_Controller_Action
         $this->view->menus = $this->menus = array(
             array(
                 'action' => 'login',
-                'label' => '管理员登录',
+                'label' => '会员登录',
             ),
             array(
                 'action' => 'logout',
@@ -50,7 +50,7 @@ class GuestController extends Diana_Controller_Action
      */
     function loginAction()
     {
-        $this->view->headTitle("管理员登录");
+        $this->view->headTitle("会员登录");
         $serviceDoorkeeper = new Client_Service_Doorkeeper();
         $cookieName = $serviceDoorkeeper->getCookieWithLastime();//获取cookie名
         if ($cookieValue = $_COOKIE[$cookieName]) {//获取最后一名登录者的名字
@@ -88,6 +88,9 @@ class GuestController extends Diana_Controller_Action
         }
     }
 
+    /**
+     * 注销登录
+     */
     function logoutAction()
     {
         $this->view->headTitle("注销登录");
@@ -141,6 +144,9 @@ class GuestController extends Diana_Controller_Action
         }
     }
 
+    /**
+     * 验证码
+     */
     function captchaAction()
     {
         $this->getHelper("layout")->disableLayout();//关闭布局
@@ -156,6 +162,35 @@ class GuestController extends Diana_Controller_Action
         }else{
             echo $serviceCaptcha->getMsgs();
         }
+    }
+
+    /**
+     * 判断是否在线
+     */
+    function onlineAction()
+    {
+        $this->getHelper("layout")->disableLayout();//关闭布局
+        $this->getHelper("viewRenderer")->setNoRender();//关闭视图
+        $output = array('stat' => 0,'msgs' => '','result' => array());
+        $sessionMember = new Zend_Session_Namespace(DIANA_TAG_SESSIONNAMESPAN_MEMBER);
+        if(empty($sessionMember->id)){
+            $output['msgs'] = '尚未登录';
+        }else{
+            $serviceMemberMsg = new Client_Service_MemberMsg();
+            $countMsgUnread = $serviceMemberMsg->getUnreadWithInbox($sessionMember->id);
+            $output['stat'] = 1;
+            $output['result'] = array(
+                'member' => array(
+                    'id' => $sessionMember->id,
+                    'name' => $sessionMember->name,
+                    'email' => $sessionMember->email,
+                    'msg_unread' => $countMsgUnread,//未读短信
+                ),
+            );
+        }
+        ob_clean();
+        header('content-type: application/json; charset=utf-8');
+        echo  $_REQUEST['jsoncallback'].'('.json_encode($output).')';
     }
 
 }

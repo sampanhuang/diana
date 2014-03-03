@@ -21,10 +21,8 @@ class PluginController extends Www_Controller_Action
 
     }
 
-    function topUserAction()
+    function headMenuMemberAction()
     {
-        $urlApi = 'http://'.DIANA_DOMAIN_CLIENT_CURRENT.'/default/api/user-info';
-        echo DIANA_DOMAIN_CURRENT_PRE;
     }
 
 }

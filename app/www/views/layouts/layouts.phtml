@@ -14,9 +14,19 @@
     <link rel="shortcut icon" href="/favicon.ico" type="image/vnd.microsoft.icon">
     <script type="text/javascript" src="/static/jquery-1.10.2.min.js"></script>
     <script type="text/javascript" src="/static/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/default/plugin/head-menu-member"></script>
     <?php echo $this->headLink().chr(13).chr(10);?>
     <?php echo $this->headStyle().chr(13).chr(10);?>
     <?php echo $this->headScript().chr(13).chr(10);?>
+    <script type="text/javascript">
+        /*$(function(){
+            var AjaxUrl = "http://<?php echo DIANA_DOMAIN_CLIENT_CURRENT;?>/default/guest/online/?jsoncallback=?";
+            $.getJSON(AjaxUrl, function (json) {
+                $('#head_menu_nav').html(json.stat);
+                alert(json.stat);
+            });
+        });*/
+    </script>
 </head>
 <body>
 <!--头部-->
@@ -38,9 +48,7 @@
                 </div>
             </form>
         </div>
-        <div class="span4 text-right">
-            <script type="text/javascript" src="/member/guest/menu"></script>
-        </div>
+        <div class="span4 text-right" id="head_menu_nav"><p style="line-height: 80px;"></p></div>
     </div>
 </header>
 <!--导航-->
@@ -52,14 +60,14 @@
                     <?php
                     if(!empty($this->mainChannels)){
                         foreach($this->mainChannels as $rowChannel){
-                            echo '<li><a href="'.$rowChannel['channel_link'].'">'.$rowChannel['channel_name_'.DIANA_TRANSLATE_CURRENT].'</a></li>';
+                            echo '<li><a href="'.$rowChannel['channel_link'].'" title="'.$rowChannel['channel_name_'.DIANA_TRANSLATE_CURRENT].'">'.$rowChannel['channel_name_'.DIANA_TRANSLATE_CURRENT].'</a></li>';
                         }
                     }
                     ?>
                 </ul>
                 <ul class="nav pull-right">
-                    <li><a href="/default/website/apply" target="_blank"><?php echo $this->translate("member_post_apply_website");?></a></li>
-                    <li><a href="/member/website" target="_blank"><?php echo $this->translate("member_center");?></a></li>
+                    <li><a id="link_menu_website_register_post" href="/default/website/apply" target="_blank" title="<?php echo $this->translate("member_post_apply_website");?>"><?php echo $this->translate("member_post_apply_website");?></a></li>
+                    <li><a href="http://<?php echo DIANA_DOMAIN_CLIENT_CURRENT?>" target="_blank" title="<?php echo $this->translate("member_center");?>"><?php echo $this->translate("member_center");?></a></li>
                 </ul>
             </div>
         </div>
@@ -80,9 +88,9 @@
     <div class="container">
         <p class="footer">
         <ul class="inline">
-            <li><a href="http://<?php echo DIANA_DOMAIN_WWW_CN.$this->url();?>">简体中文</a></li>
-            <li><a href="http://<?php echo DIANA_DOMAIN_WWW_TW.$this->url();?>">繁體中文</a></li>
-            <li><a href="http://<?php echo DIANA_DOMAIN_WWW_US.$this->url();?>">English</a></li>
+            <li><a href="http://<?php echo DIANA_DOMAIN_WWW_CN.$this->url();?>" title="简体中文">简体中文</a></li>
+            <li><a href="http://<?php echo DIANA_DOMAIN_WWW_TW.$this->url();?>" title="繁體中文">繁體中文</a></li>
+            <li><a href="http://<?php echo DIANA_DOMAIN_WWW_US.$this->url();?>" title="English">English</a></li>
         </ul>
         <ul class="inline">
             <li>Langer:<?php echo DIANA_TRANSLATE_CURRENT;?></li>

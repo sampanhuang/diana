@@ -1,5 +1,5 @@
 <?php
-//error_reporting(E_ALL || ~E_NOTICE);
+error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT );
 date_default_timezone_set('asia/shanghai');
 mb_internal_encoding("UTF-8");//编码
 //定义起始时间
@@ -18,24 +18,21 @@ define('DIANA_DOMAIN_ROOT',"diana.local");//根域名
 define('DIANA_DOMAIN_STATIC',"static.".DIANA_DOMAIN_ROOT);//静态
 
 define('DIANA_DOMAIN_WWW',"www.".DIANA_DOMAIN_ROOT);//www,www-cn,www-tw,www-us域名下的
-define('DIANA_DOMAIN_WWW_CN',"www-cn.".DIANA_DOMAIN_ROOT);//www,www-cn,www-tw,www-us域名下的
-define('DIANA_DOMAIN_WWW_TW',"www-tw.".DIANA_DOMAIN_ROOT);//www,www-cn,www-tw,www-us域名下的
-define('DIANA_DOMAIN_WWW_US',"www-us.".DIANA_DOMAIN_ROOT);//www,www-cn,www-tw,www-us域名下的
+define('DIANA_DOMAIN_WWW_CN',"cn.".DIANA_DOMAIN_WWW);//www,www-cn,www-tw,www-us域名下的
+define('DIANA_DOMAIN_WWW_TW',"tw.".DIANA_DOMAIN_WWW);//www,www-cn,www-tw,www-us域名下的
+define('DIANA_DOMAIN_WWW_US',"us.".DIANA_DOMAIN_WWW);//www,www-cn,www-tw,www-us域名下的
 
 define('DIANA_DOMAIN_CLIENT',"client.".DIANA_DOMAIN_ROOT);//client,client-cn,client-tw,client-us域名下的
-define('DIANA_DOMAIN_CLIENT_CN',"client-cn.".DIANA_DOMAIN_ROOT);//
-define('DIANA_DOMAIN_CLIENT_TW',"client-tw.".DIANA_DOMAIN_ROOT);//
-define('DIANA_DOMAIN_CLIENT_US',"client-us.".DIANA_DOMAIN_ROOT);//
+define('DIANA_DOMAIN_CLIENT_CN',"cn.".DIANA_DOMAIN_CLIENT);//
+define('DIANA_DOMAIN_CLIENT_TW',"tw.".DIANA_DOMAIN_CLIENT);//
+define('DIANA_DOMAIN_CLIENT_US',"us.".DIANA_DOMAIN_CLIENT);//
 
 define('DIANA_DOMAIN_ADMIN',"admin.".DIANA_DOMAIN_ROOT);//管理员
-define('DIANA_DOMAIN_ADMIN_CN',"admin-cn.".DIANA_DOMAIN_ROOT);//
-define('DIANA_DOMAIN_ADMIN_TW',"admin-tw.".DIANA_DOMAIN_ROOT);//
-define('DIANA_DOMAIN_ADMIN_US',"admin-us.".DIANA_DOMAIN_ROOT);//
-
+define('DIANA_DOMAIN_ADMIN_CN',"cn.".DIANA_DOMAIN_ADMIN);//
+define('DIANA_DOMAIN_ADMIN_TW',"tw.".DIANA_DOMAIN_ADMIN);//
+define('DIANA_DOMAIN_ADMIN_US',"us.".DIANA_DOMAIN_ADMIN);//
+define('DIANA_SESSION_COOKIE_DOMAIN',implode('.',array_slice (explode('.',$_SERVER['HTTP_HOST']), -3, 3)));
 define('DIANA_DOMAIN_CURRENT',$_SERVER['HTTP_HOST']);
-list($tmpPreDomain) = explode('.',DIANA_DOMAIN_CURRENT);
-define('DIANA_DOMAIN_CURRENT_PRE',$tmpPreDomain);
-
 define('DIANA_WEBSITE_VERSION','beate 1');//网站版本
 
 
