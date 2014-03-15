@@ -28,7 +28,7 @@ $(function(){
             tmpContent += '    <a href="http://<?php echo DIANA_DOMAIN_CLIENT_CURRENT?>/?url_redirect=profile/safe/resetpwd" title="<?php echo $this->translate("member_resetpwd");?>" target="_blank"><?php echo $this->translate("www_menu_member_resetpwd");?></a>'+
                           '    <a href="http://<?php echo DIANA_DOMAIN_CLIENT_CURRENT?>/default/guest/logout" title="<?php echo $this->translate("member_logout");?>" target="_blank"><?php echo $this->translate("www_menu_member_logout");?></a>';
         }else{
-            tmpContent += '<a href="/member/guest/register" title="<?php echo $this->translate("member_register");?>" target="_blank"><?php echo $this->translate("member_register");?></a>'+
+            tmpContent += '<a href="/default/member/register" title="<?php echo $this->translate("member_register");?>" target="_blank"><?php echo $this->translate("member_register");?></a>'+
             '    <a href="http://<?php echo DIANA_DOMAIN_CLIENT_CURRENT?>" title="<?php echo $this->translate("member_login");?>" target="_blank"><?php echo $this->translate("member_login");?></a>'+
             '    <a href="http://<?php echo DIANA_DOMAIN_CLIENT_CURRENT?>/guest/forgetpwd/check/fail/step/1" title="<?php echo $this->translate("member_forgetpwd");?>" target="_blank"><?php echo $this->translate("member_forgetpwd");?></a>'+
             '    <a href="/default/website/apply" title="<?php echo $this->translate("member_post_apply_website");?>" target="_blank"><?php echo $this->translate("member_post_apply_website");?></a>';

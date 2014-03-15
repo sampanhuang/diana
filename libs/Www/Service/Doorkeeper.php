@@ -69,6 +69,43 @@ class Www_Service_Doorkeeper extends Diana_Service_Abstract
     }
 
     /**
+     * 邮箱注册方式
+     * @param $email
+     * @param $captcha
+     */
+    function registerOfEmail($email,$captcha)
+    {
+        //确认外部参数是否正确
+        if (empty($email)||empty($captcha)) {
+            $this->setMsgs("各项参数不能为空");
+            return false;
+        }
+        if ((!is_scalar($email))||(!is_scalar($captcha))) {
+            $this->setMsgs("各项参数必须为标量");
+            return false;
+        }
+        //判断邮箱格式
+        if(!Com_Function::validEmail($email)){
+            $this->setMsgs("无效的邮箱格式");
+            return false;
+        }
+        //判断验证码是否正确
+        $serviceCaptcha = new Diana_Service_Captcha();
+        if (!$serviceCaptcha->checkCaptchaWord($captcha,"www-member-register-email")) {
+            $this->focus = 5;
+            $this->setMsgs($serviceCaptcha->getMsgs());
+            return false;
+        }
+        //判断用户邮箱是否存在
+        $modelMember = new Diana_Model_Member();
+        if($rowsMember = $modelMember->getRowsByEmail(null,$email)){
+            $this->focus = 2;
+            $this->setMsgs("当前邮箱【".$email."】已经存在");
+            return false;
+        }
+    }
+
+    /**
      * 注册
      * @param $name
      * @param $email

@@ -156,35 +156,35 @@ $(function(){
         <label class="control-label" for="input_name">会员名称</label>
         <div class="controls">
             <input type="text" id="input_name" name="name" tabindex="1" class="span4" placeholder="会员名称" value="<?php echo $this->emailLasttime;?>">
-            <span class="help-inline muted" id="help_name">必填选，会员名称不能为空</span>
+            <span class="help-inline muted" id="help_name" style="color:#999">必填选，会员名称不能为空</span>
         </div>
     </div>
     <div class="control-group">
         <label class="control-label" for="input_email">密保邮箱</label>
         <div class="controls">
             <input type="text" id="input_email" name="email" tabindex="2" class="span4" placeholder="密保邮箱" value="<?php echo $this->emailLasttime;?>">
-            <span class="help-inline muted" id="help_email">必填选，密保邮箱不能为空</span>
+            <span class="muted help-inline muted" id="help_email" style="color:#999">必填选，密保邮箱不能为空</span>
         </div>
     </div>
     <div class="control-group">
         <label class="control-label" for="input_password">帐号密码</label>
         <div class="controls">
             <input type="password" id="input_password" name="password" tabindex="3" class="span4" placeholder="帐号密码" value="">
-            <span class="help-inline" id="help_password">必填选，密码不能为空</span>
+            <span class="help-inline muted" id="help_password" style="color:#999">必填选，密码不能为空</span>
         </div>
     </div>
     <div class="control-group">
-        <label class="control-label" for="input_password_confirmation">帐号密码</label>
+        <label class="control-label" for="input_password_confirmation">确认密码</label>
         <div class="controls">
-            <input type="password" id="input_password_confirmation" name="password_confirmation" tabindex="4" class="span4" placeholder="帐号密码" value="">
-            <span class="help-inline" id="help_password_confirmation">必填选，密码不能为空</span>
+            <input type="password" id="input_password_confirmation" name="password_confirmation" tabindex="4" class="span4" placeholder="确认密码" value="">
+            <span class="help-inline muted" id="help_password_confirmation" style="color:#999">必填选，确认密码不能为空</span>
         </div>
     </div>
     <div class="control-group">
         <label class="control-label" for="input_captcha">验证字符</label>
         <div class="controls">
             <input type="text" id="input_captcha" name="captcha" tabindex="5" class="span4" placeholder="验证字符" value="">
-            <span class="help-inline" id="help_captcha">请输入下面图片内的字符</span><br>
+            <span class="help-inline" id="help_captcha" style="color:#999">请输入下面图片内的字符</span><br>
             <img id="img_captcha" name="img_captcha" width="100" height="40" alt="点击更换验证码" title="点击更换验证码" style="cursor:pointer;">
         </div>
     </div>

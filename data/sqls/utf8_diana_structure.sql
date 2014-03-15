@@ -126,22 +126,6 @@ CREATE TABLE `tb_config_update_history` (
   PRIMARY KEY (`history_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-/*Table structure for table `tb_config_update_history_2014` */
-
-CREATE TABLE `tb_config_update_history_2014` (
-  `history_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `history_configId` int(11) DEFAULT NULL,
-  `history_configKey` varchar(64) NOT NULL,
-  `history_configValue` varchar(64) NOT NULL,
-  `history_insert_time` int(11) unsigned NOT NULL DEFAULT '0',
-  `history_insert_manId` int(11) unsigned NOT NULL DEFAULT '0',
-  `history_insert_manName` varchar(32) DEFAULT NULL,
-  `history_insert_manEmail` varchar(32) DEFAULT NULL,
-  `history_insert_ip` varchar(32) NOT NULL,
-  `history_insert_addr` varchar(32) DEFAULT NULL,
-  PRIMARY KEY (`history_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
-
 /*Table structure for table `tb_domain` */
 
 CREATE TABLE `tb_domain` (
@@ -236,33 +220,9 @@ CREATE TABLE `tb_manager_log` (
   KEY `Type_ManagerId` (`log_type`,`log_managerId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='管理员登录日志';
 
-/*Table structure for table `tb_manager_log_2014` */
-
-CREATE TABLE `tb_manager_log_2014` (
-  `log_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '流水号',
-  `log_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '登录时间',
-  `log_ip` varchar(64) NOT NULL COMMENT '登录IP',
-  `log_type` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '日志类型',
-  `log_sessionId` varchar(64) DEFAULT NULL COMMENT '会话ID',
-  `log_managerId` int(10) unsigned DEFAULT '0' COMMENT '管理员ID',
-  `log_managerName` varchar(64) DEFAULT NULL COMMENT '管理员帐号',
-  `log_managerEmail` varchar(64) DEFAULT NULL COMMENT '管理员邮箱',
-  PRIMARY KEY (`log_id`),
-  KEY `Type_ManagerId` (`log_type`,`log_managerId`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='管理员登录日志';
-
 /*Table structure for table `tb_manager_log_remark` */
 
 CREATE TABLE `tb_manager_log_remark` (
-  `log_id` int(11) unsigned NOT NULL COMMENT '流水号',
-  `log_user_agent` varchar(256) NOT NULL COMMENT '浏览器信息',
-  `log_remark` text COMMENT '备注',
-  PRIMARY KEY (`log_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `tb_manager_log_remark_2014` */
-
-CREATE TABLE `tb_manager_log_remark_2014` (
   `log_id` int(11) unsigned NOT NULL COMMENT '流水号',
   `log_user_agent` varchar(256) NOT NULL COMMENT '浏览器信息',
   `log_remark` text COMMENT '备注',
@@ -467,20 +427,6 @@ CREATE TABLE `tb_member_config_update_history` (
   PRIMARY KEY (`history_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-/*Table structure for table `tb_member_config_update_history_2014` */
-
-CREATE TABLE `tb_member_config_update_history_2014` (
-  `history_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `history_memberId` int(11) DEFAULT NULL,
-  `history_configId` int(11) DEFAULT NULL,
-  `history_configKey` varchar(64) NOT NULL,
-  `history_configValue` varchar(64) NOT NULL,
-  `history_insert_time` int(11) unsigned NOT NULL DEFAULT '0',
-  `history_insert_ip` varchar(32) NOT NULL,
-  `history_insert_addr` varchar(32) DEFAULT NULL,
-  PRIMARY KEY (`history_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
-
 /*Table structure for table `tb_member_config_value` */
 
 CREATE TABLE `tb_member_config_value` (
@@ -564,33 +510,9 @@ CREATE TABLE `tb_member_log` (
   KEY `MemberId` (`log_memberId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='用户登录日志';
 
-/*Table structure for table `tb_member_log_2014` */
-
-CREATE TABLE `tb_member_log_2014` (
-  `log_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '流水号',
-  `log_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '登录时间',
-  `log_ip` varchar(64) NOT NULL COMMENT '登录IP',
-  `log_type` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '日志类型',
-  `log_sessionId` varchar(64) DEFAULT NULL COMMENT '会话ID',
-  `log_memberId` int(10) unsigned DEFAULT '0' COMMENT '用户ID',
-  `log_memberName` varchar(64) DEFAULT NULL COMMENT '用户帐号',
-  `log_memberEmail` varchar(64) DEFAULT NULL COMMENT '用户邮箱',
-  PRIMARY KEY (`log_id`),
-  KEY `MemberId` (`log_memberId`)
-) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='用户登录日志';
-
 /*Table structure for table `tb_member_log_remark` */
 
 CREATE TABLE `tb_member_log_remark` (
-  `log_id` int(11) unsigned NOT NULL COMMENT '流水号',
-  `log_user_agent` varchar(256) NOT NULL COMMENT '浏览器信息',
-  `log_remark` text COMMENT '备注',
-  PRIMARY KEY (`log_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `tb_member_log_remark_2014` */
-
-CREATE TABLE `tb_member_log_remark_2014` (
   `log_id` int(11) unsigned NOT NULL COMMENT '流水号',
   `log_user_agent` varchar(256) NOT NULL COMMENT '浏览器信息',
   `log_remark` text COMMENT '备注',
@@ -744,43 +666,6 @@ CREATE TABLE `tb_member_trend_login` (
   UNIQUE KEY `Month_Day_Event` (`trend_month`,`trend_day`,`trend_eventId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-/*Table structure for table `tb_member_trend_login_2014` */
-
-CREATE TABLE `tb_member_trend_login_2014` (
-  `trend_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `trend_eventId` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_year` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_month` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_day` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_0` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_1` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_2` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_3` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_4` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_5` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_6` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_7` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_8` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_9` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_10` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_11` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_12` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_13` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_14` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_15` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_16` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_17` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_18` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_19` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_20` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_21` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_22` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_23` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_total` int(11) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`trend_id`),
-  UNIQUE KEY `Month_Day_Event` (`trend_month`,`trend_day`,`trend_eventId`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
-
 /*Table structure for table `tb_member_trend_register` */
 
 CREATE TABLE `tb_member_trend_register` (
@@ -816,42 +701,6 @@ CREATE TABLE `tb_member_trend_register` (
   PRIMARY KEY (`trend_id`),
   UNIQUE KEY `Month_Day` (`trend_month`,`trend_day`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `tb_member_trend_register_2014` */
-
-CREATE TABLE `tb_member_trend_register_2014` (
-  `trend_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `trend_year` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_month` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_day` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_0` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_1` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_2` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_3` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_4` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_5` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_6` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_7` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_8` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_9` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_10` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_11` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_12` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_13` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_14` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_15` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_16` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_17` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_18` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_19` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_20` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_21` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_22` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_23` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_total` int(11) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`trend_id`),
-  UNIQUE KEY `Month_Day` (`trend_month`,`trend_day`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tb_safe_filter_word` */
 
@@ -1143,42 +992,6 @@ CREATE TABLE `tb_website_trend_apply_register` (
   UNIQUE KEY `Month_Day` (`trend_month`,`trend_day`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-/*Table structure for table `tb_website_trend_apply_register_2014` */
-
-CREATE TABLE `tb_website_trend_apply_register_2014` (
-  `trend_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `trend_year` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_month` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_day` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_0` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_1` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_2` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_3` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_4` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_5` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_6` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_7` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_8` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_9` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_10` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_11` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_12` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_13` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_14` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_15` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_16` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_17` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_18` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_19` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_20` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_21` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_22` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_23` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_total` int(11) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`trend_id`),
-  UNIQUE KEY `Month_Day` (`trend_month`,`trend_day`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
-
 /*Table structure for table `tb_website_trend_click_in` */
 
 CREATE TABLE `tb_website_trend_click_in` (
@@ -1253,43 +1066,6 @@ CREATE TABLE `tb_website_trend_click_out` (
   UNIQUE KEY `Month_Day_Event` (`trend_month`,`trend_day`,`trend_eventId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-/*Table structure for table `tb_website_trend_click_out_2014` */
-
-CREATE TABLE `tb_website_trend_click_out_2014` (
-  `trend_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `trend_eventId` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_year` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_month` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_day` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_0` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_1` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_2` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_3` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_4` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_5` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_6` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_7` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_8` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_9` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_10` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_11` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_12` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_13` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_14` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_15` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_16` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_17` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_18` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_19` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_20` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_21` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_22` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_23` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_total` int(11) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`trend_id`),
-  UNIQUE KEY `Month_Day_Event` (`trend_month`,`trend_day`,`trend_eventId`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
-
 /*Table structure for table `tb_website_trend_register` */
 
 CREATE TABLE `tb_website_trend_register` (
@@ -1325,42 +1101,6 @@ CREATE TABLE `tb_website_trend_register` (
   PRIMARY KEY (`trend_id`),
   UNIQUE KEY `Month_Day` (`trend_month`,`trend_day`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `tb_website_trend_register_2014` */
-
-CREATE TABLE `tb_website_trend_register_2014` (
-  `trend_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `trend_year` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_month` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_day` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_0` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_1` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_2` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_3` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_4` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_5` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_6` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_7` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_8` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_9` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_10` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_11` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_12` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_13` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_14` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_15` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_16` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_17` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_18` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_19` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_20` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_21` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_22` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_23` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_total` int(11) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`trend_id`),
-  UNIQUE KEY `Month_Day` (`trend_month`,`trend_day`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tb_website_trend_search` */
 
@@ -1398,43 +1138,6 @@ CREATE TABLE `tb_website_trend_search` (
   PRIMARY KEY (`trend_id`),
   UNIQUE KEY `Month_Day_Event` (`trend_month`,`trend_day`,`trend_eventId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `tb_website_trend_search_2014` */
-
-CREATE TABLE `tb_website_trend_search_2014` (
-  `trend_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `trend_eventId` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_year` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_month` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_day` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_0` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_1` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_2` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_3` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_4` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_5` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_6` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_7` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_8` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_9` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_10` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_11` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_12` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_13` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_14` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_15` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_16` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_17` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_18` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_19` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_20` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_21` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_22` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_23` int(11) unsigned NOT NULL DEFAULT '0',
-  `trend_hour_total` int(11) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`trend_id`),
-  UNIQUE KEY `Month_Day_Event` (`trend_month`,`trend_day`,`trend_eventId`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
