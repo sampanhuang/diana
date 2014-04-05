@@ -1,0 +1,23 @@
+<?php
+return array(	
+	"website_label" => "海華門",
+	"website_welcome" => "歡迎來到海華門",
+	"website_slogan" => "海華門！海外華人同出一門",
+	"member_register" => "註冊",
+	"member_login" => "登錄",
+	"member_forgetPasswd" => "取回密碼",
+	"global_return_top" => "返回頂部",
+	"global_index" => "首頁",
+	"global_all" => "全部",
+	"global_label_order" => "排序",
+	"global_label_order_new" => "最新",
+	"global_label_order_hot" => "最熱",
+	"global_label_category" => "類型",
+	"global_label_country" => "國家",
+	"global_more" => "更多&raquo;",
+	"global_search" => "搜索",
+	"global_enable_1" => "開啟",
+	"global_enable_0" => "關閉",
+	"global_show_1" => "顯示",
+	"global_show_0" => "隱藏",
+);

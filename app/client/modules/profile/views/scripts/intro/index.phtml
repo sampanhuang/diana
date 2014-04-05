@@ -1,0 +1,174 @@
+<div class="div_bg_fa separator_bot">
+    <fieldset border="false" class="fieldset_border separator_bot" >
+        <legend>用户资料</legend>
+        <table width="100%" border="0" cellspacing="1" cellpadding="5" class="table_border separator_top separator_bot">
+            <tr>
+                <th width="10%">流水号</th>
+                <td width="23%"><?php echo $this->currentMemberDetail['member_id'];?></td>
+                <th width="10%">邮箱</th>
+                <td width="23%"><?php echo $this->currentMemberDetail['member_email'];?></td>
+                <th width="10%">名称</th>
+                <td width="23%"><?php echo $this->currentMemberDetail['member_name'];?></td>
+            </tr>
+            <tr>
+                <th>密码修改次数</th>
+                <td><?php echo $this->currentMemberDetail['member_passwd_change_count'];?></td>
+                <th>密码修改时间</th>
+                <td><?php echo $this->formatDate("Y-m-d H:i:s",$this->currentMemberDetail['member_passwd_change_time']);?></td>
+                <th>密码修改IP</th>
+                <td><?php echo $this->currentMemberDetail['member_passwd_change_ip'];?></td>
+            </tr>
+            <tr>
+                <th>登录次数</th>
+                <td><?php echo $this->currentMemberDetail['member_login_count'];?></td>
+                <th>最后登录时间</th>
+                <td><?php echo $this->formatDate("Y-m-d H:i:s",$this->currentMemberDetail['member_login_last_time']);?></td>
+                <th>最后登录IP</th>
+                <td><?php echo $this->currentMemberDetail['member_login_last_ip'];?></td>
+            </tr>
+            <tr>
+                <th>锁定状态</th>
+                <td><?php
+                    if( $this->currentMemberDetail['member_lock_time'] > time()){
+                        echo '<span style="color:red;">已锁定<span>';                    ;
+                    }else{
+                        echo '<span style="color:green;">未锁定<span>';
+                    }
+                    ?></td>
+                <th><?php if(!empty($this->currentMemberDetail['member_lock_time'])){echo '解锁时间';}?></th>
+                <td><?php echo $this->formatDate("Y-m-d H:i:s",$this->currentMemberDetail['member_lock_time']);?></td>
+                <th><?php if(!empty($this->currentMemberDetail['member_lock_time'])){echo '备注';}?></th>
+                <td>
+                    <?php
+                    if( $this->currentMemberDetail['member_lock_time'] > 0){
+                        if( $this->currentMemberDetail['member_lock_time'] > time()){
+                            echo $this->formatsecond($this->currentMemberDetail['member_lock_time'] - time());
+                            echo '后解锁';
+                        }else{
+                            echo $this->formatsecond(time() - $this->currentMemberDetail['member_lock_time']);
+                            echo '前解锁';
+                        }
+                    }
+                    ?></td>
+            </tr>
+            <?php if(!empty($this->currentMemberDetail['member_insert_time'])){?>
+            <tr>
+                <th>创建时间</th>
+                <td><?php echo $this->formatDate("Y-m-d H:i:s",$this->currentMemberDetail['member_insert_time']);?></td>
+                <th>创建IP</th>
+                <td><?php echo $this->currentMemberDetail['member_insert_ip'];?></td>
+                <th>创建人</th>
+                <td><?php echo $this->currentMemberDetail['member_insert_man'];?></td>
+            </tr>
+            <?php }?>
+            <?php if(!empty($this->currentMemberDetail['member_update_time'])){?>
+            <tr>
+                <th>最后编辑时间</th>
+                <td><?php echo $this->formatDate("Y-m-d H:i:s",$this->currentMemberDetail['member_update_time']);?></td>
+                <th>最后编辑IP</th>
+                <td><?php echo $this->currentMemberDetail['member_update_ip'];?></td>
+                <th>最后编辑人</th>
+                <td><?php echo $this->currentMemberDetail['member_update_man'];?></td>
+            </tr>
+            <?php }?>
+        </table>
+    </fieldset>
+    <fieldset border="false" class="fieldset_border separator_bot">
+        <legend>角色资料</legend>
+        <table width="100%" border="0" cellspacing="1" cellpadding="5" class="table_border">
+            <tr>
+                <th width="10%">流水号</th>
+                <td width="23%"><?php echo $this->currentMemberDetail['role_id'];?></td>
+                <th width="10%">角色名称</th>
+                <td width="23%"><?php echo $this->currentMemberDetail['role_name'];?></td>
+                <th width="10%">超级权限</th>
+                <td width="23%">
+                    <?php
+                    if ($this->currentMemberDetail['role_admin'] == 1) {
+                        echo '<span style="color:red;">是</span>';
+                    }else{
+                        echo '<span style="color:green;">否</span>';
+                    }
+                    ?>
+                </td>
+
+            </tr>
+            <tr>
+                <th>锁定状态</th>
+                <td><?php
+                    if( $this->currentMemberDetail['role_lock_time'] > time()){
+                        echo '<span style="color:red;">已锁定<span>';                    ;
+                    }else{
+                        echo '<span style="color:green;">未锁定<span>';
+                    }
+                    ?></td>
+                <th><?php if(!empty($this->currentMemberDetail['role_lock_time'])){echo '解锁时间';}?></th>
+                <td><?php echo $this->formatDate("Y-m-d H:i:s",$this->currentMemberDetail['role_lock_time']);?></td>
+                <th><?php if(!empty($this->currentMemberDetail['role_lock_time'])){echo '备注';}?></th>
+                <td>
+                    <?php
+                    if( $this->currentMemberDetail['role_lock_time'] > 0){
+                        if( $this->currentMemberDetail['role_lock_time'] > time()){
+                            echo $this->formatsecond($this->currentMemberDetail['role_lock_time'] - time());
+                            echo '后解锁';
+                        }else{
+                            echo $this->formatsecond(time() - $this->currentMemberDetail['role_lock_time']);
+                            echo '前解锁';
+                        }
+                    }
+                    ?></td>
+            </tr>
+            <tr>
+                <th width="10%">创建时间</th>
+                <td width="23%"><?php echo $this->formatDate("Y-m-d H:i",$this->currentMemberDetail['role_insert_time']);?></td>
+                <th width="10%">创建人</th>
+                <td width="23%"><?php echo $this->currentMemberDetail['role_insert_man'];?></td>
+                <th width="10%">创建IP</th>
+                <td width="23%"><?php echo $this->currentMemberDetail['role_insert_ip'];?></td>
+            </tr>
+            <tr>
+                <th width="10%">最后修改时间</th>
+                <td width="23%"><?php echo $this->formatDate("Y-m-d H:i",$this->currentMemberDetail['role_update_time']);?></td>
+                <th width="10%">最后修改人</th>
+                <td width="23%"><?php echo $this->currentMemberDetail['role_update_man'];?></td>
+                <th width="10%">最后修改IP</th>
+                <td width="23%"><?php echo $this->currentMemberDetail['role_update_ip'];?></td>
+            </tr>
+        </table>
+    </fieldset>
+    <fieldset border="false" class="fieldset_border separator_bot" >
+        <legend>权限范围</legend>
+        <?php
+        if (empty($this->currentMemberRoleMenuTree)) {
+            echo '权限数据为空！';
+        }else{
+            echo '<table width="98%" border="0" cellspacing="1" cellpadding="5" class = "table_border">'.chr(10).chr(13);
+            $htmlcheckName = 'checkbox_menu_id';
+            foreach ($this->currentMemberRoleMenuTree as $module){
+                $moduleHtmlCheckboxId = implode('_',array($htmlcheckName,$module['menu_id']));
+                $countController = $counterController = count($module['son']);
+                foreach ($module['son'] as $controller){
+                    $controllerHtmlCheckboxId = implode('_',array($htmlcheckName,$module['menu_id'],$controller['menu_id']));
+                    $htmlCheckbox = array();
+                    foreach ($controller['son'] as $action){
+                        $actionHtmlCheckboxId = implode('_',array($htmlcheckName,$module['menu_id'],$controller['menu_id'],$action['menu_id']));
+                        $htmlChecked = ' ';
+                        $actionId = $action['menu_id'];
+                        $actionsLabel = $action['menu_label_'.DIANA_TRANSLATE_CURRENT];
+                        $htmlCheckbox[] = $actionsLabel;
+                    }
+                    echo '<tr>'.chr(10).chr(13);
+                    if ($counterController == $countController) {
+                        echo '<th width="10%" rowspan="'.$countController.'"  align="left" valign="top">'.$module['menu_label_'.DIANA_TRANSLATE_CURRENT].'</th>'.chr(10).chr(13);
+                    }
+                    echo '<th width="10%"  align="left" valign="top">'.$controller['menu_label_'.DIANA_TRANSLATE_CURRENT].'</th>'
+                        .'<td width="80%">'.implode('&nbsp;&nbsp;',$htmlCheckbox).'</td>'.chr(10).chr(13);
+                    echo '</tr>'.chr(10).chr(13);
+                    $counterController--;
+                }
+            }
+            echo '</table>'.chr(10).chr(13);
+        }
+        ?>
+    </fieldset>
+</div>

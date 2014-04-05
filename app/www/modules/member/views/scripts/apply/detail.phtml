@@ -1,0 +1,58 @@
+<?php
+if(!empty($this->detailApply)){
+?>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="table table-striped">
+    <thead>
+    <tr>
+        <th valign="top">流水号</th>
+        <td valign="top" colspan="3"><?php echo $this->detailApply['register_id'];?></td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <th valign="top" scope="row" style="width: 10%;">名称</th>
+        <td valign="top" style="width: 40%;"><?php echo $this->detailApply['website_name'];?></td>
+        <th valign="top" scope="row" style="width: 10%;">域名</th>
+        <td valign="top" style="width: 40%;"><a href="<?php echo $this->detailApply['website_domain'];?>" target="_blank"><?php echo $this->detailApply['website_domain'];?></a></td>
+    </tr>
+    <tr>
+        <th valign="top" scope="row" style="width: 10%;">区域</th>
+        <td valign="top" style="width: 40%;"><?php echo $this->translate("continent_code_".$this->detailApply['website_continent']).'/'.$this->translate("country_code_".$this->detailApply['website_country']);?></td>
+        <th valign="top" scope="row" style="width: 10%;">类型</th>
+        <td valign="top" style="width: 40%;"><?php echo $this->translate("category_id_".$this->detailApply['website_categoryId']);?></td>
+    </tr>
+    <tr>
+        <th valign="top" scope="row">标签</th>
+        <td valign="top" colspan="3"><?php echo $this->detailApply['website_tag'];?></td>
+    </tr>
+    <tr>
+        <th valign="top" scope="row">简介</th>
+        <td valign="top" colspan="3"><?php echo nl2br($this->detailApply['website_intro']);?></td>
+    </tr>
+    <tr>
+        <th valign="top" scope="row">申请时间</th>
+        <td valign="top"><?php echo $this->formatDate('Y-m-d H:i:s',$this->detailApply['register_insert_time']);?></td>
+        <th valign="top" scope="row">申请IP</th>
+        <td valign="top"><?php echo $this->detailApply['register_insert_ip'];?></td>
+    </tr>
+    <tr>
+        <th valign="top" scope="row">更新时间</th>
+        <td valign="top"><?php echo $this->formatDate('Y-m-d H:i:s',$this->detailApply['register_update_time']);?></td>
+        <th valign="top" scope="row">更新IP</th>
+        <td valign="top"><?php echo $this->detailApply['register_update_ip'];?></td>
+    </tr>
+    <tr>
+        <th valign="top" scope="row">审核时间</th>
+        <td valign="top"><?php echo $this->formatDate('Y-m-d H:i:s',$this->detailApply['register_pass_time']);?></td>
+        <th valign="top" scope="row">审核IP</th>
+        <td valign="top"><?php echo $this->detailApply['register_pass_ip'];?></td>
+    </tr>
+    <tr>
+        <th valign="top" scope="row">审核结果</th>
+        <td valign="top"  colspan="3"><span class="badge"><?php echo $this->translate('www_website_apply_pass_'.$this->detailApply['apply_pass']);?></span></td>
+    </tr>
+    </tbody>
+</table>
+<?php
+}
+?>

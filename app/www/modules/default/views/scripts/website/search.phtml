@@ -1,0 +1,58 @@
+<ul class="breadcrumb">
+    <li><a href="/">首页</a> <span class="divider">/</span></li>
+
+    <?php
+    if($this->paginator['total'] > 0){
+        echo '<li class="active">搜索结果：';
+        echo '获得约 '.$this->paginator['total'].' 条结果，共 '.$this->pagenum['last'].' 页，以下是第 '.$this->pagenum['current'].' 页</li>';
+    }else{
+        echo '<li class="active">暂无搜索结果</li>';
+    }
+    ?>
+
+</ul>
+<div class="row">
+    <div class="span12" >
+        <?php
+        if($this->paginator['total'] > 0){
+            ?>
+            <div class="row" style="margin-bottom: 5px;">
+                <div class="span5">
+                </div>
+                <div class="span5"><?php echo $this->render('paginator.phtml'); ?></div>
+            </div>
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" class="table table-striped table-hover">
+                <?php
+                foreach($this->paginator['rows'] as $row){
+                    ?>
+                    <tr>
+                        <td>
+                            <h4><?php echo $this->utf8Substr($row['website_name'],32);?><small>&nbsp;&nbsp;<?php echo $this->allWebsiteArea[$row['website_areaFatherId']]['area_name_'.DIANA_TRANSLATE_CURRENT].'/'.$this->allWebsiteArea[$row['website_areaId']]['area_name_'.DIANA_TRANSLATE_CURRENT].'&nbsp;&nbsp;&nbsp;'.$this->allWebsiteCategory[$row['website_categoryId']]['category_name_'.DIANA_TRANSLATE_CURRENT];?></small></h4>
+                            <a href="<?php echo $this->url(array("action" => "detail","website_id" => $row['website_id']));?>" title="<?php echo $row['website_name'];?>" target="_blank"><?php echo $this->utf8Substr($row['website_domain'],32);?></a><br>
+                            <?php echo $this->utf8Substr($row['website_intro'],160);?><br>
+                            <small>
+                                <?php
+                                if(!empty($row['website_tag'])){
+                                    $tmpHtml = array();
+                                    $tmpWebsiteTag = explode(',',$this->utf8Substr($row['website_tag'],128));
+                                    $tmpWebsiteTag = array_filter($tmpWebsiteTag);
+                                    $tmpWebsiteTag = array_unique($tmpWebsiteTag);
+                                    foreach($tmpWebsiteTag as $valTmpWebsiteTag){
+                                        $tmpHtml[] = '<a href="'.$this->url(array("action"=>"search","keyword" => $valTmpWebsiteTag)).'" title="'.$valTmpWebsiteTag.'"  class="muted">'.$valTmpWebsiteTag.'</a>';
+                                    }
+                                    echo implode("&nbsp;",$tmpHtml);
+                                }
+                                ?>
+                            </small>
+                        </td>
+                    </tr>
+                    <?php }?>
+            </table>
+            <div class="row" style="margin-bottom: 5px;">
+                <div class="span2">
+                </div>
+                <div class="span8"><?php echo $this->render('paginator.phtml'); ?></div>
+            </div>
+            <?php }?>
+    </div>
+</div>

@@ -1,0 +1,139 @@
+<div class="div_bg_fa separator_bot">
+    <?php
+    if(!empty($this->rowsManagerLogLogin)){
+    ?>
+    <fieldset border="false" class="fieldset_border separator_bot" >
+        <legend>登录日志</legend>
+        <table width="100%" border="0" cellspacing="1" cellpadding="5" class="table_border separator_top separator_bot">
+            <thead>
+                <tr>
+                    <th width="120">时间</th>
+                    <th width="120">IP地址</th>
+                    <th width="200">现实地址</th>
+                    <th width="250">会话ID</th>
+                    <th width="150">登录帐号</th>
+                    <th >登录邮箱</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php
+            foreach($this->rowsManagerLogLogin as $rowManagerLogLogin){
+            ?>
+            <tr>
+                <td><?php echo $this->formatDate('Y-m-d H:i',$rowManagerLogLogin['log_time']);?></td>
+                <td><?php echo $rowManagerLogLogin['log_ip'];?></td>
+                <td><?php echo $this->utf8Substr($this->arrIpAddr[$rowManagerLogLogin['log_ip']]["area1"].$this->arrIpAddr[$rowManagerLogLogin['log_ip']]["area2"],15);?></td>
+                <td><?php echo $rowManagerLogLogin['log_sessionId'];?></td>
+                <td><?php echo $rowManagerLogLogin['log_managerName'];?></td>
+                <td><?php echo $rowManagerLogLogin['log_managerEmail'];?></td>
+            </tr>
+            <?php }?>
+            </tbody>
+        </table>
+    </fieldset>
+    <?php
+    }
+    if(!empty($this->rowsManagerLogResetPwdAfterLogin)){
+    ?>
+    <fieldset border="false" class="fieldset_border separator_bot" >
+        <legend>密码变更（登录后）</legend>
+        <table width="100%" border="0" cellspacing="1" cellpadding="5" class="table_border separator_top separator_bot">
+            <thead>
+            <tr>
+                <th width="120">时间</th>
+                <th width="120">IP地址</th>
+                <th width="200">现实地址</th>
+                <th width="250">会话ID</th>
+                <th width="150">登录帐号</th>
+                <th >登录邮箱</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php
+            foreach($this->rowsManagerLogResetPwdAfterLogin as $rowManagerLogResetPwdAfterLogin){
+            ?>
+            <tr>
+                <td><?php echo $this->formatDate('Y-m-d H:i',$rowManagerLogResetPwdAfterLogin['log_time']);?></td>
+                <td><?php echo $rowManagerLogResetPwdAfterLogin['log_ip'];?></td>
+                <td><?php echo $this->utf8Substr($this->arrIpAddr[$rowManagerLogLogin['log_ip']]["area1"].$this->arrIpAddr[$rowManagerLogLogin['log_ip']]["area2"],15);?></td>
+                <td><?php echo $rowManagerLogResetPwdAfterLogin['log_sessionId'];?></td>
+                <td><?php echo $rowManagerLogResetPwdAfterLogin['log_managerName'];?></td>
+                <td><?php echo $rowManagerLogResetPwdAfterLogin['log_managerEmail'];?></td>
+            </tr>
+            <?php }?>
+            </tbody>
+        </table>
+    </fieldset>
+    <?php
+    }
+    if(!empty($this->rowsManagerLogResetPwdBeforeLogin)){
+    ?>
+    <fieldset border="false" class="fieldset_border separator_bot" >
+        <legend>密码变更（登录前）</legend>
+        <table width="100%" border="0" cellspacing="1" cellpadding="5" class="table_border separator_top separator_bot">
+            <thead>
+            <tr>
+                <th width="120">时间</th>
+                <th width="120">IP地址</th>
+                <th width="200">现实地址</th>
+                <th width="150">登录帐号</th>
+                <th >登录邮箱</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php
+            foreach($this->rowsManagerLogResetPwdBeforeLogin as $rowsManagerLogResetPwdBeforeLogin){
+                ?>
+            <tr>
+                <td><?php echo $this->formatDate('Y-m-d H:i',$rowsManagerLogResetPwdBeforeLogin['log_time']);?></td>
+                <td><?php echo $rowsManagerLogResetPwdBeforeLogin['log_ip'];?></td>
+                <td><?php echo $this->utf8Substr($this->arrIpAddr[$rowManagerLogLogin['log_ip']]["area1"].$this->arrIpAddr[$rowManagerLogLogin['log_ip']]["area2"],15);?></td>
+                <td><?php echo $rowsManagerLogResetPwdBeforeLogin['log_managerName'];?></td>
+                <td><?php echo $rowsManagerLogResetPwdBeforeLogin['log_managerEmail'];?></td>
+            </tr>
+                <?php }?>
+            </tbody>
+        </table>
+    </fieldset>
+    <?php
+    }
+    ?>
+    <fieldset border="false" class="fieldset_border separator_bot" >
+        <legend>环境参数</legend>
+        <table width="100%" border="0" cellspacing="1" cellpadding="5" class="table_border separator_top separator_bot">
+            <tbody>
+            <?php
+            foreach($this->servInfo as $keyServ => $valServ){
+                ?>
+            <tr>
+                <th width="20%"><?php echo $keyServ;?></th>
+                <td width="80%"><?php echo $valServ;?></td>
+            </tr>
+                <?php }?>
+            </tbody>
+        </table>
+    </fieldset>
+    <fieldset border="false" class="fieldset_border separator_bot" >
+        <legend>PHP参数</legend>
+        <table width="100%" border="0" cellspacing="1" cellpadding="5" class="table_border separator_top separator_bot">
+            <thead>
+            <tr>
+                <th width="20%"></th>
+                <th width="40%">Global Value</th>
+                <th width="40%">Local Value</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php
+            foreach($this->phpInfo as $keyIni => $arrIni){
+            ?>
+            <tr>
+                <th><?php echo $keyIni;?></th>
+                <td><?php echo $arrIni['global_value'];?></td>
+                <td><?php echo $arrIni['local_value'];?></td>
+            </tr>
+            <?php }?>
+            </tbody>
+        </table>
+    </fieldset>
+</div>

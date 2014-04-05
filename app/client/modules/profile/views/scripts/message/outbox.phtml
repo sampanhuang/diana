@@ -1,0 +1,7 @@
+<?php
+if(($this->dataget['outbox_detail'] == 'yes')&&(!empty($this->dataget['outbox_id']))){
+    echo $this->render('message/outbox-detail.phtml');
+}else{
+    echo $this->render('message/outbox-index.phtml');
+}
+?>

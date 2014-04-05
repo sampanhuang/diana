@@ -1,0 +1,112 @@
+<script type="text/javascript">
+    $(function(){
+        //提交查询表单
+        $('#linkbtn_submit').click(function(){
+            $("#form_query").submit();
+        });
+        //隐藏提示
+        $("#div_help").hide();
+        //查询帮助
+        $('#linkbtn_help').click(function(){
+            $("#div_help").toggle();
+        });
+    });
+</script>
+<div class="div_bg_fa separator_bot">
+    <form id="form_query" name="form_query" method="post">
+        <fieldset border="false"  class="fieldset_border separator_bot" >
+            <legend>网站注册申请查询</legend>
+            <table width="100%" border="0" cellspacing="1" cellpadding="5"  class="table_border separator_top separator_bot">
+                <tr>
+                    <th width="10%">关键字</th>
+                    <td width="90%">
+                        <input id="input_search_query_key" name="query_key" class="easyui-validatebox" data-options="required:true"  style="width:230px;" value="<?php echo $this->request['query_key'];?>">
+                        <span id="span_notice_query_key" class="span_notice">不支持模糊查询，不支持多变量名查询</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th width="10%">类型</th>
+                    <td width="90%">
+                        <?
+                        foreach($this->queryColumns as $tmpQueryColumn){
+                            $tmpHtmlTagChecked = '';
+                            if($tmpQueryColumn == $this->request['query_column']){
+                                $tmpHtmlTagChecked = 'checked="checked"';
+                            }
+                            echo '<label><input type="radio" name="query_column" value="'.$tmpQueryColumn.'" id="query_column_'.$tmpQueryColumn.'" '.$tmpHtmlTagChecked.'  />'.$this->translate('model_'.$tmpQueryColumn).'</label>';
+                        }
+                        ?>
+                    </td>
+                </tr>
+            </table>
+            <input id="input_handle" name="handle" type="hidden" value="query">
+            <div border="false" class="div_btn">
+                <a id="linkbtn_submit" class="easyui-linkbutton" iconCls="icon-ok" style="margin-right:20px;">确定</a>
+                <a id="linkbtn_reset" class="easyui-linkbutton" iconCls="icon-cancel" style="margin-right:20px;">取消</a>
+            </div>
+        </fieldset>
+    </form>
+    <?php
+        if(!empty($this->detail)){
+    ?>
+    <fieldset border="false"  class="fieldset_border separator_bot" >
+        <legend>网站注册申请明细</legend>
+        <table width="100%" border="0" cellspacing="1" cellpadding="5"  class="table_border separator_top separator_bot">
+            <tr>
+                <th width="10%">申请单ID</th>
+                <td width="23%"><?php echo $this->detail['register_id'];?></td>
+                <th width="10%">申请人</th>
+                <td width="23%"><?php echo $this->utf8Substr($this->detail['website_memberName'],8);?>&nbsp;<span style="color:#999999">&lt;<?php echo $this->detail['website_memberEmail'];?>&gt;</span></td>
+                <th width="10%"><?php echo $this->translate('model_register_pass');?></th>
+                <td width="23%"><?php echo $this->translate('model_register_pass_'.$this->detail['register_pass']);?></td>
+            </tr>
+            <tr>
+                <th width="10%">申请时间</th>
+                <td width="23%"><?php echo $this->formatDate('Y-m-d H:i',$this->detail['register_insert_time']);?></td>
+                <th width="10%">申请IP</th>
+                <td width="23%"><?php echo $this->detail['register_insert_ip'];?></td>
+                <th width="10%">申请地点</th>
+                <td width="23%"><?php echo $this->detail['register_insert_addr'];?></td>
+            </tr>
+            <tr>
+                <th width="10%">变更时间</th>
+                <td width="23%"><?php echo $this->formatDate('Y-m-d H:i',$this->detail['register_update_time']);?></td>
+                <th width="10%">变更IP</th>
+                <td width="23%"><?php echo $this->detail['register_update_ip'];?></td>
+                <th width="10%">变更地点</th>
+                <td width="23%"><?php echo $this->detail['register_update_addr'];?></td>
+            </tr>
+            <tr>
+                <th width="10%">审核时间</th>
+                <td width="23%"><?php echo $this->formatDate('Y-m-d H:i',$this->detail['register_pass_time']);?></td>
+                <th width="10%">审核IP</th>
+                <td width="23%"><?php echo $this->detail['register_pass_ip'];?></td>
+                <th width="10%">审核地点</th>
+                <td width="23%"><?php echo $this->detail['register_pass_addr'];?></td>
+            </tr>
+        </table>
+        <table width="100%" border="0" cellspacing="1" cellpadding="5"  class="table_border separator_top separator_bot">
+            <tr>
+                <th width="10%">网站名</th>
+                <td width="40%"><?php echo $this->detail['website_name'];?></td>
+                <th width="10%">网站域名</th>
+                <td width="40%"><?php echo $this->detail['website_domain'];?></td>
+            </tr>
+            <tr>
+                <th width="10%">类别</th>
+                <td width="40%"><?php if($this->detail['website_categoryFatherId']){echo $this->detail['website_categoryFatherName'].'&nbsp;<span style="color:#999999;">/</span>&nbsp;';} echo $this->detail['website_categoryName'];?></td>
+                <th width="10%">地区</th>
+                <td width="40%"><?php if($this->detail['website_areaFatherId']){echo $this->detail['website_areaFatherName'].'&nbsp;<span style="color:#999999;">/</span>&nbsp;';}?><?php echo $this->detail['website_areaName'];?></td>
+            </tr>
+            <tr>
+                <th width="10%">标签</th>
+                <td width="90%" colspan="3"><?php echo $this->detail['website_tag'];?></td>
+            </tr>
+            <tr>
+                <th width="10%">简介</th>
+                <td width="90%" colspan="3"><?php echo $this->detail['website_intro'];?></td>
+            </tr>
+        </table>
+    </fieldset>
+    <?php }?>
+</div>

@@ -1,0 +1,37 @@
+<table width="240" border="0" cellspacing="1" cellpadding="5" bgcolor="#dedede">
+      <tr>
+        <td align="left">
+        	<span class="title-bold" style="float:left"><?php echo $this->translate("continent_code_".$this->currentArea).$this->translate("www_index_rank");?></span>
+            <span class="right ui-grey"><a href="/default/website/top/continent/<?php echo $this->currentArea;?>"><?php echo $this->translate("global_more");?></a></span>
+        </td>
+      </tr>
+      <tr>
+        <td bgcolor="#ffffff">
+        	<div class="ui-rank-panel-trigger">
+                <span class="ui-rank-panel-trigger-title left"><?php echo $this->translate("www_index_website");?></span>
+                <span class="ui-rank-panel-trigger-hit left"><?php echo $this->translate("www_index_today_yesterday_total");?></span>
+                <span class="ui-rank-panel-trigger right"><?php echo $this->translate("www_index_up_down");?></span>
+            </div>
+            <!--输出排行榜数据-->
+            <?php 
+            if (empty($this->rank[$this->currentArea])){
+            	echo "nothing";
+            }else{	
+            	$counter = 1;
+            ?>
+        	<div class="ui-rank-list">
+            	<ul>
+            		<?php foreach ($this->rank[$this->currentArea] as $rowRank){?>
+                	<li>
+                    	<span class="ui-rank-number left <?php if ($counter <= 3){echo "ui-rank-top";}?>"><?php echo $counter++;?></span>
+                    	<span class="ui-rank-title left"><a href="<?php echo $rowRank["link"];?>" title="<?php echo $rowRank["title"];?>" class="left"><?php echo $this->utf8substr($rowRank["label"],4);?></a></span>
+                        <span class="ui-rank-hit left"><a href="/" class="left"><?php echo implode(" / ",array($rowRank["today_hit"],$rowRank["yesterday_hit"],$rowRank["total_hit"]));?></a></span>
+                        <span class="<?php if ($rowRank["hit_up"] == 1) {echo "ui-rank-up";}else{echo "ui-rank_down";}?> right"></span>
+                    </li>   
+                    <?php }?>                 
+                </ul>
+            </div>
+            <?php }?>
+        </td>
+      </tr>
+    </table>

@@ -1,0 +1,58 @@
+
+<script type="text/javascript">
+    $(function(){
+        $('#dialog_acceptmail').dialog({
+            iconCls:'icon-user',
+            closable:false,
+            modal:true,
+            title:'取回密码-激活链接'
+        });
+    });
+</script>
+<div id="dialog_acceptmail" class="easyui-dialog" style="width:780px;height:270px;padding:10px">
+    <div class="div_tip  separator_bot">
+        <div class="div_tip_icon icon-tip"></div>
+        <div class="div_tip_text"><?php echo $this->alert;?></div>
+        <div style="clear:both;"></div>
+    </div>
+    <?php
+    if(!empty($this->managerDetail)){
+    ?>
+    <table width="100%" border="0" cellspacing="1" cellpadding="5" class="table_border separator_top separator_bot">
+        <tr>
+            <th width="15%">使用帐号：</th>
+            <td width="35%"><?php echo $this->managerDetail["manager_email"];?></td>
+            <th width="15%">帐号名称：</th>
+            <td width="35%"><?php echo $this->managerDetail["manager_name"];?></td>
+        </tr>
+        <tr>
+            <th>新密码发送：</th>
+            <td><?php echo date("Y-m-d H:i",$this->dataget['time']);?></td>
+            <th>新密码生效：</th>
+            <td><?php echo date("Y-m-d H:i",time());?></td>
+        </tr>
+        <tr>
+            <th>总共时长：</th>
+            <td><?php echo $this->formatSecond((time() - $this->dataget['time']));?></td>
+            <th>密码修改次数：</th>
+            <td>共<?php echo $this->managerDetail["manager_passwd_change_count"];?>次</td>
+        </tr>
+        <tr>
+            <th>上次修改时间：</th>
+            <td><?php echo date("Y-m-d H:i",$this->managerDetail["manager_passwd_change_time"]);?></td>
+            <th>上次修改时间：</th>
+            <td><?php echo $this->managerDetail["manager_passwd_change_ip"];?></td>
+        </tr>
+        <tr>
+            <th>最后登录时间：</th>
+            <td><?php echo date("Y-m-d H:i",$this->managerDetail["manager_login_last_time"]);?></td>
+            <th>最后登录时间：</th>
+            <td><?php echo $this->managerDetail["manager_login_last_ip"];?></td>
+        </tr>
+    </table>
+    <?php }?>
+    <div border="false" class="div_btn">
+        <a id="linkbtn_login" class="easyui-linkbutton" iconCls="icon-user" href="<?php echo $this->url(array('action' => 'login'));?>">用户登录</a>
+        <a id="linkbtn_forget_pwd" class="easyui-linkbutton" iconCls="icon-help" href="<?php echo $this->url(array('action' => 'forgetpwd'));?>">忘记密码</a>
+    </div>
+</div>

@@ -1,0 +1,128 @@
+<script type="text/javascript">
+$(function(){
+    $('#dialog_forgetpwd').dialog({
+        //buttons: '#dialog-buttons',
+        iconCls:'icon-user',
+        closable:false,
+        modal:true,
+        title:'取回密码'
+    });
+    var urlcaptcha = "/default/guest/captcha/key/manager-forgetpwd";
+    var imgcaptcha = "#img_captcha";
+    refreshCaptcha(imgcaptcha,urlcaptcha);
+    //点击图片更换验证码
+    $(imgcaptcha).bind('click',function(){refreshCaptcha(imgcaptcha,urlcaptcha);});
+    $("#form_forgetpwd").keydown(function(event){
+        if(event.keyCode==13){forgetpwd();}
+    });
+    $("#linkbtn_submit").bind("click", forgetpwd());
+    $('#linkbtn_cancel').bind('click',function(){$('#form_forgetpwd').get(0).reset();});
+    function forgetpwd() {
+        var email = document.getElementById("input_email").value;
+        var captcha = document.getElementById("input_captcha").value;
+
+        if(email == ""){
+            $("#help_email").css({ color: "#B94A48"});
+            $("#help_email").html("请输入要取回密码的帐号");
+            refreshCaptcha(imgcaptcha,urlcaptcha);
+            return false;
+        }else if(!isEmail(email)){
+            $("#help_email").css({ color: "#B94A48"});
+            $("#help_email").html("要取回密码的帐号格式错误");
+            refreshCaptcha(imgcaptcha,urlcaptcha);
+            return false;
+        }else{
+            $("#help_email").css({ color: "#468847"});
+            $("#help_email").html("验证码输入正常");
+        }
+        if(captcha == ""){
+            $("#help_captcha").css({ color: "#B94A48"});
+            $("#help_captcha").html("验证码不能为空");
+            return false;
+        }else if(!isCaptcha(captcha)){
+            $("#help_captcha").css({ color: "#B94A48"});
+            $("#help_captcha").html("验证码只能是四位字每");
+            return false;
+        }else{
+            $("#help_captcha").css({ color: "#468847"});
+            $("#help_captcha").html("验证码输入正常");
+        }
+        sendmail(email, captcha);
+    }
+
+    //发送邮件的操作
+    function sendmail(email,captcha) {
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: "<?php echo $this->url(array("show_ajax" => "json","show_data"=>"sendmail"));?>",
+            data: { email: email, captcha: captcha },
+            success: function(json) {
+                if (json.stat == 1) {
+                    $.messager.alert('邮件发送成功',"邮件发送成功，请查收（邮件有效期为48小时！）!");
+                }
+            },
+            beforeSend: function (){
+                $.messager.progress({
+                    title: '邮件发送中',
+                    msg: '新密码确认邮件正在发送中，请耐心等待...'
+                });
+                $("#linkbtn_submit").unbind( "click" ,forgetpwd );
+            },
+            error: function() {
+                $.messager.alert('获取账号信息失败','获取账号信息失败...请联系管理员!');
+            },
+            complete:function (){
+                $.messager.progress('close');
+                refreshCaptcha(imgcaptcha,urlcaptcha);
+                $("#linkbtn_submit").bind( "click" ,forgetpwd );
+            }
+        });
+    }
+    //邮箱验证
+    function isEmail(str){
+        //var reg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/;
+        var reg = /^([a-zA-Z0-9_.-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/;
+        return reg.test(str);
+    }
+    //验证码
+    function isCaptcha(str)
+    {
+        //var reg =/^[A-Za-z0-9]{4}$/;
+        var reg =/^[A-Za-z]{4}$/;
+        return reg.test(str);
+    }
+    //刷新验证码
+    function refreshCaptcha(img,url){
+        url = url + "?rand=" + Math.random()
+        $(img).attr("src",url);
+    }
+});
+</script>
+<div id="dialog_forgetpwd" class="easyui-dialog" style="width:780px;height:260px;padding:10px">
+<form class="form-horizontal" id="form_forgetpwd" name="form_forgetpwd" method="post">
+
+    <table width="100%" border="0" cellspacing="1" cellpadding="5" class="table_border separator_top separator_bot">
+        <tr>
+            <th>登录帐号</th>
+            <td>
+                <input type="text" id="input_email" name="email" tabindex="1" class="span4" placeholder="登录帐号" value=""style="width:200px;">
+                <span class="help-inline muted" id="help_email">必填选，帐号不能为空</span>
+            </td>
+        </tr>
+        <tr>
+            <th>验证字符</th>
+            <td>
+                <input type="text" id="input_captcha" name="captcha" tabindex="3" class="span4" placeholder="验证字符" value=""style="width:200px;">
+                <span class="help-inline" id="help_captcha">请输入下面图片内的字符</span><br>
+                <img id="img_captcha" name="img_captcha" width="100" height="40" alt="点击更换验证码" title="点击更换验证码" style="cursor:pointer;">
+            </td>
+        </tr>
+    </table>
+    <div border="false" class="div_btn">
+        <a id="linkbtn_submit" class="easyui-linkbutton" iconCls="icon-ok">确定</a>
+        <a id="linkbtn_cancel" class="easyui-linkbutton" iconCls="icon-cancel">取消</a>
+        <a id="linkbtn_login" class="easyui-linkbutton" iconCls="icon-help" href="<?php echo $this->url(array('action' => 'login'));?>">用户登录</a>
+    </div>
+</form>
+</div>

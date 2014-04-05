@@ -1,0 +1,29 @@
+<?php
+if($this->pagenum['last'] > 1){
+?>
+<div class="pagination pagination-right" style="margin:0 0 ;">
+    <ul>
+        <?php
+        $classDisabled = '';
+        if($this->pagenum['first'] == $this->pagenum['current']){
+            $classDisabled = 'disabled';
+        }
+        echo '<li class="'.$classDisabled.'"><a href="'.$this->url(array_merge(array('page' => $this->pagenum['first']),$_GET)).'">First</a></li>';
+        for($page = $this->pagenum['space']['start'];$page <= $this->pagenum['space']['end'];$page++){
+            $classActive = '';
+            if($page == $this->pagenum['current']){
+                $classActive = 'active';
+            }
+            echo '<li class="'.$classActive.'"><a href="'.$this->url(array_merge(array('page' => $page),$_GET)).'">'.$page.'</a></li>';
+        }
+        $classDisabled = '';
+        if($this->pagenum['last'] == $this->pagenum['current']){
+            $classDisabled = 'disabled';
+        }
+        echo '<li class="'.$classDisabled.'"><a href="'.$this->url(array_merge(array('page' => $this->pagenum['last']),$_GET)).'">Last</a></li>';
+        ?>
+    </ul>
+</div>
+<?php
+}
+?>

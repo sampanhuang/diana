@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <?php echo $this->headMeta().chr(13).chr(10);?>
+    <?php echo $this->headTitle().chr(13).chr(10);?>
+    <link rel="stylesheet" type="text/css" href="/static/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/bootstrap/css/bootstrap-responsive.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/custom/css/id.css">
+    <link rel="stylesheet" type="text/css" href="/static/custom/css/tag.css">
+    <link rel="stylesheet" type="text/css" href="/static/custom/css/class.css">
+    <style type="text/css">
+        <!--
+        body {
+            padding-top: 100px;
+        }
+        -->
+    </style>
+    <script type="text/javascript" src="/static/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="/static/bootstrap/js/bootstrap.min.js"></script>
+    <?php echo $this->headLink().chr(13).chr(10);?>
+    <?php echo $this->headStyle().chr(13).chr(10);?>
+    <?php echo $this->headScript().chr(13).chr(10);?>
+</head>
+<body>
+<div class="container">
+    <!---开始标签页--->
+    <div class="row">
+        <div class="span12">
+            <ul id="tab" class="nav nav-tabs">
+                <?php
+                foreach($this->menus as $menu){
+                    $cssActive = '';
+                    if($menu['action'] == $this->currentActionName){
+                        $cssActive = 'active';
+                    }
+                    echo '<li class="'.$cssActive.'"><a href="'.$this->url(array('action' => $menu['action'])).'" >'.$menu['label'].'</a></li>';
+                }
+                ?>
+            </ul>
+            <?php
+            if(!empty($this->msgs)){
+                echo '<div class="alert">'.implode(';',$this->msgs).'</div>';
+            }
+            ?>
+            <?php  echo $this->layout()->content;  ?>
+        </div>
+    </div>
+</div>
+<footer class="footer">
+    <div class="container">
+        <p>
+            页面执行时间：<?php echo number_format($this->pageCostMicrotime,2);?> 秒，内存使用：<?php echo $this->formatSize(memory_get_usage());?>
+        </p>
+    </div>
+</footer>
+</body>
+</html>

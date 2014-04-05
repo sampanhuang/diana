@@ -1,6 +1,17 @@
+<<<<<<< HEAD
 INSTALL.txt
 LICENSE.txt
 README.txt
 demos/
 extras/documentation
 
+=======
+.gitignore
+.idea
+.idea/*
+temp/*
+data/configs/*
+data/filter_word/*
+app/www/public/index.htm
+/nbproject/private/
+>>>>>>> master

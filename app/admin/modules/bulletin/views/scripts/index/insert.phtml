@@ -1,0 +1,140 @@
+<?php
+$this->headLink()->appendStylesheet('/static/kindeditor-4.1.7/themes/default/default.css');
+$this->headScript()->appendFile("/static/kindeditor-4.1.7/kindeditor.js");
+$this->headScript()->appendFile("/static/kindeditor-4.1.7/lang/zh_CN.js");
+$this->headScript()->captureStart();?>
+$(function(){
+    var editor;
+    KindEditor.ready(function(K) {
+        editor = K.create('#bulletin_content', {
+            height:500,
+            resizeType : 1,
+            allowPreviewEmoticons : false,
+            allowImageUpload : false,
+            items : [
+            'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+            'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+            'insertunorderedlist', '|', 'emoticons', 'image', 'link'],
+            afterBlur: function(){this.sync();}
+            });
+        });
+    //表单内点击按钮提交
+    $('#linkbtn_send').click(function(){
+        formSubmit();
+    });
+    $('#linkbtn_save').click(function(){
+        $('#input_handle_type').val('save');
+        formSubmit();
+    });
+    //表单内回车提交
+    $("#form_main").keydown(function(event){
+        if(event.keyCode==13){formSubmit();}
+    });
+    <?php
+    if(!empty($this->detail['bulletin_channelId'])){
+        echo "onchangeShow(".$this->detail['bulletin_channelFatherId'].",".$this->detail['bulletin_channelId'].")";
+    }
+    ?>
+});
+<?php $this->headScript()->captureEnd();?>
+<script type="text/javascript">
+    //表单提交
+    function formSubmit() {
+        $("#form_main").submit();
+    }
+    function onchangeShow(oneId,selectedId){
+        var arrOptionsCountry = <?php echo json_encode($this->optionsBulletinChannelOfSon)?>;
+        onchangecallback(arrOptionsCountry[oneId],selectedId);
+    }
+    function onchangecallback(data , selectedId){
+        $("#select_bulletin_channelId").html("");  //清空原有的option
+        var str="<option value=''>请选择</option>";
+        var tmpSelected;
+        for(var key in data){
+            tmpSelected = 0;
+            if( key == selectedId){
+                tmpSelected = ' selected ';
+            }
+            str+="<option value='"+key+"' "+tmpSelected+" >"+data[key]+"</option>"
+        }
+        $("#select_bulletin_channelId").html(str);
+    }
+
+</script>
+<div class="div_bg_fa separator_bot">
+    <form id="form_main" name="form_main" method="post">
+        <fieldset border="false"  class="fieldset_border separator_bot" >
+            <legend>公告发布</legend>
+            <table width="100%" border="0" cellspacing="1" cellpadding="5"  class="table_border separator_top separator_bot">
+                <tr>
+                    <th width="10%">作用域</th>
+                    <td>
+                        <?php
+                        if($this->detail['bulletin_access'] == 7){
+                            $this->detail['bulletin_access'] = array(1,2,4);
+                        }elseif($this->detail['bulletin_access'] == 6){
+                            $this->detail['bulletin_access'] = array(2,4);
+                        }elseif($this->detail['bulletin_access'] == 5){
+                            $this->detail['bulletin_access'] = array(1,4);
+                        }elseif($this->detail['bulletin_access'] == 3){
+                            $this->detail['bulletin_access'] = array(1,2);
+                        }else{
+                            $this->detail['bulletin_access'] = array($this->detail['bulletin_access']);
+                        }
+                        foreach(array(4,2,1) as $tmpV){
+                            $tmpChecked = '';
+                            if(!empty($this->detail['bulletin_access'])){
+                                if(in_array($tmpV,$this->detail['bulletin_access'])){
+                                    $tmpChecked = 'checked="checked"';
+                                }
+                            }
+                            echo '<label><input type="checkbox" name="bulletin_access[]" value="'.$tmpV.'" id="bulletin_access_'.$tmpV.'" '.$tmpChecked.' />'.$this->translate('model_bulletin_access_'.$tmpV).'</label>&nbsp;&nbsp;';
+                        }
+                        ?>
+                        <span id="span_notice_msg_dest"></span></td>
+                </tr>
+                <tr>
+                    <th width="10%">作者</th>
+                    <td><input id="input_bulletin_author" name="bulletin_author" class="easyui-validatebox" data-options="required:true"  style="width:30%;" value="<?php echo $this->detail['bulletin_author'];?>"><span id="span_bulletin_author"></span></td>
+                </tr>
+                <tr>
+                    <th width="10%">类别</th>
+                    <td>
+                        <select id="select_bulletin_channelFatherId" name="bulletin_channelFatherId" onchange="onchangeShow(this.value)" style="width:20%;">
+                            <option value="0">请选择</option>
+                            <?php
+                            if(!empty($this->optionsBulletinChannelOfFather)){
+                                foreach($this->optionsBulletinChannelOfFather as $tmpChannelId => $tmpChannelLabel){
+                                    $tmpSelected = '';
+                                    if($tmpChannelId == $this->detail['bulletin_channelFatherId']){
+                                        $tmpSelected = ' selected ';
+                                    }
+                                    echo '<option value="'.$tmpChannelId.'" '.$tmpSelected.'>'.$tmpChannelLabel.'</option>';
+                                }
+                            }
+                            ?>
+                        </select>
+                        <select id="select_bulletin_channelId" name="bulletin_channelId" style="width:20%;">
+                            <option value="0">请选择</option>
+
+                        </select>
+                        <span id="span_bulletin_channelId"></span></td>
+                </tr>
+                <tr>
+                    <th width="10%">标题</th>
+                    <td><input id="input_bulletin_title" name="bulletin_title" class="easyui-validatebox" data-options="required:true"  style="width:80%;" value="<?php echo $this->detail['bulletin_title'];?>"><span id="span_notice_bulletin_title"></span></td>
+                </tr>
+            </table>
+        </fieldset>
+        <fieldset border="false"  class="fieldset_border separator_bot" >
+            <legend>内容</legend>
+            <textarea id="bulletin_content" name="bulletin_content" style="width:100%;height:300px;"><?php echo $this->detail['bulletin_content'];?></textarea>
+        </fieldset>
+        <div border="false" class="div_btn">
+            <input type="hidden" id="input_bulletin_id" name="bulletin_id" value="<?php echo $this->detail['bulletin_id'];?>">
+            <input type="hidden" id="input_req_handle" name="req_handle" value="<?php echo $this->reqHandle;?>">
+            <a id="linkbtn_send" class="easyui-linkbutton" iconCls="icon-apply" style="margin-right:20px;">确定</a>
+            <a id="linkbtn_reset" class="easyui-linkbutton" iconCls="icon-cancel" href="<?php echo $this->url(array('outbox_id' => $this->outboxId));?>" >取消</a>
+        </div>
+    </form>
+</div>

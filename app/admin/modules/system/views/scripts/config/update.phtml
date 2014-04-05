@@ -1,0 +1,173 @@
+<?php
+$this->headScript()->appendFile("/static/custom/script/date.js");
+$this->headScript()->appendFile("/static/custom/script/formatter.js");
+?>
+<script type="text/javascript">
+    $(function(){
+        //表单内点击按钮重置
+        $('#linkbtn_reset').click(function(){
+            formReset();
+        });
+        //表单内点击按钮提交
+        $('#linkbtn_submit').click(function(){
+            formSubmit();
+        });
+        //表单内回车提交
+        $("#form_config_update").keydown(function(event){
+            if(event.keyCode==13){formSubmit();}
+        });
+        //网格内容
+        $('#datagrid_config_update_history').datagrid({
+            rownumbers:true,
+            cache:false,
+            pagination:true,
+            pageList:[<?php echo DIANA_DATAGRID_PAGELIST_ADMIN;?>],
+            pageSize:<?php echo $this->pagesize;?>,
+            url: '<?php echo $this->url($this->queryGrid);?>'
+        });
+    });
+    //表单提交
+    function formSubmit() {
+        $("#form_config_update").submit();
+    }
+    //表单重置
+    function formReset(){
+        $('#form_config_update').get(0).reset();
+    }
+    //格式化操作人
+    function formatMan(val,row){
+        return row.history_insert_manName + '&nbsp;<span style="color:#999999">&lt;' + row.history_insert_manEmail + '&gt;</span>';
+    }
+</script>
+<div class="div_bg_fa separator_bot">
+    <form id="form_config_update" name="form_config_update" method="post">
+        <fieldset border="false"  class="fieldset_border separator_bot" >
+            <legend>修改变量值</legend>
+            <table width="100%" border="0" cellspacing="1" cellpadding="5"  class="table_border separator_top separator_bot">
+                <?php
+                if(!empty($this->detail['conf_fatherId'])){
+                    if(!empty($this->detail['conf_father'])){
+                        $tmpConfigFatherLabel = $this->detail['conf_father']['conf_label'];
+                    }else{
+                        $tmpConfigFatherLabel = '<span style="color:red">参数类别已被删除</span>';
+                    }
+                    ?>
+                    <tr>
+                        <th width="20%">变量类别</th>
+                        <td width="80%">
+                            <?php echo $tmpConfigFatherLabel;?>
+                        </td>
+                    </tr>
+                    <?php }?>
+                <tr>
+                    <th width="20%">变量用途</th>
+                    <td width="80%">
+                        <?php echo $this->detail['conf_label'];?>
+                    </td>
+                </tr>
+                <tr>
+                    <th>变量名</th>
+                    <td>
+                        <?php echo $this->detail['conf_key'];?>
+                    </td>
+                </tr>
+                <tr>
+                    <th>变量值</th>
+                    <td>
+                        <?php
+                        $tmpTagId = ' id="input_conf_value" ';
+                        $tmpTagName = ' name="conf_value" ';
+                        if($this->detail['conf_input_type'] == 'input'){
+                            echo '<input '.$tmpTagId.$tmpTagName.' style="width:80%;" value="'.$this->detail['conf_value'].'">';
+                        }elseif($this->detail['conf_input_type'] == 'select'){
+                            echo '<select '.$tmpTagId.$tmpTagName.' >';
+                            if(!empty($this->detail['conf_options'])){
+                                $tmpConfigOption = explode(',',$this->detail['conf_options']);
+                                foreach($tmpConfigOption as $tmpOption){
+                                    $tmpTagSelected = '';
+                                    if($tmpOption == $this->detail['conf_value']){
+                                        $tmpTagSelected = ' selected="selected" ';
+                                    }
+                                    echo '<option value="'.$tmpOption.'" '.$tmpTagSelected.'>'.$tmpOption.'</option>';
+                                }
+                            }
+                            echo '</select>';
+                        }elseif($this->detail['conf_input_type'] == 'textarea'){
+                            echo '<textarea '.$tmpTagId.$tmpTagName.' style="width:90%;" rows="5">'.$this->detail['conf_value'].'</textarea>';
+                        }elseif($this->detail['conf_input_type'] == 'checkbox'){
+                            if(!empty($this->detail['conf_options'])){
+                                $tmpTagName = ' name="conf_value[]" ';
+                                $tmpConfigValue = explode(',',$this->detail['conf_value']);
+                                $tmpConfigOption = explode(',',$this->detail['conf_options']);
+                                $tmpCounter = 1;
+                                foreach($tmpConfigOption as $tmpOption){
+                                    $tmpTagChecked = '';
+                                    if(in_array($tmpOption,$tmpConfigValue)){
+                                        $tmpTagChecked="checked";
+                                    }
+                                    $tmpTagId = ' id="input_conf_value_'.$tmpCounter.'" ';
+                                    echo '<label><input type="checkbox" '.$tmpTagId.$tmpTagName.$tmpTagChecked.' value="'.$tmpOption.'" />'.$tmpOption.'</label>&nbsp;';
+                                }
+                            }
+                        }elseif($this->detail['conf_input_type'] == 'radio'){
+                            if(!empty($this->detail['conf_options'])){
+                                $tmpConfigOption = explode(',',$this->detail['conf_options']);
+                                $tmpCounter = 1;
+                                foreach($tmpConfigOption as $tmpOption){
+                                    $tmpTagChecked = '';
+                                    if($tmpOption == $this->detail['conf_value']){
+                                        $tmpTagChecked="checked";
+                                    }
+                                    $tmpTagId = ' id="input_conf_value_'.$tmpCounter.'" ';
+                                    echo '<label><input '.$tmpTagId.$tmpTagName.$tmpTagChecked.' type="radio"  value="'.$tmpOption.'"/>'.$tmpOption.'</label>&nbsp;';
+                                    $tmpCounter++;
+                                }
+                            }
+                        }else{
+                            echo '<br><span style="color:red;">无效的输入格式 - '.$this->detail['conf_input_type'].'</span>';
+                        }
+                        ?>
+                        <br><span id="span_notice_conf_value" class="span_notice"><?php echo $this->detail['conf_remark'];?></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>变量默认值</th>
+                    <td>
+                        <?php echo $this->detail['conf_default'];?>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+        <input id="input_conf_id" name="conf_id" type="hidden" value="<?php echo $this->detail['conf_id'];?>">
+        <input id="input_conf_key" name="conf_key" type="hidden" value="<?php echo $this->detail['conf_key'];?>">
+        <input id="input_handle" name="handle" type="hidden" value="<?php echo $this->handle;?>">
+        <div border="false" class="div_btn">
+            <a id="linkbtn_submit" class="easyui-linkbutton" iconCls="icon-ok" style="margin-right:20px;">确定</a>
+            <a id="linkbtn_reset" class="easyui-linkbutton" iconCls="icon-cancel" style="margin-right:20px;">取消</a>
+        </div>
+    </form>
+    <!---帮助内容-->
+    <div id="div_help" class="ul_help separator_top">
+        提示：
+        <ul>
+            <li>输入有“文本框”、“文本区域”、“下拉菜单”、“单选框”、“复选框”等多种方式</li>
+            <li>具体的输入方式定制请在设置中进行选择</li>
+        </ul>
+    </div>
+</div>
+<!--网格数据-->
+<table id="datagrid_config_update_history" title="配置参数变更历史" width="100%" hight="100%" >
+    <thead data-options="frozen:true">
+    <tr>
+        <th field="history_configKey" width="220">变量名</th>
+        <th field="history_configValue" width="500" >变量值</th>
+    </tr>
+    </thead>
+    <thead>
+    <tr>
+        <th field="history_insert_time" width="120" formatter="formatTimeStamp">添加时间</th>
+        <th field="history_insert_manId" width="300"  formatter="formatMan">添加人</th>
+        <th field="history_insert_ip" width="150" ">添加IP</th>
+    </tr>
+    </thead>
+</table>

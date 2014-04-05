@@ -1,0 +1,198 @@
+<?php
+$this->headScript()->appendFile("/static/custom/script/md5.js");
+$this->headScript()->captureStart();?>
+$(function(){
+    var urlcaptcha = "/default/index/captcha/key/www-member-register";
+    var imgcaptcha = "#img_captcha";
+    refreshCaptcha(imgcaptcha,urlcaptcha);
+    //点击图片更换验证码
+    $(imgcaptcha).bind('click',function(){refreshCaptcha(imgcaptcha,urlcaptcha);});
+    $("#btn_register").bind("click", registerSubmit);
+    $("#form_register").keydown(function(event){
+        if(event.keyCode==13){registerSubmit();}
+    });
+    //提交登录
+    function registerSubmit() {
+        var name = $("#input_name").val();
+        var email = $("#input_email").val();
+        var passwd = $("#input_password").val();
+        var password_confirmation = $("#input_password_confirmation").val();
+        var captcha = $("#input_captcha").val();
+        var alertmsg = "";//提示文字
+        var alertfocus = 0;
+        if(name == ""){
+            $("#input_name").focus();
+            $("#help_name").html("请输入会员名称");
+            $("#help_name").css({ color: "#B94A48"});
+            return false;
+        }else if(name.length < 2 || name.length > 16){
+            $("#input_email").focus();
+            $("#help_name").css({ color: "#B94A48"});
+            $("#help_name").html("会员名称长度限制在2~16之间");
+            return false;
+        }else{
+            $("#help_name").css({ color: "#468847"});
+            $("#help_name").html("登录帐号输入正常");
+        }
+
+        if(email == ""){
+            $("#input_email").focus();
+            $("#help_email").html("请输入登录帐号");
+            $("#help_email").css({ color: "#B94A48"});
+            return false;
+        }else if(!isEmail(email)){
+            $("#input_email").focus();
+            $("#help_email").css({ color: "#B94A48"});
+            $("#help_email").html("登录帐号格式错误");
+            return false;
+        }else{
+            $("#help_email").css({ color: "#468847"});
+            $("#help_email").html("登录帐号输入正常");
+        }
+
+        if(passwd == ""){
+            $("#input_password").focus();
+            $("#help_password").css({ color: "#B94A48"});
+            $("#help_password").html("请输入登录密码");
+            return false;
+        }else if(passwd.length < 6 || passwd.length > 32){
+            $("#input_password").focus();
+            $("#help_password").css({ color: "#B94A48"});
+            $("#help_password").html("密码长度限制在6~32之间");
+            return false;
+        }else{
+            $("#help_password").css({ color: "#468847"});
+            $("#help_password").html("登录密码输入正常");
+        }
+        if(passwd !== password_confirmation){
+            $("#input_password_confirmation").focus();
+            $("#help_password_confirmation").css({ color: "#B94A48"});
+            $("#help_password_confirmation").html("两次输入的密码必须相同");
+            return false;
+        }else{
+            $("#help_password_confirmation").css({ color: "#468847"});
+            $("#help_password_confirmation").html("确认密码输入正常");
+        }
+
+        if(captcha == ""){
+            $("#input_captcha").focus();
+            $("#help_captcha").css({ color: "#B94A48"});
+            $("#help_captcha").html("请输入验证码");
+            return false;
+        }else if(!isCaptcha(captcha)){
+            $("#input_captcha").focus();
+            $("#help_captcha").css({ color: "#B94A48"});
+            $("#help_captcha").html("验证码只能是四位字每");
+            return false;
+        }else{
+            $("#help_captcha").css({ color: "#468847"});
+            $("#help_captcha").html("验证码输入正常");
+        }
+        register(name,email, passwd ,captcha);
+    }
+
+    //登陆操作
+    function register(name,email,passwd,captcha) {
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: "/member/guest/register/show_ajax/json/show_data/register",
+            data: { name:name,email: email, passwd: hex_md5(passwd) , captcha: captcha },
+            success: function(json) {
+                if (json.stat == 1) {
+                    window.location.href = "/member/website";
+                }else {
+                    if(json.focus == 1){
+                        $("#help_name").css({ color: "#B94A48"});
+                        $("#help_name").html(json.msgs);
+                    }else if(json.focus == 2){
+                        $("#help_email").css({ color: "#B94A48"});
+                        $("#help_email").html(json.msgs);
+                    }else if(json.focus == 3){
+                        $("#help_password").css({ color: "#B94A48"});
+                        $("#help_password").html(json.msgs);
+                    }else if(json.focus == 5){
+                        $("#help_captcha").css({ color: "#B94A48"});
+                        $("#help_captcha").html(json.msgs);
+                    }
+                    $("#div_alert").html(json.msgs);
+                    $("#div_alert").removeClass("hidden");
+                    refreshCaptcha(imgcaptcha,urlcaptcha);
+                }
+            },
+            error: function() {
+                $("#div_alert").html("获取账号信息失败...请联系管理员");
+                $("#div_alert").removeClass("hidden");
+                refreshCaptcha(imgcaptcha,urlcaptcha);
+            }
+        });
+    }
+    //邮箱验证
+    function isEmail(str){
+        var reg = /^([a-zA-Z0-9_.-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/;
+        return reg.test(str);
+    }
+    //验证码
+    function isCaptcha(str)
+    {
+        //var reg =/^[A-Za-z0-9]{4}$/;
+        var reg =/^[A-Za-z]{4}$/;
+        return reg.test(str);
+    }
+    //刷新验证码
+    function refreshCaptcha(img,url){
+        url = url + "?rand=" + Math.random()
+        $(img).attr("src",url);
+    }
+});
+<?php $this->headScript()->captureEnd();?>
+<ul class="breadcrumb">
+    <li><a href="/">首页</a> <span class="divider">/</span></li>
+    <li class="active">会员注册</li>
+</ul>
+<form class="form-horizontal" id="form_register" name="form_register" method="post">
+    <div class="alert hidden" id="div_alert"></div>
+    <div class="control-group">
+        <label class="control-label" for="input_name">会员名称</label>
+        <div class="controls">
+            <input type="text" id="input_name" name="name" tabindex="1" class="span4" placeholder="会员名称" value="<?php echo $this->emailLasttime;?>">
+            <span class="help-inline muted" id="help_name" style="color:#999">必填选，会员名称不能为空</span>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="input_email">密保邮箱</label>
+        <div class="controls">
+            <input type="text" id="input_email" name="email" tabindex="2" class="span4" placeholder="密保邮箱" value="<?php echo $this->emailLasttime;?>">
+            <span class="muted help-inline muted" id="help_email" style="color:#999">必填选，密保邮箱不能为空</span>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="input_password">帐号密码</label>
+        <div class="controls">
+            <input type="password" id="input_password" name="password" tabindex="3" class="span4" placeholder="帐号密码" value="">
+            <span class="help-inline muted" id="help_password" style="color:#999">必填选，密码不能为空</span>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="input_password_confirmation">确认密码</label>
+        <div class="controls">
+            <input type="password" id="input_password_confirmation" name="password_confirmation" tabindex="4" class="span4" placeholder="确认密码" value="">
+            <span class="help-inline muted" id="help_password_confirmation" style="color:#999">必填选，确认密码不能为空</span>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="input_captcha">验证字符</label>
+        <div class="controls">
+            <input type="text" id="input_captcha" name="captcha" tabindex="5" class="span4" placeholder="验证字符" value="">
+            <span class="help-inline" id="help_captcha" style="color:#999">请输入下面图片内的字符</span><br>
+            <img id="img_captcha" name="img_captcha" width="100" height="40" alt="点击更换验证码" title="点击更换验证码" style="cursor:pointer;">
+        </div>
+    </div>
+    <hr>
+    <div class="control-group">
+        <div class="controls">
+            <button id="btn_register" type="button" tabindex="6" class="btn btn-primary">确定</button>&nbsp;&nbsp;&nbsp;&nbsp;
+            <button id="btn_reset" type="reset" tabindex="7" class="btn">取消</button>
+        </div>
+    </div>
+</form>

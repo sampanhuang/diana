@@ -1,0 +1,122 @@
+<script type="text/javascript">
+    $(function(){
+        //表单内点击按钮重置
+        $('#linkbtn_reset').click(function(){
+            formReset();
+        });
+        //表单内点击按钮提交
+        $('#linkbtn_submit').click(function(){
+            formSubmit();
+        });
+        //表单内回车提交
+        $("#form_query").keydown(function(event){
+            if(event.keyCode==13){formSubmit();}
+        });
+        //表单提交
+        function formSubmit() {
+            $("#form_query").submit();
+        }
+        //表单重置
+        function formReset(){
+            $('#form_query').get(0).reset();
+        }
+    });
+</script>
+<div class="div_bg_fa separator_bot">
+<form id="form_query" name="form_query" method="post">
+    <fieldset border="false"  class="fieldset_border separator_bot" >
+        <legend>标签查询</legend>
+        <table width="100%" border="0" cellspacing="1" cellpadding="5"  class="table_border separator_top separator_bot">
+            <tr>
+                <th width="10%">关键字</th>
+                <td width="90%">
+                    <input id="input_search_query_key" name="query_key" class="easyui-validatebox" data-options="required:true"  style="width:230px;" value="<?php echo $this->request['query_key'];?>">
+                    <span id="span_notice_query_key" class="span_notice">不支持模糊查询，不支持多变量名查询</span>
+                </td>
+            </tr>
+            <tr>
+                <th width="10%">类型</th>
+                <td width="90%">
+                    <?
+                    foreach($this->queryColumns as $tmpQueryColumn){
+                        $tmpHtmlTagChecked = '';
+                        if($tmpQueryColumn == $this->request['query_column']){
+                            $tmpHtmlTagChecked = 'checked="checked"';
+                        }
+                        echo '<label><input type="radio" name="query_column" value="'.$tmpQueryColumn.'" id="query_column_'.$tmpQueryColumn.'" '.$tmpHtmlTagChecked.'  />'.$this->translate('model_tag_'.$tmpQueryColumn).'</label>';
+                    }
+                    ?>
+                </td>
+            </tr>
+        </table>
+        <input id="input_handle" name="handle" type="hidden" value="query">
+        <div border="false" class="div_btn">
+            <a id="linkbtn_submit" class="easyui-linkbutton" iconCls="icon-ok" style="margin-right:20px;">确定</a>
+            <a id="linkbtn_reset" class="easyui-linkbutton" iconCls="icon-cancel" style="margin-right:20px;">取消</a>
+        </div>
+    </fieldset>
+</form>
+<?php
+if(!empty($this->detail)){
+    ?>
+    <fieldset border="false"  class="fieldset_border separator_bot" >
+        <legend>标签明细</legend>
+        <table width="100%" border="0" cellspacing="1" cellpadding="5"  class="table_border separator_top separator_bot">
+            <tbody>
+            <tr>
+                <th width="10%" valign="top" scope="row">ID</th>
+                <td width="90%" valign="top" colspan="3"><?php echo $this->detail['tag_id'];?></td>
+            </tr>
+            <tr>
+                <th width="10%" valign="top">标签</th>
+                <td width="40%" valign="top" ><?php echo $this->detail['tag_name'];?></td>
+                <th width="10%" valign="top" >使用次数</th>
+                <td width="40%" valign="top" ><?php echo $this->detail['tag_count'];?></td>
+            </tr>
+            <tr>
+                <th valign="top" >初次使用</th>
+                <td valign="top" ><?php echo $this->formatDate("Y-m-d H:i",$this->detail['tag_insert_time']);?></td>
+                <th valign="top" >末次使用</th>
+                <td valign="top" ><?php echo $this->formatDate("Y-m-d H:i",$this->detail['tag_update_time']);?></td>
+            </tr>
+            </tbody>
+        </table>
+    </fieldset>
+    <?php
+    if(!empty($this->detail['tag_website'])){
+        ?>
+        <fieldset border="false"  class="fieldset_border separator_bot" >
+            <legend>引用网站</legend>
+            <table width="100%" border="0" cellspacing="1" cellpadding="5"  class="table_border separator_top separator_bot">
+                <thead>
+                <tr>
+                    <th  width="50">ID</th>
+                    <th  width="150">名称</th>
+                    <th  width="200">域名</th>
+                    <th  width="50">流入</th>
+                    <th  width="50">流出</th>
+                    <th  width="100">时间</th>
+                    <th  width="100">选项</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    foreach($this->detail['tag_website'] as $row){
+                        ?>
+                    <tr>
+                        <td><?php echo $row['website_id'];?></td>
+                        <td><?php echo $this->utf8Substr($row['website_name'],12);?></td>
+                        <td><a href="<?php echo $row['website_domain'];?>" title="<?php echo $row['website_name'];?>" target="_blank"><?php echo $this->utf8Substr($row['website_domain'],32);?></a></td>
+                        <td><span class="badge"><?php echo $row['website_click_in'];?></span></td>
+                        <td><span class="badge"><?php echo $row['website_click_out'];?></span></td>
+                        <td><?php echo $this->formatDate("Y-m-d H:i",$row['website_apply_time']);?></td>
+                        <td></td>
+                    </tr>
+                        <?php }?>
+                </tbody>
+            </table>
+        </fieldset>
+    <?php
+    }
+}
+?>

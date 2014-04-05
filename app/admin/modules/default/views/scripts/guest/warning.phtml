@@ -1,0 +1,15 @@
+<?php $this->headScript()->captureStart();?>
+$(function(){
+    $.messager.alert('警告','<?php echo $this->content;?>','warning');
+});
+<?php $this->headScript()->captureEnd();?>
+<!---帮助内容-->
+<div id="div_help" class="ul_help separator_top">
+    提示：
+    <ul>
+        <li>当你看到这个页面时，情况不是很好</li>
+        <li>也许是权限出了问题（简单的说就是你访问了没有开放给你的区域）</li>
+        <li>也或者是开发者没有花心思搞好这个东西或是测试没有尽到责任</li>
+        <li>尽快联系系统管理员吧，他会替你解释发生了什么事情</li>
+    </ul>
+</div>

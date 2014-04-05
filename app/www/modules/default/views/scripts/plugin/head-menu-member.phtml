@@ -1,0 +1,39 @@
+$(function(){
+    var urlAjaxJson = "http://<?php echo DIANA_DOMAIN_CLIENT_CURRENT;?>/default/guest/online/?jsoncallback=?";
+    var tmpContent = '<p style="line-height: 80px;">';
+    var sayHello = '';
+    $.getJSON(urlAjaxJson, function (json) {
+        if(json.stat == 1){
+            $('#link_menu_website_register_post').attr("href",'http://<?php echo DIANA_DOMAIN_CLIENT_CURRENT?>/?url_redirect=apply/website-register/post');
+            now = new Date();
+            hour = now.getHours()
+            if(hour < 6){sayHello = "<?php echo $this->translate("www_menu_member_hello_1-6");?>";}
+            else if (hour < 9){sayHello = "<?php echo $this->translate("www_menu_member_hello_6-9");?>";}
+            else if (hour < 12){sayHello = "<?php echo $this->translate("www_menu_member_hello_9-12");?>";}
+            else if (hour < 14){sayHello = "<?php echo $this->translate("www_menu_member_hello_12-14");?>";}
+            else if (hour < 17){sayHello = "<?php echo $this->translate("www_menu_member_hello_14-17");?>";}
+            else if (hour < 19){sayHello = "<?php echo $this->translate("www_menu_member_hello_17-19");?>";}
+            else if (hour < 22){sayHello = "<?php echo $this->translate("www_menu_member_hello_19-22");?>";}
+            else {sayHello = "<?php echo $this->translate("www_menu_member_hello_22-24");?>！";}
+            sayHello = '<span class="muted">' + sayHello + '</span>';
+            sayHello = '';
+            tmpContent += sayHello+'    <a href="http://<?php echo DIANA_DOMAIN_CLIENT_CURRENT?>/?url_redirect=profile/intro/index"  title="'+json.result.member.name+ '&lt; ' + json.result.member.email + '&gt;" target="_blank">'+json.result.member.name+'</a>'+
+                        '    <a href="http://<?php echo DIANA_DOMAIN_CLIENT_CURRENT?>/?url_redirect=apply/website-register/post" title="<?php echo $this->translate("member_post_apply_website");?>" target="_blank"><?php echo $this->translate("member_post_apply_website");?></a>'+
+                        '    <a href="http://<?php echo DIANA_DOMAIN_CLIENT_CURRENT?>/?url_redirect=website/index/index" title="<?php echo $this->translate("member_mywebsite");?>" target="_blank"><?php echo $this->translate("member_mywebsite");?></a>'+
+                          '    <a href="http://<?php echo DIANA_DOMAIN_CLIENT_CURRENT?>/?url_redirect=profile/message/inbox" title="<?php echo $this->translate("www_menu_member_msg_inbox");?>" target="_blank"><?php echo $this->translate("www_menu_member_msg_inbox");?></a>';
+
+            if(json.result.member.msg_unread > 0){
+                tmpContent += '(<?php echo $this->translate("www_menu_member_msg_unread");?>:' + json.result.member.msg_unread + ')';
+            }
+            tmpContent += '    <a href="http://<?php echo DIANA_DOMAIN_CLIENT_CURRENT?>/?url_redirect=profile/safe/resetpwd" title="<?php echo $this->translate("member_resetpwd");?>" target="_blank"><?php echo $this->translate("www_menu_member_resetpwd");?></a>'+
+                          '    <a href="http://<?php echo DIANA_DOMAIN_CLIENT_CURRENT?>/default/guest/logout" title="<?php echo $this->translate("member_logout");?>" target="_blank"><?php echo $this->translate("www_menu_member_logout");?></a>';
+        }else{
+            tmpContent += '<a href="/default/member/register" title="<?php echo $this->translate("member_register");?>" target="_blank"><?php echo $this->translate("member_register");?></a>'+
+            '    <a href="http://<?php echo DIANA_DOMAIN_CLIENT_CURRENT?>" title="<?php echo $this->translate("member_login");?>" target="_blank"><?php echo $this->translate("member_login");?></a>'+
+            '    <a href="http://<?php echo DIANA_DOMAIN_CLIENT_CURRENT?>/guest/forgetpwd/check/fail/step/1" title="<?php echo $this->translate("member_forgetpwd");?>" target="_blank"><?php echo $this->translate("member_forgetpwd");?></a>'+
+            '    <a href="/default/website/apply" title="<?php echo $this->translate("member_post_apply_website");?>" target="_blank"><?php echo $this->translate("member_post_apply_website");?></a>';
+        }
+        tmpContent += '</p>';
+        $('#head_menu_nav').html(tmpContent);
+    });
+});

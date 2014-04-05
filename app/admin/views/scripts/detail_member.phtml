@@ -1,0 +1,67 @@
+<?php
+if(!empty($this->detailMember)){
+    ?>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="table table-striped">
+	<thead>
+		<tr><th  colspan="4">会员资料</th></tr>
+	</thead>
+	<tbody>
+    <tr>
+        <td  valign="top" scope="row">ID</td> 
+        <td valign="top" colspan="3"><?php echo $this->detailMember['member_id'];?></td>
+    </tr>
+    <tr>
+        <td  valign="top" scope="row" style="width: 10%;">名称</td> 
+        <td valign="top" style="width: 40%;"><?php echo $this->detailMember['member_name'];?></td>
+        <td  valign="top" scope="row" style="width: 10%;">邮箱</td> 
+        <td valign="top" style="width: 40%;"><?php echo $this->detailMember['member_email'];?></td>
+    </tr>
+    <?php
+    if($this->detailMember['member_passwd_change_count'] > 0){
+        ?>
+        <tr>
+            <td  valign="top" scope="row">密码修改次数</td> 
+            <td valign="top" colspan="3"><span class="badge"><?php echo $this->detailMember['member_passwd_change_count'];?></span></td>
+        </tr>
+        <tr>
+            <td  valign="top" scope="row" style="width: 10%;">密码修改时间</td> 
+            <td valign="top" style="width: 40%;"><?php echo $this->formatDate('Y-m-d H:i:s',$this->detailMember['member_passwd_change_time']);?></td>
+            <td  valign="top" scope="row" style="width: 10%;">密码修改IP</td> 
+            <td valign="top" style="width: 40%;"><?php echo $this->detailMember['member_passwd_change_ip'];?></td>
+        </tr>
+        <?php
+    }
+    if($this->detailMember['member_login_count'] > 0){
+        ?>
+        <tr>
+            <td  valign="top" scope="row">登录次数</td> 
+            <td valign="top" colspan="3"><span class="badge"><?php echo $this->detailMember['member_login_count'];?></span></td>
+        </tr>
+        <tr>
+            <td  valign="top" scope="row" style="width: 10%;">最后登录时间</td> 
+            <td valign="top" style="width: 40%;"><?php echo $this->formatDate('Y-m-d H:i:s',$this->detailMember['member_login_last_time']);?></td>
+            <td  valign="top" scope="row" style="width: 10%;">最后登录IP</td> 
+            <td valign="top" style="width: 40%;"><?php echo $this->detailMember['member_login_last_ip'];?></td>
+        </tr>
+        <?php
+    }
+    if($this->detailMember['member_lock_time'] > 0){
+        ?>
+        <tr>
+            <td  valign="top" scope="row">锁定时间</td> 
+            <td valign="top" colspan="3"><?php echo $this->formatDate('Y-m-d H:i:s',$this->detailMember['member_lock_time']);?></td>
+        </tr>
+        <?php
+    }
+    ?>
+    <tr>
+        <td  valign="top" scope="row" style="width: 10%;">注册时间</td> 
+        <td valign="top" style="width: 40%;"><?php echo $this->formatDate('Y-m-d H:i:s',$this->detailMember['member_register_time']);?></td>
+        <td  valign="top" scope="row" style="width: 10%;">注册IP</td> 
+        <td valign="top" style="width: 40%;"><?php echo $this->detailMember['member_register_ip'];?></td>
+    </tr>
+    </tbody>
+</table>
+<?php
+}
+?>

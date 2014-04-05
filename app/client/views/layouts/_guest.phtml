@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <?php echo $this->headMeta().chr(13).chr(10);?>
+    <?php echo $this->headTitle().chr(13).chr(10);?>
+    <link rel="stylesheet" type="text/css" href="/static/jquery-easyui-1.3.3/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="/static/jquery-easyui-1.3.3/themes/icon.css">
+    <script type="text/javascript" src="/static/jquery-easyui-1.3.3/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/jquery-easyui-1.3.3/jquery.easyui.min.js"></script>
+    <?php echo $this->headLink().chr(13).chr(10);?>
+    <?php echo $this->headStyle().chr(13).chr(10);?>
+    <?php echo $this->headScript().chr(13).chr(10);?>
+</head>
+<body>
+
+<?php  echo $this->layout()->content;  ?>
+<!--
+<footer class="footer">
+    <div class="container">
+        <p>
+            页面执行时间：<?php echo number_format($this->pageCostMicrotime,2);?> 秒，内存使用：<?php echo $this->formatSize(memory_get_usage());?>
+        </p>
+    </div>
+</footer>
+-->
+</body>
+</html>

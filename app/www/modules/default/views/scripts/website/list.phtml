@@ -1,0 +1,91 @@
+<ul class="breadcrumb">
+    <li><a href="/">首页</a> <span class="divider">/</span></li>
+    <?php
+    if(!empty($this->areaFather)){
+        $htmlCategory = '';
+        if(!empty($this->category)){
+            $htmlCategory =  '<li class="active"><span class="divider">/</span>'.$this->allWebsiteCategory[$this->category]['category_name_'.DIANA_TRANSLATE_CURRENT].'</li>';
+        }
+        if(empty($this->area)){
+            echo '<li class="active">'.$this->allWebsiteArea[$this->areaFather]['area_name_'.DIANA_TRANSLATE_CURRENT].$htmlCategory.'</li>';
+        }else{
+            echo '<li><a href="'.$this->url(array("area_father" => $this->areaFather,'area' => null)).'">'.$this->allWebsiteArea[$this->areaFather]['area_name_'.DIANA_TRANSLATE_CURRENT].'</a> <span class="divider">/</span></li>';
+            echo '<li class="active">'.$this->allWebsiteArea[$this->area]['area_name_'.DIANA_TRANSLATE_CURRENT].$htmlCategory.'</li>';
+        }
+
+    }
+    ?>
+</ul>
+<ul class="inline">
+        <?php
+        if(!empty($this->areaFather)){
+            $htmlCountry = array();
+            $htmlCountry[] = '<li><a href="'.$this->url(array("area" => null)).'">全部</a></li>';
+            foreach($this->rowWebsiteAreaSon as $rowsAreaSon){
+                $tmpWebsiteCount = '';
+                if($rowsAreaSon['area_count_website'] > 0){
+                    $tmpWebsiteCount = '<small class="muted">['.$rowsAreaSon['area_count_website'].']</small>';
+                }
+                $htmlCountry[] = '<li><a href="'.$this->url(array("area" => $rowsAreaSon['area_id'])).'" title="'.$rowsAreaSon['area_name_'.DIANA_TRANSLATE_CURRENT].'">'.$rowsAreaSon['area_name_'.DIANA_TRANSLATE_CURRENT].'</a>'.$tmpWebsiteCount.'</li>';
+            }
+            echo '<li><strong class="muted">国家：</strong></li>'.implode('',$htmlCountry);
+        }
+        ?>
+</ul>
+<ul class="inline">
+        <?php
+        if(!empty($this->allWebsiteCategory)){
+            $htmlCategory = array();
+            $htmlCategory[] =  '<li><a href="'.$this->url(array("category" => null)).'">全部</a></li>';
+            foreach($this->allWebsiteCategory as $rowWebsiteCategory){
+                $htmlCategory[] =  '<li><a href="'.$this->url(array("category" => $rowWebsiteCategory['category_id'])).'" title="'.$rowWebsiteCategory['category_name_'.DIANA_TRANSLATE_CURRENT].'">'.$rowWebsiteCategory['category_name_'.DIANA_TRANSLATE_CURRENT].'</a></li>';
+            }
+            echo '<li><strong class="muted">类别：</strong></li>'.implode('',$htmlCategory);
+        }
+        ?>
+</ul>
+<br>
+<div class="row">
+    <div class="span12" >
+        <?php
+        if($this->paginator['total'] > 0){
+        ?>
+        <div class="row" style="margin-bottom: 5px;">
+            <div class="span5">
+            </div>
+            <div class="span5"><?php echo $this->render('paginator.phtml'); ?></div>
+        </div>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="table table-striped table-hover">
+            <?php
+            foreach($this->paginator['rows'] as $row){
+                ?>
+                <tr>
+                    <td>
+                        <h4><?php echo $this->utf8Substr($row['website_name'],32);?><small>&nbsp;&nbsp;<?php echo $this->allWebsiteArea[$row['website_areaFatherId']]['area_name_'.DIANA_TRANSLATE_CURRENT].'/'.$this->allWebsiteArea[$row['website_areaId']]['area_name_'.DIANA_TRANSLATE_CURRENT].'&nbsp;&nbsp;&nbsp;'.$this->allWebsiteCategory[$row['website_categoryId']]['category_name_'.DIANA_TRANSLATE_CURRENT];?></small></h4>
+                        <a href="<?php echo $this->url(array("action" => "detail","website_id" => $row['website_id']));?>" title="<?php echo $row['website_name'];?>" target="_blank"><?php echo $this->utf8Substr($row['website_domain'],32);?></a><br>
+                        <?php echo $this->utf8Substr($row['website_intro'],200);?><br>
+                        <small>
+                            <?php
+                                if(!empty($row['website_tag'])){
+                                    $tmpHtml = array();
+                                    $tmpWebsiteTag = explode(',',$this->utf8Substr($row['website_tag'],128));
+                                    $tmpWebsiteTag = array_filter($tmpWebsiteTag);
+                                    $tmpWebsiteTag = array_unique($tmpWebsiteTag);
+                                    foreach($tmpWebsiteTag as $valTmpWebsiteTag){
+                                        $tmpHtml[] = '<a href="'.$this->url(array("action"=>"search","keyword" => $valTmpWebsiteTag)).'" title="'.$valTmpWebsiteTag.'"  class="muted">'.$valTmpWebsiteTag.'</a>';
+                                    }
+                                    echo implode("&nbsp;",$tmpHtml);
+                                }
+                            ?></small>
+                    </td>
+                </tr>
+                <?php }?>
+        </table>
+        <div class="row" style="margin-bottom: 5px;">
+            <div class="span2">
+            </div>
+            <div class="span8"><?php echo $this->render('paginator.phtml'); ?></div>
+        </div>
+        <?php }?>
+    </div>
+</div>

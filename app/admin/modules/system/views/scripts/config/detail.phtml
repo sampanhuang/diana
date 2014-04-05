@@ -1,0 +1,145 @@
+<script type="text/javascript">
+    $(function(){
+        //表单内点击按钮重置
+        $('#linkbtn_reset').click(function(){
+            formReset();
+        });
+        //表单内点击按钮提交
+        $('#linkbtn_submit').click(function(){
+            formSubmit();
+        });
+        //表单内回车提交
+        $("#form_config_search").keydown(function(event){
+            if(event.keyCode==13){formSubmit();}
+        });
+        //表单提交
+        function formSubmit() {
+            $("#form_config_search").submit();
+        }
+        //表单重置
+        function formReset(){
+            $('#form_config_search').get(0).reset();
+        }
+    });
+</script>
+<div class="div_bg_fa separator_bot">
+    <form id="form_config_search" name="form_config_search" method="post">
+    <fieldset border="false"  class="fieldset_border separator_bot" >
+        <legend>配置参数查询</legend>
+        <table width="100%" border="0" cellspacing="1" cellpadding="5"  class="table_border separator_top separator_bot">
+            <tr>
+                <th width="10%">变量名</th>
+                <td width="90%">
+                    <input id="input_search_conf_key" name="conf_key" class="easyui-validatebox" data-options="required:true"  style="width:230px;" value="<?php echo $this->request['conf_key'];?>">
+                    <span id="span_notice_search_conf_key" class="span_notice">不支持模糊查询，不支持多变量名查询</span>
+                </td>
+            </tr>
+        </table>
+        <input id="input_handle" name="handle" type="hidden" value="<?php echo $this->handle;?>">
+        <div border="false" class="div_btn">
+            <a id="linkbtn_submit" class="easyui-linkbutton" iconCls="icon-ok" style="margin-right:20px;">确定</a>
+            <a id="linkbtn_reset" class="easyui-linkbutton" iconCls="icon-cancel" style="margin-right:20px;">取消</a>
+        </div>
+    </fieldset>
+    </form>
+    <?php if(!empty($this->detail)){?>
+    <fieldset border="false"  class="fieldset_border separator_bot" >
+        <legend>查询结果</legend>
+        <table width="100%" border="0" cellspacing="1" cellpadding="5"  class="table_border separator_top separator_bot">
+            <?php
+            if(!empty($this->detail['conf_fatherId'])){
+                if(!empty($this->detail['conf_father'])){
+                    $tmpConfigFatherLabel = $this->detail['conf_father']['conf_label'];
+                }else{
+                    $tmpConfigFatherLabel = '<span style="color:red">参数类别已被删除</span>';
+                }
+                ?>
+                <tr>
+                    <th width="10%">变量类别</th>
+                    <td width="90%">
+                        <?php echo $tmpConfigFatherLabel;?>
+                    </td>
+                </tr>
+                <?php }?>
+            <tr>
+                <th width="10%">变量用途</th>
+                <td width="90%">
+                    <?php echo $this->detail['conf_label'];?>
+                    <span id="span_notice_conf_label" class="span_notice">用于介绍当前配置参数项有何用途</span>
+                </td>
+            </tr>
+            <tr>
+                <th>变量名</th>
+                <td>
+                    <?php echo $this->detail['conf_key'];?>
+                    <span id="span_notice_conf_key" class="span_notice">不能轻易变更，程序会通过配置参数变量名得到变量值</span>
+                </td>
+            </tr>
+            <tr>
+                <th>变量值</th>
+                <td>
+                    <?php echo $this->detail['conf_value'];?>
+                    <span id="span_notice_conf_value" class="span_notice">程序中过配置参数变量名得到的值</span>
+                </td>
+            </tr>
+            <tr>
+                <th>变量默认值</th>
+                <td>
+                    <?php echo $this->detail['conf_default'];?>
+                    <span id="span_notice_conf_default" class="span_notice">默认值，用于参考</span>
+                </td>
+            </tr>
+        </table>
+        <table width="100%" border="0" cellspacing="1" cellpadding="5"  class="table_border separator_top separator_bot">
+            <tr>
+                <th width="10%">输入类型</th>
+                <td width="90%">
+                    <?php echo $this->translate("global_html_tag_".$this->detail['conf_input_type']);?>
+                    <span id="span_notice_conf_input_type" class="span_notice">参数输入类型</span>
+                </td>
+            </tr>
+            <tr>
+                <th>输入选项</th>
+                <td>
+                    <?php echo $this->detail['conf_options'];?>
+                    <span id="span_notice_conf_options" class="span_notice">用于下拉菜单、单选多选框选项，多个请以,格开</span>
+                </td>
+            </tr>
+            <tr>
+                <th>输入备注</th>
+                <td>
+                    <?php if(!empty($this->detail['conf_remark'])){echo $this->detail['conf_remark'].'<br/>';}?>
+                    <span id="span_notice_conf_remark" class="span_notice">用于提醒用户在修改变量值时需要注意什么</span>
+                </td>
+            </tr>
+            <tr>
+                <th>排列顺序</th>
+                <td>
+                    <?php echo $this->detail['conf_order'];?>
+                    <span id="span_notice_conf_order" class="span_notice">定义当前参数显示顺序，显示顺序从大到小</span>
+                </td>
+            </tr>
+        </table>
+        <table width="100%" border="0" cellspacing="1" cellpadding="5"  class="table_border separator_top separator_bot">
+            <tr>
+                <th width="10%">配置添加时间</th>
+                <td width="40%"><?php echo $this->formatDate('Y-m-d H:i',$this->detail['conf_insert_time']);?></td>
+                <th width="10%">配置添加IP</th>
+                <td width="40%"><?php echo $this->detail['conf_insert_ip'];?></td>
+            </tr>
+            <tr>
+                <th width="10%">参数值更新时间</th>
+                <td width="40%"><?php echo $this->formatDate('Y-m-d H:i',$this->detail['conf_update_time']);?></td>
+                <th width="10%">参数值更新IP</th>
+                <td width="40%"><?php echo $this->detail['conf_update_ip'];?></td>
+            </tr>
+            <tr>
+                <th width="10%">输入设置修改时间</th>
+                <td width="40%"><?php echo $this->formatDate('Y-m-d H:i',$this->detail['conf_alter_time']);?></td>
+                <th width="10%">输入设置修改IP</th>
+                <td width="40%"><?php echo $this->detail['conf_alter_ip'];?></td>
+            </tr>
+        </table>
+    </fieldset>
+    <?php }?>
+</div>

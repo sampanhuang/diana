@@ -1,0 +1,180 @@
+<?php
+$this->headScript()->appendFile("/static/custom/script/md5.js");
+$this->headScript()->captureStart();?>
+$(function(){
+var urlcaptcha = "/default/index/captcha/key/www-member-login";
+var imgcaptcha = "#img_captcha";
+refreshCaptcha(imgcaptcha,urlcaptcha);
+//点击图片更换验证码
+$(imgcaptcha).bind('click',function(){refreshCaptcha(imgcaptcha,urlcaptcha);});
+$("#btn_login").bind("click", loginSubmit);
+$("#form_login").keydown(function(event){
+if(event.keyCode==13){loginSubmit();}
+});
+$("#btn_clear_cookie").bind("click", clearTraces );
+initFocus();
+//设置焦点
+function initFocus(){
+if($("#input_email").val() == ""){
+$("#input_email").focus();
+}else{
+$("#input_password").focus();
+}
+}
+function changeFocus(id)
+{
+if ( id == 1){
+$("#input_email").focus();
+}else if( id == 2 ){
+$("#input_password").focus();
+}else if ( id == 3){
+$("#input_captcha").focus();
+}
+}
+//提交登录
+function loginSubmit() {
+var email = $("#input_email").val();
+var passwd = $("#input_password").val();
+var captcha = $("#input_captcha").val();
+var alertmsg = "";//提示文字
+var alertfocus = 0;
+if(email == ""){
+changeFocus(1);
+$("#help_email").html("请输入登录帐号");
+$("#help_email").css({ color: "#B94A48"});
+return false;
+}else{
+$("#help_email").css({ color: "#468847"});
+$("#help_email").html("登录帐号输入正常");
+}
+
+if(passwd == ""){
+changeFocus(2);
+$("#help_password").css({ color: "#B94A48"});
+$("#help_password").html("请输入登录密码");
+return false;
+}else{
+$("#help_password").css({ color: "#468847"});
+$("#help_password").html("登录密码输入正常");
+}
+if(captcha == ""){
+changeFocus(3);
+$("#help_captcha").css({ color: "#B94A48"});
+$("#help_captcha").html("请输入验证码");
+return false;
+}else if(!isCaptcha(captcha)){
+changeFocus(3);
+$("#help_captcha").css({ color: "#B94A48"});
+$("#help_captcha").html("验证码只能是四位字每");
+return false;
+}else{
+$("#help_captcha").css({ color: "#468847"});
+$("#help_captcha").html("验证码输入正常");
+}
+login(email, passwd ,captcha);
+}
+
+//登陆操作
+function login(email,passwd,captcha) {
+$.ajax({
+type: "POST",
+dataType: "json",
+url: "/member/guest/login/show_ajax/json/show_data/login",
+data: { email: email, passwd: hex_md5(passwd) , captcha: captcha },
+success: function(json) {
+if (json.stat == 1) {
+window.location.href = "/member/website/";
+}else {
+if(json.focus == 1){
+$("#help_email").css({ color: "#B94A48"});
+$("#help_email").html(json.msgs);
+}else if(json.focus == 2){
+$("#help_password").css({ color: "#B94A48"});
+$("#help_password").html(json.msgs);
+}else if(json.focus == 3){
+$("#help_captcha").css({ color: "#B94A48"});
+$("#help_captcha").html(json.msgs);
+}
+$("#div_alert").html(json.msgs);
+$("#div_alert").removeClass("hidden");
+refreshCaptcha(imgcaptcha,urlcaptcha);
+}
+},
+error: function() {
+$("#div_alert").html("获取账号信息失败...请联系管理员");
+$("#div_alert").removeClass("hidden");
+refreshCaptcha(imgcaptcha,urlcaptcha);
+}
+});
+}
+//验证码
+function isCaptcha(str)
+{
+//var reg =/^[A-Za-z0-9]{4}$/;
+var reg =/^[A-Za-z]{4}$/;
+return reg.test(str);
+}
+//刷新验证码
+function refreshCaptcha(img,url){
+url = url + "?rand=" + Math.random()
+$(img).attr("src",url);
+}
+//删除cookie
+function clearTraces()
+{
+$("#input_email").attr("value","");
+$.ajax({
+type: "GET",
+dataType: "json",
+url: "/default/guest/login/show_ajax/json/show_data/clear-cookie",
+success: function(json) {
+if (json.stat == 1) {
+$.messager.alert('提示', '登录痕迹清除成功', 'info', function() {initFocus();});
+}else {
+$.messager.alert('警告', json.msgs, 'error');
+}
+},
+error: function() {
+$.messager.alert('错误', '操作失败...请联系管理员!', 'error');
+}
+});
+}
+});
+<?php $this->headScript()->captureEnd();?>
+<ul class="breadcrumb">
+    <li><a href="/">首页</a> <span class="divider">/</span></li>
+    <li class="active">会员登录</li>
+</ul>
+<form class="form-horizontal" id="form_login" name="form_login" method="post">
+    <div class="alert hidden" id="div_alert"></div>
+    <div class="control-group">
+        <label class="control-label" for="input_email">登录帐号</label>
+        <div class="controls">
+            <input type="text" id="input_email" name="email" tabindex="1" class="span4" placeholder="登录帐号" value="<?php echo $this->emailLasttime;?>">
+            <span class="help-inline muted" id="help_email">必填选，帐号不能为空，可以是用户名或是密保邮箱</span>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="input_password">登录密码</label>
+        <div class="controls">
+            <input type="password" id="input_password" name="password" tabindex="2" class="span4" placeholder="登录密码" value="">
+            <span class="help-inline" id="help_password">必填选，密码不能为空</span>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="input_captcha">验证字符</label>
+        <div class="controls">
+            <input type="text" id="input_captcha" name="captcha" tabindex="3" class="span4" placeholder="验证字符" value="">
+            <span class="help-inline" id="help_captcha">请输入下面图片内的字符</span><br>
+            <img id="img_captcha" name="img_captcha" width="100" height="40" alt="点击更换验证码" title="点击更换验证码" style="cursor:pointer;">
+        </div>
+    </div>
+    <hr>
+    <div class="control-group">
+        <div class="controls">
+            <button id="btn_login" type="button" tabindex="4" class="btn btn-primary">确定</button>&nbsp;&nbsp;&nbsp;&nbsp;
+            <button id="btn_reset" type="reset" tabindex="5" class="btn">取消</button>&nbsp;&nbsp;&nbsp;&nbsp;
+            <button id="btn_clear_cookie" type="reset" tabindex="6" class="btn">清除痕迹</button>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,148 @@
+<?php
+$this->headScript()->appendFile("/static/custom/script/date.js");
+$this->headScript()->appendFile("/static/custom/script/common.js");
+$this->headScript()->appendFile("/static/custom/script/formatter.js");
+$this->headScript()->captureStart();?>
+$(function(){
+//提交查询表单
+$('#linkbtn_submit').click(function(){
+$('#input_log_type').val($('#input_log_typeLabel').combobox('getValues'));
+$("#form_log-member_login_search").submit();
+});
+//隐藏提示
+$("#div_help").hide();
+//查询帮助
+$('#linkbtn_help').click(function(){
+$("#div_help").toggle();
+});
+//数据列表
+$('#datagrid-member-log').datagrid({
+singleSelect:true,//允许多行选择
+rownumbers:true,
+cache:false,
+pagination:true,
+pageList:[<?php echo DIANA_DATAGRID_PAGELIST_ADMIN;?>],
+pageSize:<?php echo $this->pagesize;?>,
+url:'<?php echo $this->url($this->queryGrid);?>'
+});
+$('#input_log_typeLabel').combobox({
+url:'<?php echo $this->url(array('show_ajax' => 'json','data_ajax' => 'log-type-combobox'));?>',
+valueField:'id',
+textField:'label',
+multiple:true,
+panelHeight:'auto'
+
+});
+<?php
+if(!empty($this->datapost['log_type'])){
+    echo '$(\'#input_log_typeLabel\').combobox(\'setValues\',\''.$this->datapost['log_type'].'\'.split(\',\'));';
+    //echo '$(\'#input_log_typeLabel\').combobox(\'setText\',\''.$this->datapost['log_typeLabel'].'\');';
+
+
+}
+?>
+
+});
+
+
+<?php $this->headScript()->captureEnd();?>
+<script type="text/javascript">
+    /**
+     * 格式化操作选项
+     */
+    function formatAction(val,row)
+    {
+        var detailLink = '<a href="javascript:openWindowMemberLogDetail(\'dialog-member-log-detail\','+ row.log_id +')">明细</a>';
+        return detailLink;
+    }
+    function openWindowMemberLogDetail(div_id,log_id)
+    {
+        $('#'+div_id).dialog({
+            //top:($(window).height() - 690) * 0.5,
+            //left:($(window).width() - 390) * 0.5,
+            closed:false,
+            width:690,
+            height:390,
+            title: '日志明细',
+            href:'/member/index/log/log_detail/yes/log_id/' + log_id
+        });
+    }
+</script>
+<div class="div_bg_fa separator_bot">
+    <fieldset border="false" class="fieldset_border separator_bot" >
+        <legend>日志查询</legend>
+        <!---表单输入项-->
+        <form id="form_log-member_login_search" name="form_log-member_login_search" method="POST">
+            <table width="100%" border="0" cellspacing="1" cellpadding="5" class="table_border separator_top separator_bot">
+                <tr>
+                    <th width="10%">开始时间</th>
+                    <td width="40%"><input type="text" name="log_date_min" id="input_log_date_min" class="easyui-datetimebox" style="width:195px;" value="<?php echo $this->datapost['log_date_min'];?>" /></td>
+                    <th width="10%">结束时间</th>
+                    <td width="40%"><input type="text" name="log_date_max" id="input_log_date_max" class="easyui-datetimebox"  style="width:195px;"  value="<?php echo $this->datapost['log_date_max'];?>" /></td>
+                </tr>
+                <tr>
+                    <th width="10%">IP地址</th>
+                    <td width="40%"><input type="text" name="log_ip" id="input_log_ip" style="width:80%;" value="<?php echo $this->datapost['log_ip'];?>" /></td>
+                    <th width="10%">日志类型</th>
+                    <td width="40%">
+                        <input type="text" name="log_typeLabel" id="input_log_typeLabel" class="easyui-combobox" style="width:300px;"  " />
+                        <input id="input_log_type" name="log_type" type="hidden" value="<?php echo $this->datapost['log_type'];?>"
+                    </td>
+                </tr>
+                <tr>
+                    <th width="10%">会话ID</th>
+                    <td width="40%"><input type="text" name="log_sessionId" id="input_log_sessionId" style="width:80%;" value="<?php echo $this->datapost['log_sessionId'];?>" /></td>
+                    <th width="10%">管理员ID</th>
+                    <td width="40%"><input type="text" name="log_memberId" id="input_log_memberId" style="width:80%;"  value="<?php echo $this->datapost['log_memberId'];?>" /></td>
+                </tr>
+                <tr>
+                    <th width="10%">管理员邮箱</th>
+                    <td width="40%"><input type="text" name="log_memberEmail" id="input_log_memberEmail" style="width:80%;" value="<?php echo $this->datapost['log_memberEmail'];?>" /></td>
+                    <th width="10%">管理员姓名</th>
+                    <td width="40%"><input type="text" name="log_memberName" id="input_log_memberName" style="width:80%;"  value="<?php echo $this->datapost['log_memberName'];?>" /></td>
+                </tr>
+            </table>
+        </form>
+        <!---表单按钮-->
+        <div border="false" class="div_btn">
+            <a id="linkbtn_submit" class="easyui-linkbutton" iconCls="icon-search">查询</a>
+            <a id="linkbtn_clear" href="/system/member/log" class="easyui-linkbutton" iconCls="icon-cut">清空查询条件</a>
+            <a id="linkbtn_help" class="easyui-linkbutton" iconCls="icon-help">查看查询提示</a>
+        </div>
+        <!---查询提示-->
+        <div id="div_help" class="ul_help">
+            提示：
+            <ul>
+                <li>多个查询内容请用英文输入法的逗号,隔开，例如多个流水号请这样输入1,2,3,4,5</li>
+                <li>同一查询条件下多个查询内容，查询结果只需要符合其中一项查询内容</li>
+                <li>多个查询条件下，我们只会返回同时符合这多个条件下的数据，而不是只符合多个条件下其中一项的数据</li>
+                <li>例如流水号为1,2,3，状态为锁定条件下，假设没有流水号为1的数据，那么系统将返回状态为锁定且ID为2，3的数据</li>
+            </ul>
+        </div>
+    </fieldset>
+</div>
+<?php //echo '<a href="'.$this->url($this->queryGrid).'"  target="_blank">'.$this->url($this->queryGrid).'</a><br><br>';?>
+<!---数据网格内容-->
+<table id="datagrid-member-log" width="100%" height="100%" class="easyui-datagrid" title="查询结果">
+    <thead data-options="frozen:true">
+    <tr>
+        <!--<th data-options="field:'ck',checkbox:true"></th>
+        <th data-options="field:'log_id',width:60">流水号</th>-->
+        <th data-options="field:'log_time',width:120,align:'left'" formatter="formatTimeStamp">时间</th>
+        <th data-options="field:'log_ip',width:100,align:'left'" >IP地址</th>
+        <th data-options="field:'log_typeLabel',width:100,align:'left'" >类型</th>
+        <th data-options="field:'log_sessionId',width:200,align:'left'" >会话ID</th>
+        <th data-options="field:'log_action',width:100,align:'left'" formatter="formatAction">选项</th>
+    </tr>
+    </thead>
+    <thead>
+    <tr>
+        <th data-options="field:'log_memberId',width:100,align:'left'" >管理员ID</th>
+        <th data-options="field:'log_memberEmail',width:200,align:'left'" >管理员邮箱</th>
+        <th data-options="field:'log_memberName',width:200,align:'left'">管理员姓名</th>
+    </tr>
+    </thead>
+</table>
+<!--角色明细-->
+<div id="dialog-member-log-detail" class="easyui-dialog" data-options="modal:false,closed:true,iconCls:'icon-search'" style="padding:5px;">
+</div>

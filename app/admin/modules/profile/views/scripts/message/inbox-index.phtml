@@ -1,0 +1,241 @@
+<?php
+$this->headScript()->appendFile("/static/custom/script/date.js");
+$this->headScript()->appendFile("/static/custom/script/formatter.js");
+$this->headScript()->captureStart();?>
+$(function(){
+//提交查询表单
+$('#linkbtn_submit').click(function(){
+$("#form_manager_msg_search").submit();
+});
+//隐藏查询帮助
+$("#div_help").hide();
+//显示查询帮助
+$('#linkbtn_help').click(function(){
+$("#div_help").toggle();
+});
+//网格内容
+$('#datagrid_manager_msg').datagrid({
+singleSelect:false,//允许多行选择
+toolbar:'#toolbar',
+rownumbers:true,
+cache:false,
+pagination:true,
+pageList:[<?php echo DIANA_DATAGRID_PAGELIST_ADMIN;?>],
+pageSize:<?php echo $this->pagesize;?>,
+method:'get',
+url: '<?php echo $this->url($this->queryGrid);?>'
+});
+//数据列表操作对话框
+$('#dialog-manager-msg-del-markread').dialog({
+iconCls: 'icon-dell',
+buttons: '#dialog-buttons',
+closed:true,
+modal:true,
+});
+});
+<?php $this->headScript()->captureEnd();?>
+<script type="text/javascript">
+    /**
+     * 操作请求发送确认
+     */
+    function sendRequest(doit_code,doit_label){
+        var dialog_id = '';//对话框的ID
+        var ids = [];
+        var labels = [];
+        var rows = $('#datagrid_manager_msg').datagrid('getSelections');
+        var iconclass = '';
+        if( rows.length == 0){
+            $.messager.alert('确认请求','请选择要操作的数据','error');
+            return false;
+        }
+        for(var i=0; i<rows.length; i++){
+            ids.push(rows[i].inbox_id);
+            labels.push(rows[i].msg_subject);
+        }
+        var messagerTitle = doit_label + '确认';
+        var messagerBody = '你确认要' + doit_label + '以下' + rows.length + '条消息吗？<br><br>' + labels.join(' , ');
+        if (doit_code == 'delete' || doit_code == 'markread'){
+
+            dialog_id = 'dialog-manager-msg-del-markread';
+            if(doit_code == 'delete'){
+                iconclass = 'icon-delete';
+            }else if(doit_code == 'markread'){
+                iconclass = 'icon-contact';
+            }
+            $('#dialog-manager-msg-del-markread').dialog({
+                title: messagerTitle,
+                content:messagerBody,
+                closed:false,
+                iconCls:iconclass
+            });
+        }
+        //在弹出对话框后点击确定
+        $('#link_buttons_ok').click(function(){
+            $("#link_buttons_ok").unbind();//删除原来的事件绑定
+            $('#' + dialog_id).dialog('close');//添加新的点击绑定
+            sendReqWithAjax(doit_code,ids);
+        });
+        //在调出对话框后点击取消
+        $('#link_buttons_cancel').click(function(){
+            $("#link_buttons_cancel").unbind();//删除原来的事件绑定
+            $('#' + dialog_id).dialog('close');//添加新的点击绑定
+        });
+    }
+
+    /**
+     * 发送删除、锁定、解税等请求
+     */
+    function sendReqWithAjax(doit_code,ids)
+    {
+        if(ids == '' || ids == null || doit_code == ''){
+            $.messager.alert('确认请求','请确认你发送了参数过来','error');
+            return false;
+        }
+        var returnAjax = false;
+        $.ajax({
+            async:false,
+            type: "GET",
+            dataType: "json",
+            contentType:"utf-8",
+            cache:false,
+            url:"<?php echo $this->url(array('action' => 'inbox-handle','show_ajax' => 'json'));?>/data_ajax/" + doit_code ,
+            data: {inbox_id:ids},
+            success: function(json) {
+                if (json.stat == 1) {
+                    $.messager.alert('确认请求',json.msgs);
+                    $('#datagrid_manager_msg').datagrid('reload');//重新载入
+                    returnAjax = true;
+                }else{
+                    $.messager.alert('请求结果',json.msgs,'error');
+                }
+            },
+            beforeSend:function(){
+                forbiddenPage();
+            },
+            error: function() {
+                $.messager.alert('警告','发生未知的系统错误!<br>不如联系管理员看看是什么情况！','error');
+            },
+            complete:function(){
+                releasePage();
+            }
+        });
+        return returnAjax;
+    }
+
+    /**
+     * 发件人
+     * @param val
+     * @param row
+     * @return {String}
+     */
+    function formatSource(val,row)
+    {
+        return row.msg_source_name + '&nbsp;<span style="color:#999999">&lt;' + row.msg_source_email + '&gt;</span>';
+    }
+
+    function formatSubject(val,row)
+    {
+        var detailLink = '<a href="javascript:openWindowManagerMsgDetail(\'dialog-manager-msg-detail\','+ row.inbox_id +')">'+val+'</a>';
+        return detailLink;
+    }
+
+    function openWindowManagerMsgDetail(div_id,inbox_id)
+    {
+        $('#'+div_id).dialog({
+            closed:false,
+            width:690,
+            height:390,
+            title: '消息明细',
+            href:'<?php echo $this->url(array('inbox_detail' => 'yes')).'/inbox_id/';?>' + inbox_id
+        });
+    }
+
+    /**
+     * 设置已读状态
+     * @param val
+     * @param row
+     * @return {String}
+     */
+    function formatReadStat(val,row){
+        var iconCss = '';
+        if(row.inbox_msg_read_time > 0){
+            iconCss = 'icon-contact';
+        }else{
+            iconCss = 'icon-email';
+        }
+        var htmlSpan = '<div class="' + iconCss + '" style="width: 16px;height: 16px;"></div>';
+        return htmlSpan;
+    }
+</script>
+
+<div class="div_bg_fa separator_bot">
+    <form id="form_manager_msg_search" name="form_manager_msg_search"  method="POST">
+        <fieldset border="false"  class="fieldset_border separator_bot" >
+            <legend>收件查询</legend>
+            <table width="100%" border="0" cellspacing="1" cellpadding="5" class="table_border separator_top separator_bot">
+                <tr>
+                    <th width="10%" scope="row">标题</th>
+                    <td width="90%" colspan="3"><input type="text" name="msg_subject_like" id="input_msg_subject_like" style="width:40%" value="<?php echo $this->datapost['msg_subject_like'];?>" />&nbsp;（支持模糊查询）</td>
+                </tr>
+                <tr>
+                    <th width="10%" scope="row">开始时间</th>
+                    <td width="40%">
+                        <input type="text" name="inbox_msg_accept_date_min" id="input_inbox_msg_accept_date_min" class="easyui-datetimebox" style="width:195px;" value="<?php echo $this->datapost['inbox_msg_accept_date_min'];?>" />
+                    </td>
+                    <th width="10%" scope="row">结束时间</th>
+                    <td width="40%">
+                        <input type="text" name="inbox_msg_accept_date_max" id="input_inbox_msg_accept_date_max" class="easyui-datetimebox" style="width:195px;" value="<?php echo $this->datapost['inbox_msg_accept_date_max'];?>" />
+                    </td>
+                </tr>
+            </table>
+            <div border="false" class="div_btn">
+                <a id="linkbtn_submit" class="easyui-linkbutton" iconCls="icon-search">确定</a>
+                <a id="linkbtn_reset" href="<?php echo $this->url();?>" iconCls="icon-cut" class="easyui-linkbutton" >清空查询条件</a>
+                <a id="linkbtn_help" class="easyui-linkbutton" iconCls="icon-help">查看查询提示</a>
+            </div>
+            <!---帮助内容-->
+            <div id="div_help" class="ul_help separator_top">
+                提示：
+                <ul>
+                    <li>多个查询内容请用英文输入法的逗号,隔开，例如多个流水号请这样输入1,2,3,4,5</li>
+                    <li>同一查询条件下多个查询内容，查询结果只需要符合其中一项查询内容</li>
+                    <li>多个查询条件下，我们只会返回同时符合这多个条件下的数据，而不是只符合多个条件下其中一项的数据</li>
+                    <li>例如流水号为1,2,3，状态为锁定条件下，假设没有流水号为1的数据，那么系统将返回状态为锁定且ID为2，3的数据</li>
+                </ul>
+            </div>
+        </fieldset>
+    </form>
+</div>
+<?php //echo '<a href="'.$this->url($this->queryGrid).'"  target="_blank">'.$this->url($this->queryGrid).'</a><br><br>';?>
+<table id="datagrid_manager_msg" title="收件列表" width="100%" hight="100%" >
+    <thead data-options="frozen:true">
+    <tr>
+        <th data-options="field:'ck',checkbox:true"></th>
+        <th field="inbox_read_stat" width="40" formatter="formatReadStat">状态</th>
+        <th field="inbox_msg_accept_time" width="130" formatter="formatTimeStamp">接收时间</th>
+        <th field="msg_source" width="300" formatter="formatSource">发件人</th>
+    </tr>
+    </thead>
+    <thead>
+    <tr>
+        <th field="msg_subject" width="500" formatter="formatSubject">标题</th>
+    </tr>
+    </thead>
+</table>
+<!--数据网格工具栏-->
+<div id="toolbar" style="height:auto;padding:5px;">
+    <a id="linkbotton_grid_tool_select" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-archives',plain:true" onclick="gridSelectAll(this,'datagrid_manager_msg')">全选</a>
+    <a id="linkbotton_grid_tool_dell" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-delete',plain:true" onclick="sendRequest('delete','删除')">删除</a>
+    <a id="linkbotton_grid_tool_markread" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-contact',plain:true" onclick="sendRequest('markread','设为已读')">设为已读</a>
+</div>
+<!--操作弹出框工具栏_删除及解锁-->
+<div id="dialog-manager-msg-del-markread" class="easyui-dialog" style="width:400px;height:200px;padding:10px">
+</div>
+<!--操作弹出按钮栏_锁定-->
+<div id="dialog-buttons">
+    <a id="link_buttons_ok" href="javascript:void(0)" class="easyui-linkbutton">确定</a>
+    <a id="link_buttons_cancel" href="javascript:void(0)" class="easyui-linkbutton">取消</a>
+</div>
+<!--消息明细-->
+<div id="dialog-manager-msg-detail" class="easyui-dialog" data-options="modal:false,closed:true,iconCls:'icon-search'" style="padding:5px;">
+</div>

@@ -1,0 +1,39 @@
+<div class="div_bg_fa separator_bot">
+    <?php if (!empty($this->detailMemberLog)) { ?>
+    <fieldset border="false" class="fieldset_border separator_bot">
+        <legend>基本资料</legend>
+        <table width="100%" border="0" cellspacing="1" cellpadding="5" class="table_border">
+            <tr>
+                <th width="15%">时间</th>
+                <td width="35%"><?php echo date('Y-m-d H:i',$this->detailMemberLog['log_time']); ?></td>
+                <th width="15%">地点</th>
+                <td width="35%"><?php echo $this->detailMemberLog['log_ip']; ?></td>
+            </tr>
+            <tr>
+                <th>类型</th>
+                <td><?php echo $this->detailMemberLog['log_typeLabel']; ?></td>
+                <th>会话ID</th>
+                <td><?php echo $this->detailMemberLog['log_sessionId']; ?></td>
+            </tr>
+            <tr>
+                <th>会员邮箱</th>
+                <td><?php echo $this->detailMemberLog['log_memberName']; ?></td>
+                <th>会员姓名</th>
+                <td><?php echo $this->detailMemberLog['log_memberEmail']; ?></td>
+            </tr>
+        </table>
+    </fieldset>
+    <?php if(!empty($this->detailMemberLog['log_user_agent'])){?>
+        <fieldset border="false" class="fieldset_border separator_bot">
+            <legend>浏览器信息</legend>
+            <p><?php echo $this->detailMemberLog['log_user_agent']; ?></td></p>
+        </fieldset>
+        <?php }?>
+    <?php if(!empty($this->detailMemberLog['log_remark'])){?>
+        <fieldset border="false" class="fieldset_border separator_bot">
+            <legend>备注信息</legend>
+            <p><?php echo $this->detailMemberLog['log_remark']; ?></p>
+        </fieldset>
+        <?php }?>
+    <?php }?>
+</div>

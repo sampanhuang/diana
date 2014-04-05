@@ -1,0 +1,177 @@
+<?php
+$this->headLink()->appendStylesheet('/static/kindeditor-4.1.7/themes/default/default.css');
+$this->headScript()->appendFile("/static/kindeditor-4.1.7/kindeditor.js");
+$this->headScript()->appendFile("/static/kindeditor-4.1.7/lang/zh_CN.js");
+$this->headScript()->captureStart();?>
+$(function(){
+var editor;
+KindEditor.ready(function(K) {
+editor = K.create('#website_intro', {
+height:500,
+resizeType : 1,
+allowPreviewEmoticons : false,
+allowImageUpload : false,
+items : [
+'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+'insertunorderedlist', '|', 'emoticons', 'image', 'link'],
+afterBlur: function(){this.sync();}
+});
+});
+//表单内点击按钮提交
+$('#linkbtn_send').click(function(){
+formSubmit();
+});
+$('#linkbtn_save').click(function(){
+$('#input_handle_type').val('save');
+formSubmit();
+});
+//表单内回车提交
+$("#form_main").keydown(function(event){
+if(event.keyCode==13){formSubmit();}
+});
+<?php
+
+if((!empty($this->detail['website_categoryId']))&&(!empty($this->optionsSonOfCategory))){
+    echo "onchangeShowOfCategory(".$this->detail['website_categoryFatherId'].",".$this->detail['website_categoryId'].")";
+}
+if(!empty($this->detail['website_areaId'])){
+    echo "onchangeShowOfArea(".$this->detail['website_areaFatherId'].",".$this->detail['website_areaId'].")";
+}
+?>
+});
+<?php $this->headScript()->captureEnd();?>
+<script type="text/javascript">
+    //表单提交
+    function formSubmit() {
+        $("#form_main").submit();
+    }
+    <?php
+    if(!empty($this->optionsSonOfCategory)){
+    ?>
+    function onchangeShowOfCategory(oneId,selectedId){
+        var arrOptionsCountry = <?php echo json_encode($this->optionsSonOfCategory)?>;
+        onchangecallbackOfCategory(arrOptionsCountry[oneId],selectedId);
+    }
+    function onchangecallbackOfCategory(data , selectedId){
+        $("#select_website_categoryId").html("");  //清空原有的option
+        var str="<option value=''>请选择</option>";
+        var tmpSelected;
+        for(var key in data){
+            tmpSelected = 0;
+            if( key == selectedId){
+                tmpSelected = ' selected ';
+            }
+            str+="<option value='"+key+"' "+tmpSelected+" >"+data[key]+"</option>"
+        }
+        $("#select_website_categoryId").html(str);
+    }
+    <?php }?>
+    function onchangeShowOfArea(oneId,selectedId){
+        var arrOptionsCountry = <?php echo json_encode($this->optionsSonOfArea)?>;
+        onchangecallbackOfArea(arrOptionsCountry[oneId],selectedId);
+    }
+    function onchangecallbackOfArea(data , selectedId){
+        $("#select_website_areaId").html("");  //清空原有的option
+        var str="<option value=''>请选择</option>";
+        var tmpSelected;
+        for(var key in data){
+            tmpSelected = 0;
+            if( key == selectedId){
+                tmpSelected = ' selected ';
+            }
+            str+="<option value='"+key+"' "+tmpSelected+" >"+data[key]+"</option>"
+        }
+        $("#select_website_areaId").html(str);
+    }
+
+</script>
+<div class="div_bg_fa separator_bot">
+    <form id="form_main" name="form_main" method="post">
+        <fieldset border="false"  class="fieldset_border separator_bot" >
+            <legend>提交申请</legend>
+            <table width="100%" border="0" cellspacing="1" cellpadding="5"  class="table_border separator_top separator_bot">
+                <tr>
+                    <th width="10%">网站名称</th>
+                    <td><input id="input_website_name" name="website_name" class="easyui-validatebox" data-options="required:true"  style="width:30%;" value="<?php echo $this->detail['website_name'];?>"><span id="span_website_name"></span></td>
+                </tr>
+                <tr>
+                    <th width="10%">网站域名</th>
+                    <td><input id="input_website_domain" name="website_domain" class="easyui-validatebox" data-options="required:true"  style="width:30%;" value="<?php echo $this->detail['website_domain'];?>"><span id="span_website_domain"></span></td>
+                </tr>
+                <tr>
+                    <th width="10%">网站类别</th>
+                    <td>
+                        <?php
+                        $tmpOnchange = 'onchange="onchangeShowOfCategory(this.value)"';
+                        $tmpSelectedName = 'website_categoryFatherId';
+                        if(empty($this->optionsSonOfCategory)){
+                            $tmpSelectedName = 'website_categoryId';
+                            $tmpOnchange = '';
+                        }
+
+                        ?>
+                        <select id="select_<?php echo $tmpSelectedName;?>" name="<?php echo $tmpSelectedName;?>" <?php echo $tmpOnchange;?> style="width:20%;">
+                            <option value="0">请选择</option>
+                            <?php
+                            if(!empty($this->optionsFatherOfCategory)){
+                                foreach($this->optionsFatherOfCategory as $tmpCategoryId => $tmpCategoryLabel){
+                                    $tmpSelected = '';
+                                    if($tmpCategoryId == $this->detail[$tmpSelectedName]){
+                                        $tmpSelected = ' selected ';
+                                    }
+                                    echo '<option value="'.$tmpCategoryId.'" '.$tmpSelected.'>'.$tmpCategoryLabel.'</option>';
+                                }
+                            }
+                            ?>
+                        </select>
+                        <?php
+                        if(!empty($this->optionsSonOfCategory)){
+                        ?>
+                        <select id="select_website_categoryId" name="website_categoryId" style="width:20%;">
+                            <option value="0">请选择</option>
+                        </select>
+                        <?php }?>
+                        <span id="span_website_categoryId"></span></td>
+                </tr>
+                <tr>
+                    <th width="10%">网站地区</th>
+                    <td>
+                        <select id="select_website_areaFatherId" name="website_areaFatherId" onchange="onchangeShowOfArea(this.value)" style="width:20%;">
+                            <option value="0">请选择</option>
+                            <?php
+                            if(!empty($this->optionsFatherOfArea)){
+                                foreach($this->optionsFatherOfArea as $tmpAreaId => $tmpAreaLabel){
+                                    $tmpSelected = '';
+                                    if($tmpAreaId == $this->detail['website_areaFatherId']){
+                                        $tmpSelected = ' selected ';
+                                    }
+                                    echo '<option value="'.$tmpAreaId.'" '.$tmpSelected.'>'.$tmpAreaLabel.'</option>';
+                                }
+                            }
+                            ?>
+                        </select>
+                        <select id="select_website_areaId" name="website_areaId" style="width:20%;">
+                            <option value="0">请选择</option>
+
+                        </select>
+                        <span id="span_website_areaId"></span></td>
+                </tr>
+                <tr>
+                    <th width="10%">网站标签</th>
+                    <td><input id="input_website_tag" name="website_tag" class="easyui-validatebox" data-options="required:true"  style="width:60%;" value="<?php echo $this->detail['website_tag'];?>"><span id="span_website_tag"></span></td>
+                </tr>
+            </table>
+        </fieldset>
+        <fieldset border="false"  class="fieldset_border separator_bot" >
+            <legend>网站简介</legend>
+            <textarea id="website_intro" name="website_intro" style="width:100%;height:300px;"><?php echo $this->detail['website_intro'];?></textarea>
+        </fieldset>
+        <div border="false" class="div_btn">
+            <input type="hidden" id="input_register_id" name="register_id" value="<?php echo $this->detail['register_id'];?>">
+            <input type="hidden" id="input_req_handle" name="req_handle" value="<?php echo $this->reqHandle;?>">
+            <a id="linkbtn_send" class="easyui-linkbutton" iconCls="icon-apply" style="margin-right:20px;">确定</a>
+            <a id="linkbtn_reset" class="easyui-linkbutton" iconCls="icon-cancel" href="<?php echo $this->url(array('outbox_id' => $this->outboxId));?>" >取消</a>
+        </div>
+    </form>
+</div>

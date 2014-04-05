@@ -1,0 +1,122 @@
+<script type="text/javascript">
+    $(function(){
+        $('#input_conf_fatherId').combotree({
+            method:'GET',
+            url:'<?php echo $this->url(array('show_ajax' => 'josn','data_ajax' => 'make-father-config-father'));?>',
+            required:true,
+            value:<?php echo intval($this->detail['conf_fatherId']);?>
+        });
+        //表单内点击按钮重置
+        $('#linkbtn_reset').click(function(){
+            formReset();
+        });
+        //表单内点击按钮提交
+        $('#linkbtn_submit').click(function(){
+            formSubmit();
+        });
+        //表单内回车提交
+        $("#form_config_alter").keydown(function(event){
+            if(event.keyCode==13){formSubmit();}
+        });
+        //表单提交
+        function formSubmit() {
+            $("#form_config_alter").submit();
+        }
+        //表单重置
+        function formReset(){
+            $('#form_config_alter').get(0).reset();
+        }
+    });
+</script>
+<div class="div_bg_fa separator_bot">
+    <form id="form_config_alter" name="form_config_alter" method="post">
+        <fieldset border="false"  class="fieldset_border separator_bot" >
+            <legend>配置项参数</legend>
+            <table width="100%" border="0" cellspacing="1" cellpadding="5"  class="table_border separator_top separator_bot">
+                <tr>
+                    <th width="10%">归属类别</th>
+                    <td width="90%">
+                        <input id="input_conf_fatherId" name="conf_fatherId" class="easyui-combotree"  style="width:230px;" >
+                        <span id="span_notice_conf_fatherId" class="span_notice">如果把当前配置项做为类别使用，则选择root</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th width="10%">变量用途</th>
+                    <td width="90%">
+                        <input id="input_conf_label" name="conf_label" class="easyui-validatebox" data-options="required:true"  style="width:230px;" value="<?php echo $this->detail['conf_label'];?>">
+                        <span id="span_notice_conf_label" class="span_notice">用于介绍当前配置参数项有何用途</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>变量名</th>
+                    <td>
+                        <input id="input_conf_key" name="conf_key" class="easyui-validatebox" data-options="required:true"  style="width:230px;" value="<?php echo $this->detail['conf_key'];?>">
+                        <span id="span_notice_conf_key" class="span_notice">不能轻易变更，程序会通过配置参数变量名得到变量值</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>变量值</th>
+                    <td>
+                        <input id="input_conf_value" name="conf_value" class="easyui-validatebox" data-options="required:true"  style="width:230px;" value="<?php echo $this->detail['conf_value'];?>">
+                        <span id="span_notice_conf_value" class="span_notice">程序中过配置参数变量名得到的值</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>变量默认值</th>
+                    <td>
+                        <input id="input_conf_default" name="conf_default" class="easyui-validatebox" data-options="required:true"  style="width:230px;" value="<?php echo $this->detail['conf_default'];?>">
+                        <span id="span_notice_conf_default" class="span_notice">默认值，用于参考</span>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+        <fieldset border="false"  class="fieldset_border separator_bot" >
+            <legend>配置项输入设置</legend>
+            <table width="100%" border="0" cellspacing="1" cellpadding="5"  class="table_border separator_top separator_bot">
+                <tr>
+                    <th width="10%">输入类型</th>
+                    <td width="90%">
+                        <?php
+                        foreach($this->inputType as $tmpInputType){
+                            $tagChecked = '';
+                            if($tmpInputType == $this->detail['conf_input_type']){
+                                $tagChecked = 'checked="checked"';
+                            }
+
+                            echo '<label for="conf_input_type_'.$tmpInputType.'"><input type="radio" name="conf_input_type" id="conf_input_type_'.$tmpInputType.'" value="'.$tmpInputType.'" '.$tagChecked.'  />'.$this->translate("global_html_tag_".$tmpInputType).'</label>';
+                        }
+                        ?>
+                        <span id="span_notice_conf_input_type" class="span_notice">参数输入类型</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>输入选项</th>
+                    <td>
+                        <input id="input_conf_options" name="conf_options" class="easyui-validatebox" style="width:500px;" value="<?php echo $this->detail['conf_options'];?>">
+                        <span id="span_notice_conf_options" class="span_notice">用于下拉菜单、单选多选框选项，多个请以,格开</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>输入备注</th>
+                    <td>
+                        <textarea name="conf_remark" id="textarea_conf_remark" rows="3" style="width: 600px;"><?php echo $this->detail['conf_remark'];?></textarea><br/>
+                        <span id="span_notice_conf_remark" class="span_notice">用于提醒用户在修改变量值时需要注意什么</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>排列顺序</th>
+                    <td>
+                        <input id="input_conf_order" name="conf_order" class="easyui-numberbox" style="width:100px;" value="<?php echo $this->detail['conf_order'];?>">
+                        <span id="span_notice_conf_order" class="span_notice">定义当前参数显示顺序，显示顺序从大到小</span>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+        <input id="input_conf_id" name="conf_id" type="hidden" value="<?php echo $this->detail['conf_id'];?>">
+        <input id="input_handle" name="handle" type="hidden" value="<?php echo $this->handle;?>">
+        <div border="false" class="div_btn">
+            <a id="linkbtn_submit" class="easyui-linkbutton" iconCls="icon-ok" style="margin-right:20px;">确定</a>
+            <a id="linkbtn_reset" class="easyui-linkbutton" iconCls="icon-cancel" style="margin-right:20px;">取消</a>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,285 @@
+<?php
+$this->headScript()->appendFile("/static/custom/script/date.js");
+$this->headScript()->appendFile("/static/custom/script/formatter.js");
+$this->headScript()->captureStart();?>
+$(function(){
+//提交查询表单
+$('#linkbtn_submit').click(function(){
+$("#form_member_role_search").submit();
+});
+//隐藏查询帮助
+$("#div_help").hide();
+//显示查询帮助
+$('#linkbtn_help').click(function(){
+$("#div_help").toggle();
+});
+//锁定的时间
+$('#input_role_lock_time').datetimebox({
+value:'<?php echo date('Y-m-d H:i:s',(time() + 3600*24));?>',
+});
+//网格内容
+$('#datagrid_member_role').datagrid({
+singleSelect:false,//允许多行选择
+toolbar:'#toolbar',
+rownumbers:true,
+cache:false,
+pagination:true,
+pageList:[<?php echo DIANA_DATAGRID_PAGELIST_ADMIN;?>],
+pageSize:<?php echo $this->pagesize;?>,
+url: '<?php echo $this->url($this->queryGrid);?>'
+});
+//数据列表操作对话框
+$('#dialog-member-role-del-unlock').dialog({
+iconCls: 'icon-dell',
+buttons: '#dialog-buttons',
+closed:true,
+modal:true,
+});
+//数据列表操作对话框
+$('#dialog-member-role-lock').dialog({
+iconCls: 'icon-lock',
+toolbar: '#dialog-toolbar-lock',
+buttons: '#dialog-buttons',
+closed:true,
+modal:true,
+});
+});
+<?php $this->headScript()->captureEnd();?>
+<script type="text/javascript">
+    /**
+     * 操作请求发送确认
+     */
+    function sendRequest(doit_code,doit_label){
+        var role_lock_time = '';//锁定时间
+        var dialog_id = '';//对话框的ID
+        var ids = [];
+        var labels = [];
+        var rows = $('#datagrid_member_role').datagrid('getSelections');
+        var iconclass = '';
+        if( rows.length == 0){
+            $.messager.alert('确认请求','请选择要操作的数据','error');
+            return false;
+        }
+        for(var i=0; i<rows.length; i++){
+            ids.push(rows[i].role_id);
+            labels.push(rows[i].role_name);
+        }
+        var messagerTitle = doit_label + '确认';
+        var messagerBody = '你确认要' + doit_label + '以下' + rows.length + '条角色数据吗？<br><br>' + labels.join(' , ');
+        if(doit_code == 'lock'){
+            //role_lock_time = $('#input_role_lock_time').datetimebox('getValue');
+            dialog_id = 'dialog-member-role-lock';
+            $('#dialog-member-role-lock').dialog({
+                title: messagerTitle,
+                content:messagerBody,
+                closed:false
+            });
+        }else if (doit_code == 'delete' || doit_code == 'unlock'){
+
+            dialog_id = 'dialog-member-role-del-unlock';
+            if(doit_code == 'delete'){
+                iconclass = 'icon-delete';
+            }else if(doit_code == 'unlock'){
+                iconclass = 'icon-unlock';
+            }
+            $('#dialog-member-role-del-unlock').dialog({
+                title: messagerTitle,
+                content:messagerBody,
+                closed:false,
+                iconCls:iconclass
+            });
+        }
+        //在弹出对话框后点击确定
+        $('#link_buttons_ok').click(function(){
+            $("#link_buttons_ok").unbind();//删除原来的事件绑定
+            $('#' + dialog_id).dialog('close');//添加新的点击绑定
+            if(doit_code == 'lock'){
+                role_lock_time = $('#input_role_lock_time').datetimebox('getValue');
+            }else if (doit_code == 'delete' || doit_code == 'unlock'){
+                role_lock_time = 0;
+            }
+            sendReqWithAjax(doit_code,ids,role_lock_time);
+        });
+        //在调出对话框后点击取消
+        $('#link_buttons_cancel').click(function(){
+            $("#link_buttons_cancel").unbind();//删除原来的事件绑定
+            $('#' + dialog_id).dialog('close');//添加新的点击绑定
+        });
+    }
+
+    /**
+     * 发送删除、锁定、解税等请求
+     */
+    function sendReqWithAjax(doit_code,ids,lock_time)
+    {
+        if(ids == '' || ids == null || doit_code == ''){
+            $.messager.alert('确认请求','请确认你发送了参数过来','error');
+            return false;
+        }
+        var returnAjax = false;
+        $.ajax({
+            async:false,
+            type: "GET",
+            dataType: "json",
+            contentType:"utf-8",
+            cache:false,
+            url:"/member/member-role/" + doit_code + "/show_ajax/json/data_ajax/member-role-delete-lock-unlock",
+            data: {role_id:ids,role_lock_time:lock_time},
+            success: function(json) {
+                if (json.stat == 1) {
+                    $.messager.alert('确认请求','操作成功');
+                    $('#datagrid_member_role').datagrid('reload');//重新载入
+                    returnAjax = true;
+                }else{
+                    $.messager.alert('请求结果',json.msgs,'error');
+                }
+            },
+            beforeSend:function(){
+                forbiddenPage();
+            },
+            error: function() {
+                $.messager.alert('警告','发生未知的系统错误!<br>不如联系管理员看看是什么情况！','error');
+            },
+            complete:function(){
+                releasePage();
+            }
+        });
+        return returnAjax;
+    }
+    /**
+     * 格式化操作选项
+     */
+    function formatAction(val,row)
+    {
+        var detailLink = '<a href="javascript:addTabWithParent(\'会员权限/权限角色/明细详情\',\'/member/member-role/detail/role_id/'+row.role_id+'\',true)" >明细</a>';
+        var modifyLink = '<a href="javascript:addTabWithParent(\'会员权限/权限角色/编辑角色\',\'/member/member-role/update/role_id/'+row.role_id+'\',true)" >编辑</a>'
+        return detailLink + '&nbsp;' +  modifyLink ;
+    }
+    function formatLockStat(val,row){
+        if (row.role_lock_stat > 0){
+            return '<span style="color:red;">锁定</span>';
+        }else{
+            return '<span style="color:green;">正常</span>';
+        }
+    }
+    /**
+     * 格式化权限状态
+     */
+    function formatAdmin(val,row){
+        if (val == 1){
+            return '<span style="color:red;">超级权限</span>';
+        }else{
+            return '<span style="color:green;">普通权限</span>';
+        }
+    }
+</script>
+<div class="div_bg_fa separator_bot">
+    <form id="form_member_role_search" name="form_member_role_search"  method="POST">
+        <fieldset border="false"  class="fieldset_border separator_bot" >
+            <legend>角色查询</legend>
+            <table width="100%" border="0" cellspacing="1" cellpadding="5" class="table_border separator_top separator_bot">
+                <tr>
+                    <th width="10%" scope="row">角色名</th>
+                    <td width="90%" colspan="3"><input type="text" name="role_name" id="input_role_name" style="width:40%" value="<?php echo $this->datapost['role_name'];?>" />&nbsp;（*多个角色名请用半角逗号隔开）</td>
+                </tr>
+                <tr>
+                    <th width="10%" scope="row">超级权限</th>
+                    <td width="40%">
+                        <?php
+                        $optionsRadio = array(0=>'不限',1=>'超级权限',2=>'普通权限',);
+                        foreach($optionsRadio as $radioValue => $radioLabel){
+                            $strChecked = '';
+                            if(intval($this->datapost['role_admin_state']) == $radioValue){
+                                $strChecked = ' checked="checked" ';
+                            }
+                            echo '<label><input type="radio" name="role_admin_state" value="'.$radioValue.'" id="role_admin_state_'.$radioValue.'" '.$strChecked.' />'.$radioLabel.'</label>';
+                        }
+                        ?>
+                    </td>
+                    <th width="10%" scope="row">锁定状态</th>
+                    <td width="40%">
+                        <?php
+                        $optionsRadio = array(0=>'不限',1=>'锁定',2=>'正常',);
+                        foreach($optionsRadio as $radioValue => $radioLabel){
+                            $strChecked = '';
+                            if(intval($this->datapost['role_lock_state']) == $radioValue){
+                                $strChecked = ' checked="checked" ';
+                            }
+                            echo '<label><input type="radio" name="role_lock_state" value="'.$radioValue.'" id="role_lock_state_'.$radioValue.'" '.$strChecked.' />'.$radioLabel.'</label>';
+                        }
+                        ?>
+                    </td>
+                </tr>
+            </table>
+            <div border="false" class="div_btn">
+                <a id="linkbtn_submit" class="easyui-linkbutton" iconCls="icon-search">确定</a>
+                <a id="linkbtn_reset" href="/member/member-role/index" iconCls="icon-cut" class="easyui-linkbutton" >清空查询条件</a>
+                <a id="linkbtn_help" class="easyui-linkbutton" iconCls="icon-help">查看查询提示</a>
+            </div>
+            <!---帮助内容-->
+            <div id="div_help" class="ul_help separator_top">
+                提示：
+                <ul>
+                    <li>多个查询内容请用英文输入法的逗号,隔开，例如多个流水号请这样输入1,2,3,4,5</li>
+                    <li>同一查询条件下多个查询内容，查询结果只需要符合其中一项查询内容</li>
+                    <li>多个查询条件下，我们只会返回同时符合这多个条件下的数据，而不是只符合多个条件下其中一项的数据</li>
+                    <li>例如流水号为1,2,3，状态为锁定条件下，假设没有流水号为1的数据，那么系统将返回状态为锁定且ID为2，3的数据</li>
+                </ul>
+            </div>
+        </fieldset>
+    </form>
+</div>
+<?php echo '<a href="'.$this->url($this->queryGrid).'"  target="_blank">'.$this->url($this->queryGrid).'</a><br><br>';?>
+<table id="datagrid_member_role" title="角色列表" width="100%" hight="100%" >
+    <thead data-options="frozen:true">
+    <tr>
+        <th data-options="field:'ck',checkbox:true"></th>
+        <th field="role_name" width="200">角色名</th>
+        <th field="role_admin" width="100" formatter="formatAdmin">超级权限</th>
+        <th field="role_lock_stat" width="100" formatter="formatLockStat">状态</th>
+        <th field="role_lock_time" width="150" formatter="formatTimeStamp">解锁时间</th>
+        <th data-options="field:'role_action',width:100,align:'left'" formatter="formatAction">选项</th>
+    </tr>
+    </thead>
+    <thead>
+    <tr>
+        <th field="role_insert_time" width="120" formatter="formatTimeStamp">添加时间</th>
+        <th field="role_insert_man" width="200" >添加人</th>
+        <th field="role_insert_ip" width="100" ">添加IP</th>
+        <th field="role_update_time" width="120" formatter="formatTimeStamp">更新时间</th>
+        <th field="role_update_man" width="200">更新人</th>
+        <th field="role_update_ip" width="100">更新IP</th>
+    </tr>
+    </thead>
+</table>
+<!--数据网格工具栏-->
+<div id="toolbar" style="height:auto;padding:5px;">
+    <a id="linkbotton_grid_tool_select" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-archives',plain:true" onclick="gridSelectAll(this,'datagrid_member_role')">全选</a>
+    <a id="linkbotton_grid_tool_dell" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-delete',plain:true" onclick="sendRequest('delete','删除')">删除</a>
+    <a id="linkbotton_grid_tool_lock" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-lock',plain:true" onclick="sendRequest('lock','锁定')">锁定</a>
+    <a id="linkbotton_grid_tool_unlock" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-unlock',plain:true" onclick="sendRequest('unlock','解锁')">解锁</a>
+    <a id="linkbotton_grid_tool_refresh" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-refresh',plain:true" onclick="$('#datagrid_member_role').datagrid('reload')">刷新</a>
+</div>
+<!--角色明细-->
+<div id="window-datagrid-detail" class="easyui-window" data-options="modal:false,closed:true,iconCls:'icon-search'" style="width:690px;height:390px;padding:5px;">
+</div>
+<!--操作弹出框工具栏_删除及解锁-->
+<div id="dialog-member-role-del-unlock" class="easyui-dialog" style="width:400px;height:200px;padding:10px">
+</div>
+<!--操作弹出按钮栏_删除及解锁
+<div id="dialog-buttons-del-unlock">
+	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="javascript:alert('save')">确定</a>
+	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="javascript:$('#dialog-member-role-del-unlock').dialog('close')">取消</a>
+</div>-->
+<!--操作弹出框工具栏_锁定-->
+<div id="dialog-member-role-lock" class="easyui-dialog" style="width:400px;height:200px;padding:10px">
+</div>
+<!--操作弹出框工具栏_锁定-->
+<div id="dialog-toolbar-lock" style="padding:5px;">
+    <input  id = "input_role_lock_time" name="input_role_lock_time" class="easyui-datetimebox" required style="width:150px">&nbsp;请设置角色锁定的结束时间
+</div>
+<!--操作弹出按钮栏_锁定-->
+<div id="dialog-buttons">
+    <a id="link_buttons_ok" href="javascript:void(0)" class="easyui-linkbutton">确定</a>
+    <a id="link_buttons_cancel" href="javascript:void(0)" class="easyui-linkbutton">取消</a>
+</div>

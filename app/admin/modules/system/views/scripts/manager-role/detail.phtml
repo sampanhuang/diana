@@ -1,0 +1,109 @@
+<div class="div_bg_fa separator_bot">
+    <?php
+    if (!empty($this->currentManagerDetail)) {
+        ?>
+        <!--
+        <div border="false" class="div_btn separator_bot">
+            <a id="linkbtn_submit" href="/system/manager-role/search" class="easyui-linkbutton" iconCls="icon-search">返回查询页</a>
+            <a id="linkbtn_clear" href="<?php echo $this->url(array('controller' => 'manager-user','action' => 'search','manager_roleId' => $this->detailRole['role_id']));?>" class="easyui-linkbutton" iconCls="icon-user">查看当前角色的用户</a>
+            <a id="linkbtn_help" href="<?php echo $this->url(array('action' => 'modify','role_id' => $this->detailRole['role_id']));?>" class="easyui-linkbutton" iconCls="icon-pencil">编辑当前角色</a>
+            <a id="linkbtn_create" href="<?php echo $this->url(array('action' => 'create'));?>" class="easyui-linkbutton" iconCls="icon-edit_add">添加新角色</a>
+        </div>-->
+        <fieldset border="false" class="fieldset_border separator_bot">
+            <legend>角色资料</legend>
+            <table width="100%" border="0" cellspacing="1" cellpadding="5" class="table_border">
+                <tr>
+                    <th width="10%">流水号：</th>
+                    <td width="23%"><?php echo $this->detailRole['role_id'];?></td>
+                    <th width="10%">角色名称：</th>
+                    <td width="23%"><?php echo $this->detailRole['role_name'];?></td>
+                    <th width="10%">超级权限：</th>
+                    <td width="23%">
+                        <?php
+                        if ($this->detailRole['role_admin'] == 1) {
+                            echo '<span style="color:red;">是</span>';
+                        }else{
+                            echo '<span style="color:green;">否</span>';
+                        }
+                        ?>
+                    </td>
+
+                </tr>
+                <tr>
+                    <th width="10%">角色状态</th>
+                    <td width="23%">
+                        <?php
+                        if ($this->detailRole['role_lock_stat'] == 1) {
+                            echo '<span style="color:red;">已锁定<span>';
+                        }else{
+                            echo '<span style="color:green;">未锁定<span>';
+                        }
+                        ?>
+                    </td>
+                    <th width="10%">解锁时间：</th>
+                    <td width="23%"><?php echo date("Y-m-d H:i",$this->detailRole['role_lock_time']);?></td>
+                    <th width="10%">解锁备注：</th>
+                    <td width="23%">
+                        <?php
+                        echo $this->formatSecond($this->detailRole['role_lock_second']);
+                        if ($this->detailRole['role_lock_stat'] == 0) {
+                            echo '之前';
+                        }else{
+                            echo '之后';
+                        }
+                        echo '解锁';
+                        ?>
+                    </td>
+                </tr>
+                <tr>
+                    <th width="10%">角色创建时间</th>
+                    <td width="23%"><?php echo date("Y-m-d H:i",$this->detailRole['role_insert_time']);?></td>
+                    <th width="10%">角色创建人</th>
+                    <td width="23%"><?php echo $this->detailRole['role_insert_man'];?></td>
+                    <th width="10%">角色创建IP</th>
+                    <td width="23%"><?php echo $this->detailRole['role_insert_ip'];?></td>
+                </tr>
+                <tr>
+                    <th width="10%">角色最后修改时间</th>
+                    <td width="23%"><?php if (!empty($this->detailRole['role_update_time'])) {echo date("Y-m-d H:i",$this->detailRole['role_update_time']);}?></td>
+                    <th width="10%">角色最后修改人</th>
+                    <td width="23%"><?php echo $this->detailRole['role_update_man'];?></td>
+                    <th width="10%">角色最后修改IP</th>
+                    <td width="23%"><?php echo $this->detailRole['role_update_ip'];?></td>
+                </tr>
+            </table>
+        </fieldset>
+        <?php
+    }
+    if (!empty($this->detailRole['role_menuTree'])) {
+        ?>
+        <fieldset border="false" class="fieldset_border separator_bot">
+            <legend>角色权限</legend>
+            <table width="100%" border="0" cellspacing="1" cellpadding="5"  class="table_border">
+                <?php
+                foreach ($this->detailRole['role_menuTree'] as $moduleId => $module){
+                    $countController = $counterController = count($module['son']);
+                    foreach ($module['son'] as $controller){
+                        $actionsLabel = array();
+                        $htmlCheckbox = array();
+                        foreach ($controller['son'] as $action){
+                            $actionId = $action['menu_id'];
+                            $actionsLabel = $action['menu_label_'.DIANA_TRANSLATE_CURRENT];
+                            $htmlCheckbox[] = $actionsLabel;
+                        }
+                        echo '<tr>'.chr(10).chr(13);
+                        if ($counterController == $countController) {
+                            echo '<th width="10%" rowspan="'.$countController.'"  align="left" valign="top">'.$module['menu_label_'.DIANA_TRANSLATE_CURRENT].'</th>'.chr(10).chr(13);
+                        }
+                        echo '<th width="10%"  align="left" valign="top">'.$controller['menu_label_'.DIANA_TRANSLATE_CURRENT].'</th><td>'.implode('&nbsp;&nbsp;',$htmlCheckbox).'</td>'.chr(10).chr(13);
+                        echo '</tr>'.chr(10).chr(13);
+                        $counterController--;
+                    }
+                }
+                ?>
+            </table>
+        </fieldset>
+        <?php
+    }
+    ?>
+</div>

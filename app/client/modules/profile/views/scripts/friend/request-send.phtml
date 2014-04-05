@@ -1,0 +1,83 @@
+<script type="text/javascript">
+    $(function(){
+        //隐藏查询帮助
+        $("#div_help").hide();
+        //显示查询帮助
+        $('#linkbtn_help').click(function(){
+            $("#div_help").toggle();
+        });
+
+        //表单内点击按钮重置
+        $('#linkbtn_reset').click(function(){
+            formReset();
+        });
+        //表单内点击按钮提交
+        $('#linkbtn_submit').click(function(){
+            formSubmit();
+        });
+        //表单内回车提交
+        $("#form_query").keydown(function(event){
+            if(event.keyCode==13){formSubmit();}
+        });
+        //表单提交
+        function formSubmit() {
+            $("#form_query").submit();
+        }
+        //表单重置
+        function formReset(){
+            $('#form_query').get(0).reset();
+        }
+    });
+</script>
+<div class="div_bg_fa separator_bot">
+    <form id="form_query" name="form_query" method="post">
+        <fieldset border="false"  class="fieldset_border separator_bot" >
+            <legend>会员查询</legend>
+            <table width="100%" border="0" cellspacing="1" cellpadding="5"  class="table_border separator_top separator_bot">
+                <tr>
+                    <th width="10%">查询类型</th>
+                    <td width="90%">
+                        <?
+                        foreach($this->queryColumns as $tmpQueryColumn){
+                            $tmpHtmlTagChecked = '';
+                            if($tmpQueryColumn == $this->request['query_column']){
+                                $tmpHtmlTagChecked = 'checked="checked"';
+                            }
+                            echo '<label><input type="radio" name="query_column" value="'.$tmpQueryColumn.'" id="query_column_'.$tmpQueryColumn.'" '.$tmpHtmlTagChecked.'  />'.$this->translate('model_'.$tmpQueryColumn).'</label>';
+                        }
+                        ?>
+                    </td>
+                </tr>
+                <tr>
+                    <th width="10%">查询关键字</th>
+                    <td width="90%">
+                        <input id="input_search_query_key" name="query_key" class="easyui-validatebox" data-options="required:true"  style="width:230px;" value="<?php echo $this->request['query_key'];?>">
+                        <span id="span_notice_query_key" class="span_notice">不支持模糊查询，不支持多变量名查询</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th width="10%">留言</th>
+                    <td width="90%">
+                        <input id="input_request_remark" name="request_remark" class="easyui-validatebox" data-options="required:true"  style="width:60%;" value="<?php echo $this->request['request_remark'];?>">
+                        <span id="span_notice_request_remark" class="span_notice">不能超过64个中文</span>
+                    </td>
+                </tr>
+            </table>
+            <input id="input_req_handle" name="req_handle" type="hidden" value="send">
+        </fieldset>
+        <div border="false" class="div_btn">
+            <a id="linkbtn_submit" class="easyui-linkbutton" iconCls="icon-ok" style="margin-right:20px;">确定</a>
+            <a id="linkbtn_reset" class="easyui-linkbutton" iconCls="icon-cancel" style="margin-right:20px;">取消</a>
+            <a id="linkbtn_help" class="easyui-linkbutton" iconCls="icon-help">查看提示</a>
+        </div>
+    </form>
+</div>
+<!---帮助内容-->
+<div id="div_help" class="ul_help separator_top">
+    提示：
+    <ul>
+        <li>我之前有想过发送申请由两步进行的，先输入姓名或邮箱，点下一步，确认有这个人之后再填写备注发送</li>
+        <li>可是我觉得既然可以一步到位的事，干嘛要分两部？</li>
+        <li>所以我现在就把操作全都集中在一块了</li>
+    </ul>
+</div>
