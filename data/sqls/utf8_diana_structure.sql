@@ -383,7 +383,7 @@ CREATE TABLE `tb_member` (
   PRIMARY KEY (`member_id`),
   UNIQUE KEY `Email` (`member_email`),
   UNIQUE KEY `Name` (`member_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
 
 /*Table structure for table `tb_member_config` */
 
