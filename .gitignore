@@ -1,17 +1,14 @@
-<<<<<<< HEAD
-INSTALL.txt
-LICENSE.txt
-README.txt
-demos/
-extras/documentation
-
-=======
 .gitignore
+/nbproject/private/
 .idea
 .idea/*
 temp/*
 data/configs/*
 data/filter_word/*
 app/www/public/index.htm
-/nbproject/private/
->>>>>>> master
+app/www/public/upload
+app/admin/public/upload
+app/client/public/upload
+app/www/public/upload.lnk
+app/admin/public/upload.lnk
+app/client/public/upload.lnk
