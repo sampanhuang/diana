@@ -108,7 +108,7 @@ CREATE TABLE `tb_config` (
   `conf_alter_addr` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`conf_id`),
   UNIQUE KEY `ConfKey` (`conf_key`)
-) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tb_config_update_history` */
 
@@ -125,6 +125,22 @@ CREATE TABLE `tb_config_update_history` (
   `history_insert_addr` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`history_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/*Table structure for table `tb_config_update_history_2014` */
+
+CREATE TABLE `tb_config_update_history_2014` (
+  `history_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `history_configId` int(11) DEFAULT NULL,
+  `history_configKey` varchar(64) NOT NULL,
+  `history_configValue` varchar(64) NOT NULL,
+  `history_insert_time` int(11) unsigned NOT NULL DEFAULT '0',
+  `history_insert_manId` int(11) unsigned NOT NULL DEFAULT '0',
+  `history_insert_manName` varchar(32) DEFAULT NULL,
+  `history_insert_manEmail` varchar(32) DEFAULT NULL,
+  `history_insert_ip` varchar(32) NOT NULL,
+  `history_insert_addr` varchar(32) DEFAULT NULL,
+  PRIMARY KEY (`history_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tb_domain` */
 
@@ -220,9 +236,33 @@ CREATE TABLE `tb_manager_log` (
   KEY `Type_ManagerId` (`log_type`,`log_managerId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='管理员登录日志';
 
+/*Table structure for table `tb_manager_log_2014` */
+
+CREATE TABLE `tb_manager_log_2014` (
+  `log_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '流水号',
+  `log_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '登录时间',
+  `log_ip` varchar(64) NOT NULL COMMENT '登录IP',
+  `log_type` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '日志类型',
+  `log_sessionId` varchar(64) DEFAULT NULL COMMENT '会话ID',
+  `log_managerId` int(10) unsigned DEFAULT '0' COMMENT '管理员ID',
+  `log_managerName` varchar(64) DEFAULT NULL COMMENT '管理员帐号',
+  `log_managerEmail` varchar(64) DEFAULT NULL COMMENT '管理员邮箱',
+  PRIMARY KEY (`log_id`),
+  KEY `Type_ManagerId` (`log_type`,`log_managerId`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='管理员登录日志';
+
 /*Table structure for table `tb_manager_log_remark` */
 
 CREATE TABLE `tb_manager_log_remark` (
+  `log_id` int(11) unsigned NOT NULL COMMENT '流水号',
+  `log_user_agent` varchar(256) NOT NULL COMMENT '浏览器信息',
+  `log_remark` text COMMENT '备注',
+  PRIMARY KEY (`log_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/*Table structure for table `tb_manager_log_remark_2014` */
+
+CREATE TABLE `tb_manager_log_remark_2014` (
   `log_id` int(11) unsigned NOT NULL COMMENT '流水号',
   `log_user_agent` varchar(256) NOT NULL COMMENT '浏览器信息',
   `log_remark` text COMMENT '备注',
@@ -383,7 +423,7 @@ CREATE TABLE `tb_member` (
   PRIMARY KEY (`member_id`),
   UNIQUE KEY `Email` (`member_email`),
   UNIQUE KEY `Name` (`member_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
 
 /*Table structure for table `tb_member_config` */
 
@@ -761,7 +801,7 @@ CREATE TABLE `tb_website` (
   UNIQUE KEY `Name` (`website_name`),
   UNIQUE KEY `Domain` (`website_domain`),
   KEY `CetgoryId_Continent_Country` (`website_categoryId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
 
 /*Table structure for table `tb_website_apply_delete` */
 
@@ -807,7 +847,7 @@ CREATE TABLE `tb_website_apply_register` (
   `register_pass` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '是否通过申请（3未处理，1通过，2未通过）',
   PRIMARY KEY (`register_id`),
   KEY `WebsiteId` (`website_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='网站注册申请';
+) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
 
 /*Table structure for table `tb_website_apply_register_intro` */
 
@@ -943,7 +983,7 @@ CREATE TABLE `tb_website_tag` (
   `tag_update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '标签更新时间',
   PRIMARY KEY (`tag_id`),
   UNIQUE KEY `Name` (`tag_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
 
 /*Table structure for table `tb_website_tag_relation` */
 
@@ -954,7 +994,7 @@ CREATE TABLE `tb_website_tag_relation` (
   `relation_time` int(11) unsigned NOT NULL,
   PRIMARY KEY (`relation_id`),
   UNIQUE KEY `WebId_TagId` (`relation_websiteId`,`relation_tagId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tb_website_trend_apply_register` */
 
