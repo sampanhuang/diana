@@ -6,7 +6,8 @@ define('DIANA_APP_DIR', realpath(dirname(__FILE__). '/..'));
 //载入常量定义文件
 include_once( realpath(DIANA_APP_DIR."/../Define.php"));
 //设置include目录
-set_include_path(implode(PATH_SEPARATOR, array(realpath(DIANA_DIR_LIBS_ZEND),get_include_path())));
+//没有必要设置include了，将这个路径写入到php.ini里面的include_path
+//set_include_path(implode(PATH_SEPARATOR, array(realpath(DIANA_DIR_LIBS_ZEND),get_include_path())));
 /** Zend_Application */
 require_once 'Zend/Application.php';
 //创建一个应用，并启动运行他
