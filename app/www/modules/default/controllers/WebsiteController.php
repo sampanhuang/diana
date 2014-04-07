@@ -276,7 +276,7 @@ class WebsiteController extends Www_Controller_Action
         //处理提交请求
         $request = $this->_request;
         if($request->isPost()) {
-            $post = $request->getPost();
+            $post = $this->view->post = $request->getPost();
             if(!empty($detailMember['member_email'])){
                 $post['website_memberEmail'] = $detailMember['member_email'];
             }
@@ -289,6 +289,7 @@ class WebsiteController extends Www_Controller_Action
                 $serviceCaptcha = new Diana_Service_Captcha();
                 if (!$serviceCaptcha->checkCaptchaWord($post['captcha'],"www-website-apply")) {
                     $this->setMsgs($serviceCaptcha->getMsgs());
+                    unset($this->view->post['captcha']);
                     return false;
                 }
             }
@@ -296,15 +297,9 @@ class WebsiteController extends Www_Controller_Action
             $serviceWebsiteApplyRegister = new Diana_Service_WebsiteApplyRegister();
             if($serviceWebsiteApplyRegister->postApply($post)){
                 $this->setMsgs('提交成功，我会们在你的网站审核成功后以电子邮件的形式通知你');
-                unset($post);
+                unset($this->view->post);
             }else{
                 $this->setMsgs($serviceWebsiteApplyRegister->getMsgs());
-                $this->view->post = $post;
-                if(!empty($post['website_continent'])){
-                    if($countriesKey = $serviceCountry->getCountriesKey()){
-                        $this->view->countriesByContinent = array_keys($countriesKey[$post['website_continent']]);
-                    }
-                }
             }
         }
     }

@@ -39,7 +39,7 @@ class Website_IndexController extends Admin_Controller_ActionDec
 
     function updateAction()
     {
-
+        $this->view->queryColumns = array('id' , 'name' , 'domain');
     }
 
     function deleteAction()
@@ -57,9 +57,14 @@ class Website_IndexController extends Admin_Controller_ActionDec
                     $this->setMsgs('查询失败');
                     $this->setMsgs($serviceWebsite->getMsgs());
                 }
+            }elseif($request['handle'] == 'update'){
+
             }
         }
+        //如果是通过URL过来的话，就是这样的~
         if((empty($detailMember))&&(!empty($request['website_id']))){
+            $request['query_key'] = $request['website_id'];
+            $request['query_column'] = 'id';
             if(!$detailMember = $serviceWebsite->getDetail('id',$request['website_id'])){
                 $this->setMsgs('查询失败');
                 $this->setMsgs($serviceWebsite->getMsgs());

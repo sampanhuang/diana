@@ -37,7 +37,7 @@
             <tr>
                 <th width="10%">类型</th>
                 <td width="90%">
-                    <?
+                    <?php
                     foreach($this->queryColumns as $tmpQueryColumn){
                         $tmpHtmlTagChecked = '';
                         if($tmpQueryColumn == $this->request['query_column']){
@@ -68,7 +68,7 @@ if(!empty($this->detail)){
             <th width="10%">名称</th>
             <td width="23%"><?php echo $this->detail['website_name'];?></td>
             <th width="10%">域名</th>
-            <td width="23%"><?php echo $this->detail['website_domain'];?></td>
+            <td width="23%"><a href="<?php echo $this->detail['website_domain'];?>" title="<?php echo $this->detail['website_name'];?>" target="_blank"><?php echo $this->detail['website_domain'];?></a></td>
         </tr>
         <tr>
             <th width="10%">状态</th>
@@ -119,7 +119,7 @@ if(!empty($this->detail)){
         </tr>
         <tr>
             <th width="10%">简介</th>
-            <td width="90%" colspan="5"><?php echo $this->detail['website_intro'];?></td>
+            <td width="90%" colspan="5"><?php echo html_entity_decode($this->detail['website_intro']);?></td>
         </tr>
     </table>
     <table width="100%" border="0" cellspacing="1" cellpadding="5"  class="table_border separator_top separator_bot">

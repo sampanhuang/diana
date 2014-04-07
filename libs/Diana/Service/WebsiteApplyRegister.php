@@ -65,8 +65,9 @@ class Diana_Service_WebsiteApplyRegister extends Diana_Service_Abstract
         }
         $registerId = $rowsWebsiteApply[0]['register_id'];
         //添加网站介绍
+        $websiteIntro = Com_Functions::filterJavascript($data['website_intro']);
         $modelWebsiteApplyRegisterIntro = new Diana_Model_WebsiteApplyRegisterIntro();
-        if(!$modelWebsiteApplyRegisterIntro->saveIntro($registerId,$data['website_intro'])){
+        if(!$modelWebsiteApplyRegisterIntro->saveIntro($registerId,$websiteIntro)){
             //删除提交数据
             $modelWebsiteApplyRegister->deleteById($registerId);
             //删除会员数据

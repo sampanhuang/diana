@@ -25,7 +25,7 @@
 <div class="div_bg_fa separator_bot">
     <form id="form_query" name="form_query" method="post">
         <fieldset border="false"  class="fieldset_border separator_bot" >
-            <legend>会员明细查询</legend>
+            <legend>网站明细查询</legend>
             <table width="100%" border="0" cellspacing="1" cellpadding="5"  class="table_border separator_top separator_bot">
                 <tr>
                     <th width="10%">关键字</th>
@@ -37,7 +37,7 @@
                 <tr>
                     <th width="10%">类型</th>
                     <td width="90%">
-                        <?
+                        <?php
                         foreach($this->queryColumns as $tmpQueryColumn){
                             $tmpHtmlTagChecked = '';
                             if($tmpQueryColumn == $this->request['query_column']){

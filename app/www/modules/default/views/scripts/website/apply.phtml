@@ -5,24 +5,34 @@ $(function(){
     refreshCaptcha(imgcaptcha,urlcaptcha);
     //点击图片更换验证码
     $(imgcaptcha).bind('click',function(){refreshCaptcha(imgcaptcha,urlcaptcha);});
+    <?php
+    if(!empty($this->post['website_continent'])){
+        echo 'onchangeShow('.$this->post['website_continent'].' , '.$this->post['website_areaId'].' );';
+    }
+    ?>
 });
 //刷新验证码
 function refreshCaptcha(img,url){
     url = url + "?rand=" + Math.random()
     $(img).attr("src",url);
 }
-function onchangeShow(oneId){
+function onchangeShow(continentId , selectedAreaId){
     var arrOptionsCountry = <?php echo json_encode($this->optionsSon)?>;
-    //alert(arrOptionsCountry[oneId]);
-    onchangecallback(arrOptionsCountry[oneId]);
+    onchangecallback(arrOptionsCountry[continentId],selectedAreaId);
 }
-function onchangecallback(data){
-    $("#input_website_areaId").html("");  //清空原有的option
+function onchangecallback(data,selectedAreaId){
+    var div_id = "#input_website_areaId";
     var str="<option value=''>请选择</option>";
+    var strSelected = '';
+    $(div_id).html("");  //清空原有的option
     for(var key in data){
-        str+="<option value='"+key+"'>"+data[key]+"</option>"
+        strSelected = '';
+        if( key == selectedAreaId ){
+            strSelected = ' selected '
+        }
+        str+="<option value='"+key+"' " + strSelected + " >"+data[key]+"</option>"
     }
-    $("#input_website_areaId").html(str);
+    $(div_id).html(str);
 }
 <?php $this->headScript()->captureEnd();?>
 <ul class="breadcrumb">

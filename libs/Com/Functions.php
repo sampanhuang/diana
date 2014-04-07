@@ -4,7 +4,18 @@
  *
  */
 class Com_Functions {
-	
+
+    /**
+     * 过滤JS
+     * @param $string
+     * @return mixed
+     */
+    function filterJavascript($string)
+    {
+        $reg="/<script.*?>(\s|.)*?<\/script>/i";
+        $siftStr=preg_replace($reg,'',$string);
+        return $siftStr;
+    }
 	/**
 	 * 将秒化成天小时分种
 	 *

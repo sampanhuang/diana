@@ -68,7 +68,7 @@ function openWindowDetail(id,label)
  * 操作请求发送确认
  */
 function sendRequest(handle,handle_label,iconclass){
-    var member_lock_time = '';//锁定时间
+    var lock_time = '';//锁定时间
     var dialog_id = '';//对话框的ID
     var ids = [];
     var labels = [];
@@ -78,13 +78,13 @@ function sendRequest(handle,handle_label,iconclass){
         return false;
     }
     for(var i=0; i<rows.length; i++){
-        ids.push(rows[i].member_id);
-        labels.push(rows[i].member_email);
+        ids.push(rows[i].website_id);
+        labels.push(rows[i].website_name);
     }
     var messagerTitle = handle_label + '确认';
     var messagerBody = '你确认要' + handle_label + '以下' + rows.length + '条帐号数据吗？<br><br>' + labels.join(' , ');
     if(handle == 'lock'){
-        member_lock_time = $('#input_lock_time').datetimebox('getValue');
+        lock_time = $('#input_lock_time').datetimebox('getValue');
         dialog_id = 'dialog-handle-lock';
         $('#dialog-handle-lock').dialog({
             title: messagerTitle,
@@ -92,7 +92,7 @@ function sendRequest(handle,handle_label,iconclass){
             closed:false
         });
     }else{
-        member_lock_time = 0;
+        lock_time = 0;
         dialog_id = 'dialog-handle';
         if(handle == 'delete'){
             iconclass = 'icon-delete';
@@ -165,9 +165,8 @@ function sendReqWithAjax(handle,ids,lock_time)
 function formatAction(val,row)
 {
     var detailLink = '<a href="javascript:addTabWithParent(\'网站导航/注册网站/网站明细\',\'/website/index/detail/website_id/'+ row.website_id +'\',true)" >明细</a>';
-    //var modifyLink = '<a href="/member/member/update/member_id/'+row.member_id +'">编辑</a>'
-    //return detailLink + '&nbsp;' +  modifyLink ;
-    return detailLink;
+    var modifyLink = '<a href="javascript:addTabWithParent(\'网站导航/注册网站/网站编辑\',\'/website/index/update/website_id/'+ row.website_id +'\',true)" >编辑</a>';
+    return detailLink + '&nbsp;' +  modifyLink ;
 }
 /**
  * 格式化邮箱
@@ -344,6 +343,7 @@ function formatWebsiteName(val,row)
         <th data-options="field:'website_memberId',width:120,align:'left'" formatter="formatMember">网站所有人</th>
         <th data-options="field:'website_click_in',width:80,align:'left'">进站流量</th>
         <th data-options="field:'website_click_out',width:80,align:'left'">出站流量</th>
+        <th data-options="field:'website_action',width:80,align:'left'" formatter="formatAction">选项</th>
     </tr>
     </thead>
     <thead>

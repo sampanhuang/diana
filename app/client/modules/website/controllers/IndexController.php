@@ -41,7 +41,30 @@ class Website_IndexController extends Client_Controller_ActionDec
 
     function updateAction()
     {
-
+        $request = $this->getRequest()->getParams();
+        $serviceWebsite = new Diana_Service_Website();
+        if ($this->getRequest()->isPost()) {
+            if($request['handle'] = 'query'){
+                if(!$detailMember = $serviceWebsite->getDetail($request['query_column'],$request['query_key'])){
+                    $this->setMsgs('查询失败');
+                    $this->setMsgs($serviceWebsite->getMsgs());
+                }
+            }elseif($request['handle'] == 'update'){
+                if(!$detailMember = $serviceWebsite->updateById($request['website_id'],$request,$this->currentManagerId)){
+                    $this->setMsgs('更新失败');
+                    $this->setMsgs($serviceWebsite->getMsgs());
+                }
+            }
+        }
+        if((empty($detailMember))&&(!empty($request['website_id']))){
+            if(!$detailMember = $serviceWebsite->getDetail('id',$request['website_id'])){
+                $this->setMsgs('查询失败');
+                $this->setMsgs($serviceWebsite->getMsgs());
+            }
+        }
+        $this->view->queryColumns = array('id' , 'name' , 'domain');
+        $this->view->detail = $detailMember;
+        $this->view->request = $request;
     }
 
     function deleteAction()
