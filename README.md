@@ -16,6 +16,7 @@
 
 如果是在nginx下面
 urlrewrite需要这样写
+
 		location / {
 		            index  index.php;
 		            if (!-f $request_filename){
