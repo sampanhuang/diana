@@ -28,7 +28,12 @@ if(!empty($this->detailWebsite)) {
             ?></p>
     </div>
     <div class="span5">
-    	<img class="pull-right" src="/<?php echo $this->detailWebsite['website_cover']?>" width="400"/>
+	<?php
+	 if(!empty($this->detailWebsite['website_cover'])){
+		echo '<img class="pull-right" src="/'.$this->detailWebsite['website_cover'].'" width="400"/>';
+	 }
+	?>
+    	
     </div>
 </section >
 <?php
