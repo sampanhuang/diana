@@ -8,8 +8,7 @@
 		cp -rf /tmp/diana-publish/* /home/wwwroot/haihuamen.com/
 		#文件授权
 		chown -R www:www /home/wwwroot/haihuamen.com/
-		chmod -R 440 /home/wwwroot/haihuamen.com/
-		chmod -R 660 /home/wwwroot/haihuamen.com/temp
+		chmod -R 755 /home/wwwroot/haihuamen.com/
 		#删除下载文件
 		#rm -rf /tmp/publish /tmp/diana-publish
 

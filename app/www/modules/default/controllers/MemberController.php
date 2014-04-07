@@ -27,18 +27,36 @@ class MemberController extends Www_Controller_Action
     function registerAction()
     {
         $this->view->headTitle("会员注册");
+        $serviceConfig = new Diana_Service_Config();
+        if(!$configMemberRegisterEnable = $serviceConfig->getValueByKey('member-register-enable')){
+            $this->setMsgs('你需要设置全局参数 member-register_open ');
+            return false;
+        }
+        if($configMemberRegisterEnable == 2){
+            if(!$configMemberRegisterDisableNotice = $serviceConfig->getValueByKey('member-register-disable-notice')){
+                $this->setMsgs('你需要设置全局参数 member-register-disable-notice ');
+                return false;
+            }
+            $this->setMsgs($configMemberRegisterDisableNotice);
+        }
+        $this->view->configMemberRegisterEnable = $configMemberRegisterEnable;
         $serviceDoorkeeper = new Www_Service_Doorkeeper();
-        $dataget = array_map("trim",array_filter($this->getRequest()->getParams()));
-        if (!empty($dataget["show_data"])) {
+        $requestParams = array_map("trim",array_filter($this->getRequest()->getParams()));
+        if (!empty($requestParams["show_data"])) {
             $this->getHelper("layout")->disableLayout();//关闭布局
             $this->getHelper("viewRenderer")->setNoRender();//关闭视图
             $show = array("stat" => 0,"msgs" => "");
-            if ($dataget["show_data"] == "register") {
-                if ($detailManager = $serviceDoorkeeper->register($dataget["name"],$dataget["email"],$dataget["passwd"],$dataget["captcha"])) {
-                    $show["stat"] = 1;
-                }else{
+            if ($requestParams["show_data"] == "register") {
+                if($configMemberRegisterEnable == 1){
+                    if ($detailManager = $serviceDoorkeeper->register($requestParams["name"],$requestParams["email"],$requestParams["passwd"],$requestParams["captcha"])) {
+                        $show["stat"] = 1;
+                    }else{
+                        $show['focus'] = $serviceDoorkeeper->focus;
+                        $show["msgs"] = implode(",",$serviceDoorkeeper->getMsgs());
+                    }
+                }elseif($configMemberRegisterOpen == 2){
                     $show['focus'] = $serviceDoorkeeper->focus;
-                    $show["msgs"] = implode(",",$serviceDoorkeeper->getMsgs());
+                    $show["msgs"] = $configMemberRegisterDisableNotice;
                 }
             }
             ob_clean();
