@@ -48,6 +48,11 @@ class Diana_Model_DbTable_Website extends Diana_Model_DbTable_Abstract
             $tmpWheres = $this->getWhereByCondition("website_id",$condition["website_id_not"],11);
             $wheres = array_merge($wheres,$tmpWheres);
         }
+        if (!empty($condition["website_tag_like"])) {//网站名称
+            $tmpWheres = array();
+            $tmpWheres = $this->getWhereByCondition("website_tag",$condition["website_tag_like"],51);
+            $wheres = array_merge($wheres,$tmpWheres);
+        }
         if (!empty($condition["website_memberId"])) {//会员流水号
             $tmpWheres = array();
             $tmpWheres = $this->getWhereByCondition("website_memberId",$condition["website_memberId"],1);
@@ -83,8 +88,6 @@ class Diana_Model_DbTable_Website extends Diana_Model_DbTable_Abstract
             $tmpWheres = $this->getWhereByCondition("website_update_stat",array(2,3),1);
             $wheres = array_merge($wheres,$tmpWheres);
         }
-
-
         return $wheres;
     }
 }

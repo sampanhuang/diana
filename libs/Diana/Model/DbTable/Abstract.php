@@ -113,11 +113,11 @@ abstract class Diana_Model_DbTable_Abstract extends Zend_Db_Table_Abstract
 	function getWhereByCondition($columnKey,$columnVal,$type = null)
 	{
 		if (empty($columnKey)&&empty($columnVal)) {throw new Exception('参数$columnKey及$columnVal不能为空');}
-		if ($type == 1 || $type == 11 || $type == 2 || $type == 5) {//数字或是等于
+		if ($type == 1 || $type == 11 || $type == 2 || $type == 5 || $type == 51) {//数字或是等于
 			if ($type == 1 && empty($columnVal) && is_numeric($columnVal)) {
 				$columnVal = array(0);
 			}
-			if($type == 5){
+			if($type == 5 || $type == 51 ){
                 $columnVal = str_replace("、",",",$columnVal);
                 $columnVal = str_replace("，",",",$columnVal);
                 $columnVal = str_replace(" ",",",$columnVal);
@@ -159,10 +159,21 @@ abstract class Diana_Model_DbTable_Abstract extends Zend_Db_Table_Abstract
                 foreach ($columnVal as $tmpV){
                     $arrWheres[] = "( {$columnKey} like '%{$tmpV}%' )";
                 }
-                $strWheres = implode("or",$arrWheres);
+                $strWheres = implode(" or ",$arrWheres);
                 $wheres[$strWheres] = "1";
             }
-		}
+		}elseif ($type == 51){//类似
+            $arrWheres = array();
+            $strWheres = "";
+            $columnVal = array_filter(array_unique($columnVal));
+            if(!empty($columnVal)){
+                foreach ($columnVal as $tmpV){
+                    $arrWheres[] = "( {$columnKey} like '%{$tmpV}%' )";
+                }
+                $strWheres = implode(" and ",$arrWheres);
+                $wheres[$strWheres] = "1";
+            }
+        }
 		return $wheres;
 	}
 	

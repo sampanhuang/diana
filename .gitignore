@@ -3,7 +3,7 @@
 .idea
 .idea/*
 temp/*
-data/configs/*
+data/configs/*.php
 data/filter_word/*
 app/www/public/index.htm
 app/www/public/upload

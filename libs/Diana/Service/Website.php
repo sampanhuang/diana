@@ -14,6 +14,14 @@ class Diana_Service_Website extends Diana_Service_Abstract
     }
 
     /**
+     * 刷新网站首页
+     */
+    function flushHtmlIndex()
+    {
+
+    }
+
+    /**
      * 获取网站列表
      * @param $counter
      * @param array $condition

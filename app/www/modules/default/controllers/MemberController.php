@@ -28,13 +28,14 @@ class MemberController extends Www_Controller_Action
     {
         $this->view->headTitle("会员注册");
         $serviceConfig = new Diana_Service_Config();
-        if(!$configMemberRegisterEnable = $serviceConfig->getValueByKey('member-register-enable')){
+
+        if(!$configMemberRegisterEnable = $serviceConfig->getValueByKey('member-register_enable')){
             $this->setMsgs('你需要设置全局参数 member-register_open ');
             return false;
         }
         if($configMemberRegisterEnable == 2){
-            if(!$configMemberRegisterDisableNotice = $serviceConfig->getValueByKey('member-register-disable-notice')){
-                $this->setMsgs('你需要设置全局参数 member-register-disable-notice ');
+            if(!$configMemberRegisterDisableNotice = $serviceConfig->getValueByKey('member-register_disable-notice')){
+                $this->setMsgs('你需要设置全局参数 member-register_disable-notice ');
                 return false;
             }
             $this->setMsgs($configMemberRegisterDisableNotice);

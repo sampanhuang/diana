@@ -44,8 +44,9 @@ class Www_Service_Website extends Www_Service_Abstract
             $this->setMsgs('无法根据'.$keyword.'搜索到相应的网站ID');
             return false;
         }
+
         //通过网站ID获取网站详细信息
-        $condition = array("website_id" => $websiteId);
+        $condition = array("website_id" => $websiteId,'website_tag_like' => $keyword);
         $serviceWebsite = new Diana_Service_Website();
         if(!$paginator = $serviceWebsite->pageByCondition($page,$pagesize,$condition,$order)){
             $this->setMsgs('无效的网站ID');

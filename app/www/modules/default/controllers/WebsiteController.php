@@ -259,13 +259,14 @@ class WebsiteController extends Www_Controller_Action
      */
     function applyAction()
     {
-        //当前用户是否登录
-        $serviceDoorkeeper = new Www_Service_Doorkeeper();
-        if ($sessionMemberId = $serviceDoorkeeper->checkSession()) {
-            if ($detailMember = $serviceDoorkeeper->checkMember($sessionMemberId)) {
-                $this->view->detailMember = $detailMember;
-            }
+        //获取网站相关配置
+        $serviceConfig = new Diana_Service_Config();
+        $configKeyWebsiteApplyRegisterCaptchaEnable = 'website-apply-register_captcha-enable';
+        if(!$configValueWebsiteApplyRegisterCaptchaEnable = $serviceConfig->getValueByKey($configKeyWebsiteApplyRegisterCaptchaEnable)){
+            $this->setMsgs('你需要设置参数'.$configKeyWebsiteApplyRegisterCaptchaEnable);
+            return false;
         }
+        $this->view->configValueWebsiteApplyRegisterCaptchaEnable = $configValueWebsiteApplyRegisterCaptchaEnable;
         //获取网站分类代码
         $serviceWebsiteCategory = new Diana_Service_WebsiteCategory();
         $this->view->websiteCategoryIds = $serviceWebsiteCategory->getIds();
@@ -277,20 +278,19 @@ class WebsiteController extends Www_Controller_Action
         $request = $this->_request;
         if($request->isPost()) {
             $post = $this->view->post = $request->getPost();
-            if(!empty($detailMember['member_email'])){
-                $post['website_memberEmail'] = $detailMember['member_email'];
-            }
-            //判断验证码是否正确
-            if(empty($detailMember)){
-                if(empty($post['captcha'])){
-                    $this->setMsgs("验证码不能为空!");
-                    return false;
-                }
-                $serviceCaptcha = new Diana_Service_Captcha();
-                if (!$serviceCaptcha->checkCaptchaWord($post['captcha'],"www-website-apply")) {
-                    $this->setMsgs($serviceCaptcha->getMsgs());
-                    unset($this->view->post['captcha']);
-                    return false;
+            if( $configValueWebsiteApplyRegisterCaptchaEnable == 1 ){
+                //判断验证码是否正确
+                if(empty($detailMember)){
+                    if(empty($post['captcha'])){
+                        $this->setMsgs("验证码不能为空!");
+                        return false;
+                    }
+                    $serviceCaptcha = new Diana_Service_Captcha();
+                    if (!$serviceCaptcha->checkCaptchaWord($post['captcha'],"www-website-apply")) {
+                        $this->setMsgs($serviceCaptcha->getMsgs());
+                        unset($this->view->post['captcha']);
+                        return false;
+                    }
                 }
             }
             //提交网站注册申请

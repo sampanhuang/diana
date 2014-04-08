@@ -126,10 +126,14 @@ function onchangecallback(data,selectedAreaId){
             <div class="control-group" id="div_control-group_website_memberEmail">
                 <label class="control-label" for="input_website_memberEmail">联系邮箱</label>
                 <div class="controls">
-                    <input type="text" id="input_website_memberEmail" name="website_memberEmail" class="span6" placeholder="联系邮箱" value="<?php echo $this->post['website_memberEmail'];?>">
+                    <input type="text" id="input_website_memberEmail" name="website_memberEmail" class="span6" placeholder="联系邮箱" value="bay.sampanhuang@gmail.com">
                     <span class="help-inline" id="help_website_memberEmail">务必真实，登录后不需填写，默认为你的密保邮箱</span>
                 </div>
             </div>
+            <?php
+            //判断是否需要验证码
+            if($this->configValueWebsiteApplyRegisterCaptchaEnable == 1){
+            ?>
             <div class="control-group" id="div_control-group_captcha">
                 <label class="control-label" for="input_website_captcha">验证码</label>
                 <div class="controls">
@@ -139,6 +143,7 @@ function onchangecallback(data,selectedAreaId){
                 </div>
             </div>
             <?php
+            }
             }
             ?>
             <hr>
