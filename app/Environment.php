@@ -32,7 +32,8 @@ if(in_array($_SERVER["HTTP_HOST"],array(DIANA_DOMAIN_ADMIN_US,DIANA_DOMAIN_CLIEN
     }elseif(strpos(strtolower($_SERVER['HTTP_ACCEPT_LANGUAGE']) , 'zh-cn') !== false){
         $tmpTranslateCurrent = 'zh-cn';
     }else{
-        $tmpTranslateCurrent = 'en-us';
+        //$tmpTranslateCurrent = 'en-us';
+        $tmpTranslateCurrent = 'zh-cn';
     }
 }
 
