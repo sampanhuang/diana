@@ -41,6 +41,7 @@ class WebsiteController extends Www_Controller_Action
         	$this->setMsgs('分类或是地区数据需要事先定义');
         	return false;
         }
+
         //父级地区,array(id=>array(...))
         $rowsWebsiteAreaFather = array();
         //子级地区,array(father_id => array( id => array(..) ))
@@ -53,8 +54,10 @@ class WebsiteController extends Www_Controller_Action
         		$rowsWebsiteAreaFather[$tmpAreaId] = $rowWebsiteArea;
         	}else{
         		$rowsWebsiteAreaSon[$tmpAreaFatherId][$tmpAreaId] = $rowWebsiteArea;
+                $indexContent[$tmpAreaFatherId] = array();
         	}
         }
+
         foreach($rowsWebsiteAreaFather as $websiteAreaFatherId => $rowWebsiteAreaFather){
             $condition = array('website_areaId' => array_keys($rowsWebsiteAreaSon[$websiteAreaFatherId]));
             if($rowsWebsiteNew = $serviceWebsite->listByCondition(15,$condition,'new')){
