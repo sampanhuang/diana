@@ -52,12 +52,13 @@ class WebsiteController extends Www_Controller_Action
         	$tmpAreaFatherId = $rowWebsiteArea['area_fatherId'];
         	if(empty($tmpAreaFatherId)){
         		$rowsWebsiteAreaFather[$tmpAreaId] = $rowWebsiteArea;
+                if(empty($indexContent[$tmpAreaId])){
+                    $indexContent[$tmpAreaId] = array();
+                }
         	}else{
         		$rowsWebsiteAreaSon[$tmpAreaFatherId][$tmpAreaId] = $rowWebsiteArea;
-                $indexContent[$tmpAreaFatherId] = array();
         	}
         }
-
         foreach($rowsWebsiteAreaFather as $websiteAreaFatherId => $rowWebsiteAreaFather){
             $condition = array('website_areaId' => array_keys($rowsWebsiteAreaSon[$websiteAreaFatherId]));
             if($rowsWebsiteNew = $serviceWebsite->listByCondition(15,$condition,'new')){
