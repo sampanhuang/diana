@@ -28,7 +28,7 @@ class WebsiteController extends Www_Controller_Action
         $this->setHeadMetaKeywords($translate->_('www_seo_keyword'));
         $this->setHeadMetaDescription($translate->_('www_seo_description'));
         //定义输出数组
-        $indexContent = array();
+        $indexContent = array( '1000' => array(),'2000' => array(),'3000' => array(),'4000' => array(),'5000' => array(),'6000' => array() );
         $serviceWebsite = new Diana_Service_Website();
         //获取全部分类信息
         $serviceWebsiteCategory = new Diana_Service_WebsiteCategory();
@@ -41,6 +41,7 @@ class WebsiteController extends Www_Controller_Action
         	$this->setMsgs('分类或是地区数据需要事先定义');
         	return false;
         }
+
         //父级地区,array(id=>array(...))
         $rowsWebsiteAreaFather = array();
         //子级地区,array(father_id => array( id => array(..) ))
