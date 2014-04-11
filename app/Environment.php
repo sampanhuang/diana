@@ -27,13 +27,14 @@ if(in_array($_SERVER["HTTP_HOST"],array(DIANA_DOMAIN_ADMIN_US,DIANA_DOMAIN_CLIEN
 }elseif(in_array($_SERVER["HTTP_HOST"],array(DIANA_DOMAIN_ADMIN_CN,DIANA_DOMAIN_CLIENT_CN,DIANA_DOMAIN_WWW_CN))){
     $tmpTranslateCurrent = 'zh-cn';
 }else{
-    if (strpos(strtolower($_SERVER['HTTP_ACCEPT_LANGUAGE']) , 'zh-tw') !== false) {
-        $tmpTranslateCurrent = 'zh-tw';
-    }elseif(strpos(strtolower($_SERVER['HTTP_ACCEPT_LANGUAGE']) , 'zh-cn') !== false){
-        $tmpTranslateCurrent = 'zh-cn';
-    }else{
-        $tmpTranslateCurrent = 'en-us';
-    }
+    if (strpos(strtolower($_SERVER['HTTP_ACCEPT_LANGUAGE']) , 'zh-cn') !== false) {
+          $tmpTranslateCurrent = 'zh-cn';
+      }elseif(strpos(strtolower($_SERVER['HTTP_ACCEPT_LANGUAGE']) , 'zh-tw') !== false){
+          $tmpTranslateCurrent = 'zh-tw';
+      }else{
+          $tmpTranslateCurrent = 'zh-cn';
+          //$tmpTranslateCurrent = 'en-us';
+      }
 }
 
 if($tmpTranslateCurrent == 'en-us'){
