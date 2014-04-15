@@ -5,6 +5,14 @@
  */
 class Com_Functions {
 
+    function filterChr($string)
+    {
+        $string=str_replace("\r\n",'',$string);//清除换行符
+        $string=str_replace("\n",'',$string);//清除换行符
+        $string=str_replace("\t",'',$string);//清除制表符
+        return $string;
+    }
+
     /**
      * 过滤JS
      * @param $string

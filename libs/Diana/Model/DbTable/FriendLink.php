@@ -37,17 +37,17 @@ class Diana_Model_DbTable_FriendLink extends Diana_Model_DbTable_Abstract
     function getWheresByCondition($condition)
     {
         $wheres = array();
-        if (!empty($condition["channel_id"])) {//流水号
+        if (!empty($condition["link_id"])) {//流水号
             $tmpWheres = array();
-            $tmpWheres = $this->getWhereByCondition("area_id",$condition["area_id"],1);
+            $tmpWheres = $this->getWhereByCondition("link_id",$condition["link_id"],1);
             $wheres = array_merge($wheres,$tmpWheres);
         }
-        if (!empty($condition["link_enabel_time"])) {//有效
+        if (!empty($condition["link_enable_time"])) {//有效
             $tmpWheres_1 = array();
-            $tmpWheres_1 = $this->getWhereByCondition("link_enabel_time_start",$condition["link_enabel_time"],4);
+            $tmpWheres_1 = $this->getWhereByCondition("link_enable_time_start",$condition["link_enable_time"],3);
             $wheres = array_merge($wheres,$tmpWheres_1);
             $tmpWheres_2 = array();
-            $tmpWheres_2 = $this->getWhereByCondition("link_enabel_time_end",$condition["link_enabel_time"],3);
+            $tmpWheres_2 = $this->getWhereByCondition("link_enable_time_end",$condition["link_enable_time"],4);
             $wheres = array_merge($wheres,$tmpWheres_2);
         }
         return $wheres;

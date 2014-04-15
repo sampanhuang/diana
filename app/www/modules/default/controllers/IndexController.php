@@ -113,29 +113,8 @@ class IndexController extends Www_Controller_Action
         if(file_put_contents($path,$contentXml)){
             echo $path;
         }
-
-        /*
-    <url>
-        <loc><?php echo $url;?></loc>
-        <lastmod>2014-04-08T16:40:04+00:00</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.8</priority>
-    </url>
-         * */
     }
-	
-	function testAction()
-	{
-		//$this->getHelper("layout")->disableLayout();//关闭布局
-		$this->getHelper("viewRenderer")->setNoRender();//关闭视图
-		$url = $this->getRequest()->getParam("url");
-		$snKey = "website_register";
-		//判断验证码是否正确
-		$snKey = "captcha_".$snKey;
-		$sessionNamespace = new Zend_Session_Namespace($snKey);
-		$sessionWord = $sessionNamespace->word;
-		echo $sessionWord;
-	}
+
 	
 	/**
 	 * 频道
@@ -148,6 +127,9 @@ class IndexController extends Www_Controller_Action
 		$this->_forward("index","website","default") ;
 	}
 
+    /**
+     * 生成验证码
+     */
     function captchaAction()
     {
         $this->getHelper("layout")->disableLayout();//关闭布局
@@ -158,14 +140,28 @@ class IndexController extends Www_Controller_Action
         if ($imgCaptcha = $serviceCaptcha->outputCaptcha($snKey)) {
             header( "Content-type: image/jpeg");
             $PSize = filesize($imgCaptcha);
-            $picturedata = fread(fopen($imgCaptcha, "r"), $PSize);
-            echo $picturedata;
+            $pictureData = fread(fopen($imgCaptcha, "r"), $PSize);
+            echo $pictureData;
         }else{
             echo $serviceCaptcha->getMsgs();
         }
     }
 
-
+    /**
+     * 测试
+     */
+    function testAction()
+    {
+        //$this->getHelper("layout")->disableLayout();//关闭布局
+        $this->getHelper("viewRenderer")->setNoRender();//关闭视图
+        $url = $this->getRequest()->getParam("url");
+        $snKey = "website_register";
+        //判断验证码是否正确
+        $snKey = "captcha_".$snKey;
+        $sessionNamespace = new Zend_Session_Namespace($snKey);
+        $sessionWord = $sessionNamespace->word;
+        echo $sessionWord;
+    }
 
 	
 	

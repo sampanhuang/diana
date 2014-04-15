@@ -78,7 +78,7 @@ class Www_Service_Website extends Www_Service_Abstract
         }
         $rowWebsite = $rowsWebsite[0];
         $websiteDomain = $rowWebsite['website_domain'].'/?source='.$_SERVER['SERVER_NAME'];
-        if(empty($websiteDomain)){
+        if(empty($rowWebsite['website_domain'])){
             $this->setMsgs('域名为空');
             return false;
         }

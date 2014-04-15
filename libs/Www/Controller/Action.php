@@ -27,7 +27,8 @@ class Www_Controller_Action extends Diana_Controller_Action
         if($mainChannels = $serviceFront->getMainChannels()){
             $this->view->mainChannels = $this->mainChannels =  $mainChannels;
         }
-
+        //链接友情链接
+        $this->getFriendLinkForBot();
         $serviceConfig = new Diana_Service_Config();
         $this->debug['ajax_type'] = $serviceConfig->getValueByKey('debug_ajax_type_www');
         $this->debug['ajax_on_clean'] = $serviceConfig->getValueByKey('debug_ajax_ob_clean_www');
@@ -78,6 +79,21 @@ class Www_Controller_Action extends Diana_Controller_Action
         }
     }
 
+    /**
+     * 获取底部用的友情链接
+     * @return array|bool
+     */
+    function getFriendLinkForBot()
+    {
+        $serviceFriendLink = new Diana_Service_FriendLink();
+        if(!$rowsFriendLink = $serviceFriendLink->getRowsForFront()){
+            $this->setMsgs($serviceFriendLink->getMsgs());
+            return false;
+        }
+        $this->view->indexFriendLink = $rowsFriendLink;
+        return $rowsFriendLink;
+    }
+
     public function postDispatch() {
         parent::postDispatch();
         //渲染页面
@@ -86,6 +102,7 @@ class Www_Controller_Action extends Diana_Controller_Action
         krsort($this->headMetaDescription);
         $this->view->headTitle(implode("-",$this->headTitle));
         $this->view->headMeta()->appendName('keywords', implode(",",$this->headMetaKeywords));
-        $this->view->headMeta()->appendName('description', implode(";",$this->headMetaDescription));
+        $tmpHeadMetaDescription = Com_Functions::filterChr(implode(";",$this->headMetaDescription));
+        $this->view->headMeta()->appendName('description', Com_Functions::utf8substr($tmpHeadMetaDescription,200));
     }
 }

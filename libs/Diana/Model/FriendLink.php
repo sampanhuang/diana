@@ -15,7 +15,20 @@ class Diana_Model_FriendLink extends Diana_Model_Abstract
         $this->dt = new Diana_Model_DbTable_FriendLink();
     }
 
-
+    function updateForClick($linkId,$isFirst = null)
+    {
+        $data = array(
+            'link_click_total' => new Zend_Db_Expr('link_click_total + 1'),
+            'link_click_last_time' => time(),
+        );
+        if($isFirst){
+            $data['link_click_first_time'] = time();
+        }
+        $condition = array(
+            'link_id' => $linkId,
+        );
+        return $this->saveData(2,$data,$condition);
+    }
 
     /**
      * 获取有效的友情链接

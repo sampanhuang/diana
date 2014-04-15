@@ -86,6 +86,28 @@
 <!--底部-->
 <footer>
     <div class="container">
+        <?php
+        if(!empty($this->indexFriendLink)){
+        ?>
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                    <?php
+                    for($i = 0 ; $i<20;$i++){
+                        if($i%10 == 0 && $i>0){
+                            echo '</tr><tr>';
+                        }
+                        echo '<td width="5%" align="left">';
+                        if(!empty($this->indexFriendLink[$i])){
+                            echo '<a href="'.$this->url(array('controller' => 'friend-link',"action" => "jump","link_id" => $this->indexFriendLink[$i]['link_id'])).'"  title="'.$this->indexFriendLink[$i]['link_label'].'" target="_blank">'.$this->utf8Substr($this->indexFriendLink[$i]['link_label'],10).'</a>';
+                        }
+                        echo '</td>';
+                    }
+                    ?>
+                </tr>
+            </table>
+        <?php
+        }
+        ?>
         <p class="footer">
         <ul class="inline">
             <li><a href="http://<?php echo DIANA_DOMAIN_WWW_CN.$this->url();?>" title="简体中文">简体中文</a></li>
@@ -93,7 +115,7 @@
             <!--<li><a href="http://<?php echo DIANA_DOMAIN_WWW_US.$this->url();?>" title="English">English</a></li>-->
         </ul>
         <ul class="inline">
-            <li class="muted">Langer : <?php echo DIANA_TRANSLATE_CURRENT;?></li>
+            <li class="muted"><small>Langer : <?php echo DIANA_TRANSLATE_CURRENT;?></small></li>
             <li class="muted">Version : <?php echo DIANA_WEBSITE_VERSION;?></li>
             <li class="muted">Time : <?php echo number_format($this->pageCostMicrotime,2);?>Sec</li>
             <li class="muted">Memory : <?php echo $this->formatSize(memory_get_usage());?></li>

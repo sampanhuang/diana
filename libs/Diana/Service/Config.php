@@ -24,7 +24,12 @@ class Diana_Service_Config extends Diana_Service_Abstract
         $arrConfKey = explode("_",$key);
         $preConfKey = $arrConfKey[0];
         $configWithPre = $this->getData($preConfKey);
-        return $configWithPre[$key];
+        $configValue = $configWithPre[$key];
+        if(empty($configValue)){
+            $this->setMsgs('你需要在后台定义变量名为［'.$key.'］的配置参数');
+            return false;
+        }
+        return $configValue;
     }
 
     /**
