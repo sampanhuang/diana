@@ -35,6 +35,8 @@ insert  into `tb_config_update_history_2014`(`history_id`,`history_configId`,`hi
 
 /*Data for the table `tb_domain` */
 
+/*Data for the table `tb_friend_link` */
+
 /*Data for the table `tb_front_channel` */
 
 insert  into `tb_front_channel`(`channel_id`,`channel_fatherId`,`channel_link`,`channel_name_zh-cn`,`channel_name_zh-tw`,`channel_name_en-us`,`channel_enable`,`channel_order`,`channel_insert_time`,`channel_insert_man`,`channel_insert_ip`,`channel_insert_addr`,`channel_update_time`,`channel_update_man`,`channel_update_ip`,`channel_update_addr`) values (100,0,'/december/index','首页','首頁',NULL,3,10,1382622383,NULL,NULL,NULL,0,NULL,NULL,NULL),(200,0,'/december/new','最新收录','最新收錄',NULL,3,9,1382622383,NULL,NULL,NULL,0,NULL,NULL,NULL),(300,0,'/december/area','地区目录','地區目錄',NULL,3,8,1382622383,NULL,NULL,NULL,0,NULL,NULL,NULL),(400,0,'/december/category','分类目录','分類目錄',NULL,3,7,1382622383,NULL,NULL,NULL,0,NULL,NULL,NULL),(500,0,'/december/tag','热门标签','熱門標籤',NULL,3,6,1382622383,NULL,NULL,NULL,0,NULL,NULL,NULL),(600,0,'/december/hotkey','搜索热词','搜索熱詞',NULL,3,0,1382622383,NULL,NULL,NULL,0,NULL,NULL,NULL),(601,0,'/default/website','首页','首頁','Index',1,900,1382922383,NULL,NULL,NULL,0,NULL,NULL,NULL),(602,0,'/default/website/list/area_father/1000','亚洲','亞洲','Asia',1,800,1382922383,NULL,NULL,NULL,0,NULL,NULL,NULL),(603,0,'/default/website/list/area_father/2000','欧洲','歐洲','Europe',1,700,1382922383,NULL,NULL,NULL,0,NULL,NULL,NULL),(604,0,'/default/website/list/area_father/3000','北美洲','北美洲','North America',1,600,1382922383,NULL,NULL,NULL,0,NULL,NULL,NULL),(605,0,'/default/website/list/area_father/4000','拉丁美洲','拉丁美洲','Latin America',1,500,1382922383,NULL,NULL,NULL,0,NULL,NULL,NULL),(606,0,'/default/website/list/area_father/5000','大洋洲','大洋洲','Oceania',1,400,1382922383,NULL,NULL,NULL,0,NULL,NULL,NULL),(607,0,'/default/website/list/area_father/6000','非洲','非洲','Africa',1,300,1382922383,NULL,NULL,NULL,0,NULL,NULL,NULL);
@@ -43,19 +45,19 @@ insert  into `tb_front_channel`(`channel_id`,`channel_fatherId`,`channel_link`,`
 
 /*Data for the table `tb_manager` */
 
-insert  into `tb_manager`(`manager_id`,`manager_roleId`,`manager_name`,`manager_email`,`manager_passwd`,`manager_passwd_change_count`,`manager_passwd_change_time`,`manager_passwd_change_ip`,`manager_login_count`,`manager_login_last_time`,`manager_login_last_ip`,`manager_lock_time`,`manager_active_email`,`manager_insert_time`,`manager_insert_manId`,`manager_insert_manName`,`manager_insert_manEmail`,`manager_insert_ip`,`manager_update_time`,`manager_update_manId`,`manager_update_manName`,`manager_update_manEmail`,`manager_update_ip`) values (1000,1,'审判长烧鸭','bay.sampanhuang@gmail.com','bb35a99fb3909dd82f24925fbbc93403',29,1385353039,'127.0.0.1',159,1396958108,'127.0.0.1',1383465443,0,1374930769,0,NULL,NULL,'127.0.0.01',0,NULL,NULL,NULL,NULL),(1001,5,'貌若潘安','m.sampanhuang@gmail.com','bb35a99fb3909dd82f24925fbbc93403',0,0,NULL,6,1385950639,'127.0.0.1',0,0,0,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL);
+insert  into `tb_manager`(`manager_id`,`manager_roleId`,`manager_name`,`manager_email`,`manager_passwd`,`manager_passwd_change_count`,`manager_passwd_change_time`,`manager_passwd_change_ip`,`manager_login_count`,`manager_login_last_time`,`manager_login_last_ip`,`manager_lock_time`,`manager_active_email`,`manager_insert_time`,`manager_insert_manId`,`manager_insert_manName`,`manager_insert_manEmail`,`manager_insert_ip`,`manager_update_time`,`manager_update_manId`,`manager_update_manName`,`manager_update_manEmail`,`manager_update_ip`) values (1000,1,'审判长烧鸭','bay.sampanhuang@gmail.com','bb35a99fb3909dd82f24925fbbc93403',29,1385353039,'127.0.0.1',160,1397290786,'127.0.0.1',1383465443,0,1374930769,0,NULL,NULL,'127.0.0.01',0,NULL,NULL,NULL,NULL),(1001,5,'貌若潘安','m.sampanhuang@gmail.com','bb35a99fb3909dd82f24925fbbc93403',0,0,NULL,6,1385950639,'127.0.0.1',0,0,0,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL);
 
 /*Data for the table `tb_manager_log` */
 
 /*Data for the table `tb_manager_log_2014` */
 
-insert  into `tb_manager_log_2014`(`log_id`,`log_time`,`log_ip`,`log_type`,`log_sessionId`,`log_managerId`,`log_managerName`,`log_managerEmail`) values (1,1396879146,'127.0.0.1',210,'4j693kubnm196qvsnh6nf9nod7',1000,'审判长烧鸭','bay.sampanhuang@gmail.com'),(2,1396958108,'127.0.0.1',210,'osf5es38uml6moi6v8t2kr0ha0',1000,'审判长烧鸭','bay.sampanhuang@gmail.com');
+insert  into `tb_manager_log_2014`(`log_id`,`log_time`,`log_ip`,`log_type`,`log_sessionId`,`log_managerId`,`log_managerName`,`log_managerEmail`) values (1,1396879146,'127.0.0.1',210,'4j693kubnm196qvsnh6nf9nod7',1000,'审判长烧鸭','bay.sampanhuang@gmail.com'),(2,1396958108,'127.0.0.1',210,'osf5es38uml6moi6v8t2kr0ha0',1000,'审判长烧鸭','bay.sampanhuang@gmail.com'),(3,1397290786,'127.0.0.1',210,'v89h449uegv181c58q1qu0c1d5',1000,'审判长烧鸭','bay.sampanhuang@gmail.com');
 
 /*Data for the table `tb_manager_log_remark` */
 
 /*Data for the table `tb_manager_log_remark_2014` */
 
-insert  into `tb_manager_log_remark_2014`(`log_id`,`log_user_agent`,`log_remark`) values (1,'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Maxthon/4.3.1.2000 Chrome/30.0.1599.101 Safari/537.36',NULL),(2,'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Maxthon/4.3.1.2000 Chrome/30.0.1599.101 Safari/537.36',NULL);
+insert  into `tb_manager_log_remark_2014`(`log_id`,`log_user_agent`,`log_remark`) values (1,'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Maxthon/4.3.1.2000 Chrome/30.0.1599.101 Safari/537.36',NULL),(2,'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Maxthon/4.3.1.2000 Chrome/30.0.1599.101 Safari/537.36',NULL),(3,'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Maxthon/4.3.1.2000 Chrome/30.0.1599.101 Safari/537.36',NULL);
 
 /*Data for the table `tb_manager_log_resetpwd` */
 

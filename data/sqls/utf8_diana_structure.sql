@@ -154,6 +154,23 @@ CREATE TABLE `tb_domain` (
   PRIMARY KEY (`domain_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='域名';
 
+/*Table structure for table `tb_friend_link` */
+
+CREATE TABLE `tb_friend_link` (
+  `link_id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '流水号',
+  `link_label_zh-cn` varchar(64) DEFAULT NULL,
+  `link_label_zh-tw` varchar(64) DEFAULT NULL,
+  `link_label_en-us` varchar(64) DEFAULT NULL,
+  `link_url` varchar(64) DEFAULT NULL,
+  `link_logo` varchar(64) DEFAULT NULL,
+  `link_enabel_time_start` int(11) DEFAULT NULL,
+  `link_enable_time_end` int(11) DEFAULT NULL,
+  `link_order` int(11) DEFAULT NULL,
+  `link_insert_time` int(11) DEFAULT NULL,
+  `link_update_time` int(11) DEFAULT NULL,
+  PRIMARY KEY (`link_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 /*Table structure for table `tb_front_channel` */
 
 CREATE TABLE `tb_front_channel` (
@@ -249,7 +266,7 @@ CREATE TABLE `tb_manager_log_2014` (
   `log_managerEmail` varchar(64) DEFAULT NULL COMMENT '管理员邮箱',
   PRIMARY KEY (`log_id`),
   KEY `Type_ManagerId` (`log_type`,`log_managerId`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='管理员登录日志';
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='管理员登录日志';
 
 /*Table structure for table `tb_manager_log_remark` */
 
