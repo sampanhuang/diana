@@ -183,7 +183,8 @@ class Diana_Service_WebsiteApplyRegister extends Diana_Service_Abstract
         //已经存在重复网站名和域名的申请ID
         $existApplyId = array();
         //已经存在的网站名
-        $existWebsiteName = array();
+        $existWebsiteNameZhCn = array();
+        $existWebsiteNameZhTw = array();
         //已经存在的域名
         $existWebsiteDomain = array();
         //没有出现重复网站名和重复域名的申请单
@@ -204,11 +205,13 @@ class Diana_Service_WebsiteApplyRegister extends Diana_Service_Abstract
                 $checkDomain[$tmpApplyId] = $rowWebsiteApply['website_domain'];
                 $tmpInsertData[$tmpApplyId] = array(
                     'website_memberId' => $rowWebsiteApply['website_memberId'],
-                    'website_name' => $rowWebsiteApply['website_name'],
+                    'website_name_zh-cn' => $rowWebsiteApply['website_name'],
+                    'website_name_zh-tw' => $rowWebsiteApply['website_name'],
                     'website_domain' => $rowWebsiteApply['website_domain'],
                     'website_logo' => $rowWebsiteApply['website_logo'],
                     'website_cover' => $rowWebsiteApply['website_cover'],
-                    'website_tag' => $rowWebsiteApply['website_tag'],
+                    'website_tag_zh-cn' => $rowWebsiteApply['website_tag'],
+                    'website_tag_zh-tw' => $rowWebsiteApply['website_tag'],
                     'website_categoryId' => $rowWebsiteApply['website_categoryId'],
                     'website_areaId' => $rowWebsiteApply['website_areaId'],
                     'website_apply_time' => $rowWebsiteApply['register_insert_time'],
@@ -222,7 +225,8 @@ class Diana_Service_WebsiteApplyRegister extends Diana_Service_Abstract
         $modelWebsite = new Diana_Model_Website();
         if($rowsWebsiteByName = $modelWebsite->getRowsByName(true,$checkName)){
             foreach($rowsWebsiteByName as $rowWebsiteByName){
-                $existWebsiteName[] = $rowWebsiteByName['website_name'];
+                $existWebsiteNameZhCn[] = $rowWebsiteByName['website_name_zh-cn'];
+                $existWebsiteNameZhTw[] = $rowWebsiteByName['website_name_zh-tw'];
             }
         }
         if($rowsWebsiteByDoamin = $modelWebsite->getRowsByDomain(true,$checkDomain)){
@@ -232,7 +236,11 @@ class Diana_Service_WebsiteApplyRegister extends Diana_Service_Abstract
         }
         //剔除已经存在的纪录，避免重复提交
         foreach($tmpInsertData as $keyApplyId => $valApply){
-            if(in_array($valApply['website_name'],$existWebsiteName)){
+            if(in_array($valApply['website_name_zh-cn'],$existWebsiteNameZhCn)){
+                //echo $valApply['website_name'];
+                break;
+            }
+            if(in_array($valApply['website_name_zh-tw'],$existWebsiteNameZhTw)){
                 //echo $valApply['website_name'];
                 break;
             }
@@ -254,8 +262,11 @@ class Diana_Service_WebsiteApplyRegister extends Diana_Service_Abstract
             $modelWebsiteIntro = new Diana_Model_WebsiteIntro();
             foreach($insertData as $keyApplyId => $valWebsite){
                 if($tmpRowsWebsite = $modelWebsite->saveData(1,$valWebsite)){
-                    $modelWebsiteIntro->saveIntro($tmpRowsWebsite[0]['website_id'],$optionsWebsiteApplyInstro[$tmpRowsWebsite[0]['website_applyId']]);
-                    if(!$serviceWebsiteTag->updateWebsiteTag($tmpRowsWebsite[0]['website_id'],$tmpRowsWebsite[0]['website_tag'])){
+                    $modelWebsiteIntro->saveIntro($tmpRowsWebsite[0]['website_id'],$optionsWebsiteApplyInstro[$tmpRowsWebsite[0]['website_applyId']],$optionsWebsiteApplyInstro[$tmpRowsWebsite[0]['website_applyId']]);
+                    if(!$serviceWebsiteTag->updateWebsiteTag($tmpRowsWebsite[0]['website_id'],$tmpRowsWebsite[0]['website_tag_zh-cn'])){
+                        $this->setMsgs($serviceWebsiteTag->getMsgs());
+                    }
+                    if(!$serviceWebsiteTag->updateWebsiteTag($tmpRowsWebsite[0]['website_id'],$tmpRowsWebsite[0]['website_tag_zh-tw'])){
                         $this->setMsgs($serviceWebsiteTag->getMsgs());
                     }
                     $rowsWebsite = array_merge($rowsWebsite,$tmpRowsWebsite);

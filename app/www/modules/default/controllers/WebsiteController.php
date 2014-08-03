@@ -28,7 +28,7 @@ class WebsiteController extends Www_Controller_Action
         $this->setHeadMetaKeywords($translate->_('www_seo_keyword'));
         $this->setHeadMetaDescription($translate->_('www_seo_description'));
         //定义输出数组
-        $indexContent = array( '1000' => array(),'2000' => array(),'3000' => array(),'4000' => array(),'5000' => array(),'6000' => array() );
+        $indexContent = array();
         $serviceWebsite = new Diana_Service_Website();
         //获取全部分类信息
         $serviceWebsiteCategory = new Diana_Service_WebsiteCategory();
@@ -41,7 +41,6 @@ class WebsiteController extends Www_Controller_Action
         	$this->setMsgs('分类或是地区数据需要事先定义');
         	return false;
         }
-
         //父级地区,array(id=>array(...))
         $rowsWebsiteAreaFather = array();
         //子级地区,array(father_id => array( id => array(..) ))
@@ -211,11 +210,19 @@ class WebsiteController extends Www_Controller_Action
         if($detailWebsite = $serviceWebsite->getWebsiteById($websiteId,true)){
             //开始SEO
             $this->setHeadTitle($allWebsiteCategory[$detailWebsite['website_categoryId']]['category_name_'.DIANA_TRANSLATE_CURRENT]);
-            $this->setHeadTitle($allWebsiteArea[$detailWebsite['website_areaId']]['area_name_'.DIANA_TRANSLATE_CURRENT]);
-            $this->setHeadTitle($allWebsiteArea[$detailWebsite['website_areaFatherId']]['area_name_'.DIANA_TRANSLATE_CURRENT]);
+            $this->setHeadTitle($allWebsiteArea[$detailWebsite['website_country']]['area_name_'].DIANA_TRANSLATE_CURRENT);
             $this->setHeadTitle($detailWebsite['website_name']);
             $this->setHeadMetaKeywords($detailWebsite['website_meta_keywords']);
             $this->setHeadMetaDescription($detailWebsite['website_meta_description']);
+            foreach($arrSuffixHeadKeyWork as $valSuffixHeadKeyWork){
+                //SEO地区
+                $this->setHeadMetaDescription($allWebsiteArea[$detailWebsite['website_areaId']]['area_name_'.DIANA_TRANSLATE_CURRENT].$valSuffixHeadKeyWork);
+                $this->setHeadMetaKeywords($allWebsiteArea[$detailWebsite['website_areaId']]['area_name_'.DIANA_TRANSLATE_CURRENT].$valSuffixHeadKeyWork);
+                //SEO类别
+                $this->setHeadMetaDescription($allWebsiteCategory[$detailWebsite['website_categoryId']]['category_name_'.DIANA_TRANSLATE_CURRENT].$valSuffixHeadKeyWork);
+                $this->setHeadMetaKeywords($allWebsiteCategory[$detailWebsite['website_categoryId']]['category_name_'.DIANA_TRANSLATE_CURRENT].$valSuffixHeadKeyWork);
+            }
+
             $this->view->detailWebsite = $detailWebsite;
             //猜你喜欢
             //$conditionLike = array("website_categoryId" => $detailWebsite["website_categoryId"],"website_continent" => $detailWebsite["website_continent"]);
@@ -252,14 +259,13 @@ class WebsiteController extends Www_Controller_Action
      */
     function applyAction()
     {
-        //获取网站相关配置
-        $serviceConfig = new Diana_Service_Config();
-        $configKeyWebsiteApplyRegisterCaptchaEnable = 'website-apply-register_captcha-enable';
-        if(!$configValueWebsiteApplyRegisterCaptchaEnable = $serviceConfig->getValueByKey($configKeyWebsiteApplyRegisterCaptchaEnable)){
-            $this->setMsgs('你需要设置参数'.$configKeyWebsiteApplyRegisterCaptchaEnable);
-            return false;
+        //当前用户是否登录
+        $serviceDoorkeeper = new Www_Service_Doorkeeper();
+        if ($sessionMemberId = $serviceDoorkeeper->checkSession()) {
+            if ($detailMember = $serviceDoorkeeper->checkMember($sessionMemberId)) {
+                $this->view->detailMember = $detailMember;
+            }
         }
-        $this->view->configValueWebsiteApplyRegisterCaptchaEnable = $configValueWebsiteApplyRegisterCaptchaEnable;
         //获取网站分类代码
         $serviceWebsiteCategory = new Diana_Service_WebsiteCategory();
         $this->view->websiteCategoryIds = $serviceWebsiteCategory->getIds();
@@ -270,29 +276,35 @@ class WebsiteController extends Www_Controller_Action
         //处理提交请求
         $request = $this->_request;
         if($request->isPost()) {
-            $post = $this->view->post = $request->getPost();
-            if( $configValueWebsiteApplyRegisterCaptchaEnable == 1 ){
-                //判断验证码是否正确
-                if(empty($detailMember)){
-                    if(empty($post['captcha'])){
-                        $this->setMsgs("验证码不能为空!");
-                        return false;
-                    }
-                    $serviceCaptcha = new Diana_Service_Captcha();
-                    if (!$serviceCaptcha->checkCaptchaWord($post['captcha'],"www-website-apply")) {
-                        $this->setMsgs($serviceCaptcha->getMsgs());
-                        unset($this->view->post['captcha']);
-                        return false;
-                    }
+            $post = $request->getPost();
+            if(!empty($detailMember['member_email'])){
+                $post['website_memberEmail'] = $detailMember['member_email'];
+            }
+            //判断验证码是否正确
+            if(empty($detailMember)){
+                if(empty($post['captcha'])){
+                    $this->setMsgs("验证码不能为空!");
+                    return false;
+                }
+                $serviceCaptcha = new Diana_Service_Captcha();
+                if (!$serviceCaptcha->checkCaptchaWord($post['captcha'],"www-website-apply")) {
+                    $this->setMsgs($serviceCaptcha->getMsgs());
+                    return false;
                 }
             }
             //提交网站注册申请
             $serviceWebsiteApplyRegister = new Diana_Service_WebsiteApplyRegister();
             if($serviceWebsiteApplyRegister->postApply($post)){
                 $this->setMsgs('提交成功，我会们在你的网站审核成功后以电子邮件的形式通知你');
-                unset($this->view->post);
+                unset($post);
             }else{
                 $this->setMsgs($serviceWebsiteApplyRegister->getMsgs());
+                $this->view->post = $post;
+                if(!empty($post['website_continent'])){
+                    if($countriesKey = $serviceCountry->getCountriesKey()){
+                        $this->view->countriesByContinent = array_keys($countriesKey[$post['website_continent']]);
+                    }
+                }
             }
         }
     }

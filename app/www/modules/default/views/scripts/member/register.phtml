@@ -1,5 +1,4 @@
 <?php
-if($this->configMemberRegisterEnable == 1){
 $this->headScript()->appendFile("/static/custom/script/md5.js");
 $this->headScript()->captureStart();?>
 $(function(){
@@ -159,7 +158,6 @@ $(img).attr("src",url);
     <li><a href="/">首页</a> <span class="divider">/</span></li>
     <li class="active">会员注册</li>
 </ul>
-
 <form class="form-horizontal" id="form_register" name="form_register" method="post">
     <div class="alert hidden" id="div_alert"></div>
     <div class="control-group">
@@ -206,4 +204,3 @@ $(img).attr("src",url);
         </div>
     </div>
 </form>
-<?php } ?>

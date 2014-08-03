@@ -18,16 +18,17 @@ class Diana_Model_WebsiteIntro extends Diana_Model_Abstract
     /**
      * 保存介绍
      * @param $id
-     * @param $intro
+     * @param $introZhCn
+     * @param $introZhTw
      * @return bool
      */
-    function saveIntro($id,$intro)
+    function saveIntro($id,$introZhCn,$introZhTw)
     {
-        if(empty($id)||empty($intro)){
+        if(empty($id)|| ( empty($introZhCn) && empty($introZhTw) ) ){
             return false;
         }
         $condition = array("website_id" => $id);
-        $data = array("website_intro" => $intro);
+        $data = array("website_intro_ZhCn" => $introZhCn,'website_intro_cn-tw' => $introZhTw);
         if($rows = $this->getRowsById(null,$id)){
             $data['website_intro_update_time'] = time();
             $data['website_intro_update_ip'] = $_SERVER['REMOTE_ADDR'];

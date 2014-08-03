@@ -6,6 +6,7 @@ mb_internal_encoding("UTF-8");//编码
 define('DIANA_TIMESTAMP_START',time());
 define('DIANA_REMOTE_ADDR',$_SERVER['REMOTE_ADDR']);
 
+
 //define('DIANA_WEBSITE_NAME',"Diana's Website");//网站名称
 //define('DIANA_WEBSITE_TITLE',"Diana's Website");//网站名称
 define('DIANA_WEBSITE_NAME',"海华门");//网站名称
@@ -13,12 +14,7 @@ define('DIANA_WEBSITE_TITLE',"海华门");//网站名称
 define('DIANA_WEBSITE_SUBTITLE',"海外华人同出一门");//网站名称
 
 //定义域名常量
-$tmpServerName = explode('.',$_SERVER['SERVER_NAME']);
-$tmpCountServerName = count($tmpServerName);
-$tmpDomainMain = $tmpServerName[($tmpCountServerName-2)];
-$tmpDomainExte = $tmpServerName[($tmpCountServerName-1)];
-
-define('DIANA_DOMAIN_ROOT',implode('.',array($tmpDomainMain,$tmpDomainExte)));//根域名
+define('DIANA_DOMAIN_ROOT',"diana.local");//根域名
 define('DIANA_DOMAIN_STATIC',"static.".DIANA_DOMAIN_ROOT);//静态
 
 define('DIANA_DOMAIN_WWW',"www.".DIANA_DOMAIN_ROOT);//www,www-cn,www-tw,www-us域名下的
@@ -47,8 +43,7 @@ define('DIANA_DIR_LIBS', realpath(DIANA_DIR_ROOT."/../libs"));//库目录
 define('DIANA_DIR_WWW_PUBLIC', realpath(DIANA_DIR_ROOT."/www/public"));//库目录
 define('DIANA_DIR_ADMIN_PUBLIC', realpath(DIANA_DIR_ROOT."/admin/public"));//库目录
 
-//没有必要定义这个常量了，将这个路径写入到php.ini里面的include_path
-//define('DIANA_DIR_LIBS_ZEND', realpath("D:/PhpSourceCode/FrameWrok/ZendFramework-1.12.0-minimal/library"));//zend框架目录
+define('DIANA_DIR_LIBS_ZEND', realpath("D:/PhpSourceCode/FrameWrok/ZendFramework-1.12.0-minimal/library"));//zend框架目录
 
 define('DIANA_DIR_DATA', DIANA_DIR_ROOT."/../data");//数据目录
 define('DIANA_DIR_DATA_CONFIG', DIANA_DIR_DATA."/configs");//配置文件目录
