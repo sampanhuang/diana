@@ -120,13 +120,15 @@ class Diana_Service_Website extends Diana_Service_Abstract
                         }
                     }
                 }
+                /*
+                 * 取消了列表模式，所以不再需要获取简介
                 //获取简介
                 $modelWebsiteIntro = new Diana_Model_WebsiteIntro();
                 if($optionsWebsiteIntro = $modelWebsiteIntro->getIntroById(null,$websiteIds)){
                     foreach($rowsWebsite as &$rowWebsite){
                         $rowWebsite['website_intro'] = $optionsWebsiteIntro[$rowWebsite['website_id']];
                     }
-                }
+                }*/
             }
         }
         return array('total' => $countWebsite,'rows' => $rowsWebsite);
@@ -225,7 +227,7 @@ class Diana_Service_Website extends Diana_Service_Abstract
         //获取网站描述
         $modelWebsiteIntro = new Diana_Model_WebsiteIntro();
         if($websiteIntro = $modelWebsiteIntro->getIntroById(null,$websiteId)){
-            $rowWebsite['website_intro'] = $websiteIntro[$websiteId];
+            $rowWebsite = array_merge($rowWebsite,$websiteIntro[$websiteId]);
         }
         //网站SEO
         $modelWebsiteMeta = new Diana_Model_WebsiteMeta();

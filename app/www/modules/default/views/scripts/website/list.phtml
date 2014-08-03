@@ -55,37 +55,37 @@
             </div>
             <div class="span5"><?php echo $this->render('paginator.phtml'); ?></div>
         </div>
-        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="table table-striped table-hover">
-            <?php
-            foreach($this->paginator['rows'] as $row){
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="table  table-striped table-hover">
+            <tr>
+                <?php
+                    for($i = 0 ; $i<30;$i++){
+                        if($i%5 == 0 && $i>0){
+                            echo '</tr><tr>';
+                            if(empty($this->paginator['rows'][$i])){
+                                break;
+                            }
+                        }
+                        echo '<td width="20%">';
+                        if(!empty($this->paginator['rows'][$i])){
+                            echo '<a href="'.$this->url(array("action" => "detail","website_id" => $this->paginator['rows'][$i]['website_id'])).'"  title="'.$this->paginator['rows'][$i]['website_name_'.DIANA_TRANSLATE_CURRENT].'" target="_blank"><h5>'.$this->utf8Substr($this->paginator['rows'][$i]['website_name_'.DIANA_TRANSLATE_CURRENT],10).'</h5></a>';
+                            echo '<span class="muted">'.$this->utf8Substr($this->allWebsiteArea[$this->paginator['rows'][$i]['website_areaId']]['area_name_'.DIANA_TRANSLATE_CURRENT],10).'&nbsp;&nbsp;'.$this->utf8Substr($this->allWebsiteCategory[$this->paginator['rows'][$i]['website_categoryId']]['category_name_'.DIANA_TRANSLATE_CURRENT],10).'</span><br>';
+                            echo '<span class="muted">'.$this->utf8Substr($this->paginator['rows'][$i]['website_domain'],32).'</span>';
+                        }
+
+                        echo '</td>';
+                    }
                 ?>
-                <tr>
-                    <td>
-                        <h4><?php echo $this->utf8Substr($row['website_name'],32);?><small>&nbsp;&nbsp;<?php echo $this->allWebsiteArea[$row['website_areaFatherId']]['area_name_'.DIANA_TRANSLATE_CURRENT].'/'.$this->allWebsiteArea[$row['website_areaId']]['area_name_'.DIANA_TRANSLATE_CURRENT].'&nbsp;&nbsp;&nbsp;'.$this->allWebsiteCategory[$row['website_categoryId']]['category_name_'.DIANA_TRANSLATE_CURRENT];?></small></h4>
-                        <a href="<?php echo $this->url(array("action" => "detail","website_id" => $row['website_id']));?>" title="<?php echo $row['website_name'];?>" target="_blank"><?php echo $this->utf8Substr($row['website_domain'],32);?></a><br>
-                        <?php echo $this->utf8Substr($row['website_intro'],200);?><br>
-                        <small>
-                            <?php
-                                if(!empty($row['website_tag'])){
-                                    $tmpHtml = array();
-                                    $tmpWebsiteTag = explode(',',$this->utf8Substr($row['website_tag'],128));
-                                    $tmpWebsiteTag = array_filter($tmpWebsiteTag);
-                                    $tmpWebsiteTag = array_unique($tmpWebsiteTag);
-                                    foreach($tmpWebsiteTag as $valTmpWebsiteTag){
-                                        $tmpHtml[] = '<a href="'.$this->url(array("action"=>"search","keyword" => $valTmpWebsiteTag)).'" title="'.$valTmpWebsiteTag.'"  class="muted">'.$valTmpWebsiteTag.'</a>';
-                                    }
-                                    echo implode("&nbsp;",$tmpHtml);
-                                }
-                            ?></small>
-                    </td>
-                </tr>
-                <?php }?>
+            </tr>
         </table>
         <div class="row" style="margin-bottom: 5px;">
             <div class="span2">
             </div>
             <div class="span8"><?php echo $this->render('paginator.phtml'); ?></div>
         </div>
-        <?php }?>
+        <?php
+        }else{
+            echo '暂无数据';
+        }
+        ?>
     </div>
 </div>

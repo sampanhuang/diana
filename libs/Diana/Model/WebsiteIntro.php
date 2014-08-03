@@ -60,7 +60,7 @@ class Diana_Model_WebsiteIntro extends Diana_Model_Abstract
             return false;
         }
         foreach($rows as $row){
-            $intro[$row['website_id']] = $row['website_intro'];
+            $intro[$row['website_id']] = $row;
         }
         return $intro;
     }

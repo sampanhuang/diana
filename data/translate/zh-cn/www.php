@@ -41,6 +41,7 @@ return array(
 	"www_title_similar" => "同类推荐",
 	"www_title_comment" => "网友评论",
     "www_version" => "版本",
+    "www_index_go-to-top" => "返回顶部",
 	"www_msg_parame_error" => "参数错误",	
 	"www_msg_captcha_error" => "验证码输入错误",
 	"www_msg_post_fail" => "数据提交失败",
@@ -53,4 +54,11 @@ return array(
     "www_website_apply_pass_0" => "未处理",
     "www_website_apply_pass_1" => "同意",
     "www_website_apply_pass_2" => "拒绝",
+    'www_default_about-us_index' => '关于我们',
+    'www_default_about-us_business' => '业务合作',
+    'www_default_about-us_contact' => '联系方式',
+    'www_default_about-us_friend-link' => '友情链接',
+    'www_default_about-us_terms' => '服务条款',
+
+
 );

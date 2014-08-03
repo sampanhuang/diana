@@ -1,0 +1,22 @@
+<!--导航-->
+<nav class="container">
+    <div class="navbar">
+        <div class="navbar-inner">
+            <div class="container">
+                <ul class="nav">
+                    <?php
+                    if(!empty($this->mainChannels)){
+                        foreach($this->mainChannels as $rowChannel){
+                            echo '<li><a href="'.$rowChannel['channel_link'].'" title="'.$rowChannel['channel_name_'.DIANA_TRANSLATE_CURRENT].'">'.$rowChannel['channel_name_'.DIANA_TRANSLATE_CURRENT].'</a></li>';
+                        }
+                    }
+                    ?>
+                </ul>
+                <ul class="nav pull-right">
+                    <li><a id="link_menu_website_register_post" href="/default/website/apply" target="_blank" title="<?php echo $this->translate("member_post_apply_website");?>"><?php echo $this->translate("member_post_apply_website");?></a></li>
+                    <li><a href="http://<?php echo DIANA_DOMAIN_CLIENT_CURRENT?>" target="_blank" title="<?php echo $this->translate("member_center");?>"><?php echo $this->translate("member_center");?></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>

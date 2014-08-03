@@ -5,17 +5,17 @@ if(!empty($this->detailWebsite)) {
     <li><a href="/">首页</a> <span class="divider">/</span></li>
     <li><a href="/default/website/list/area_father/<?php echo $this->detailWebsite['website_areaFatherId'];?>"><?php echo $this->allWebsiteArea[$this->detailWebsite['website_areaFatherId']]['area_name_'.DIANA_TRANSLATE_CURRENT];?></a> <span class="divider">/</span></li>
     <li><a href="/default/website/list/area/<?php echo $this->detailWebsite['website_areaId'];?>"><?php echo $this->allWebsiteArea[$this->detailWebsite['website_areaId']]['area_name_'.DIANA_TRANSLATE_CURRENT];?></a> <span class="divider">/</span></li>
-    <li class="active"><?php echo $this->detailWebsite['website_name'].'&nbsp;&nbsp;（'.$this->translate("category_id_".$this->detailWebsite['website_categoryId'])."）";?></li>
+    <li class="active"><?php echo $this->detailWebsite['website_name_'.DIANA_TRANSLATE_CURRENT].'&nbsp;&nbsp;（'.$this->allWebsiteCategory[$this->detailWebsite['website_categoryId']]['category_name_'.DIANA_TRANSLATE_CURRENT]."）";?></li>
 </ul>
 <section  class="row">
     <div class="span7">
-        <h3><?php echo $this->detailWebsite['website_name'];?><small style="margin-left:20px;"><a href="<?php echo $this->url(array("action" => "jumper"));?>" title="<?php echo $this->detailWebsite['website_name'];?>" target="_blank"><?php echo $this->detailWebsite['website_domain'];?></a></small></h3>
+        <h3><?php echo $this->detailWebsite['website_name_'.DIANA_TRANSLATE_CURRENT];?><small style="margin-left:20px;"><a href="<?php echo $this->url(array("action" => "jumper"));?>" title="<?php echo $this->detailWebsite['website_name_'.DIANA_TRANSLATE_CURRENT];?>" target="_blank"><?php echo $this->detailWebsite['website_domain'];?></a></small></h3>
         <hr/>
         <p>
             <span class="label label-info"><?php echo  $this->allWebsiteArea[$this->detailWebsite['website_areaFatherId']]['area_name_'.DIANA_TRANSLATE_CURRENT].'<span class="divider">&nbsp/&nbsp</span>'.$this->allWebsiteArea[$this->detailWebsite['website_areaId']]['area_name_'.DIANA_TRANSLATE_CURRENT];?></span>
             <span class="label label-info"><?php echo  $this->allWebsiteCategory[$this->detailWebsite['website_categoryId']]['category_name_'.DIANA_TRANSLATE_CURRENT];?></span>
         </p>
-        <p><?php echo nl2br($this->detailWebsite['website_intro']);?></p>
+        <p><?php echo nl2br($this->detailWebsite['website_intro_'.DIANA_TRANSLATE_CURRENT]);?></p>
         <p><?php
             $tmpHtml = array();
             $tmpWebsiteTag = explode(',',$this->detailWebsite['website_tag']);
@@ -28,7 +28,7 @@ if(!empty($this->detailWebsite)) {
             ?></p>
     </div>
     <div class="span5">
-    	<img class="pull-right" src="/<?php echo $this->detailWebsite['website_cover']?>" width="400"/>
+    	<!--<img class="pull-right" src="/<?php echo $this->detailWebsite['website_cover']?>" width="400"/>-->
     </div>
 </section >
 <?php
@@ -44,9 +44,9 @@ if(!empty($this->rowsWebsiteLike)){
                 }
                 echo '<td width="20%">';
                 if(!empty($this->rowsWebsiteLike[$i])){
-                    echo '<h5>'.$this->utf8Substr($this->rowsWebsiteLike[$i]['website_name'],10).'</h5>';
+                    echo '<a href="'.$this->url(array("action" => "detail","website_id" => $this->rowsWebsiteLike[$i]['website_id'])).'"  title="'.$continentContent['website']['new'][$i]['website_name_'.DIANA_TRANSLATE_CURRENT].'" target="_blank"><h5>'.$this->utf8Substr($this->rowsWebsiteLike[$i]['website_name_'.DIANA_TRANSLATE_CURRENT],10).'</h5></a>';
                     echo '<span class="muted">'.$this->allWebsiteArea[$this->rowsWebsiteLike[$i]['website_areaId']]['area_name_'.DIANA_TRANSLATE_CURRENT].'&nbsp;&nbsp;'.$this->allWebsiteCategory[$this->rowsWebsiteLike[$i]['website_categoryId']]['category_name_'.DIANA_TRANSLATE_CURRENT].'</span><br>';
-                    echo '<a href="'.$this->url(array("action" => "detail","website_id" => $this->rowsWebsiteLike[$i]['website_id'])).'"  title="'.$continentContent['website']['new'][$i]['website_name'].'" target="_blank">'.$this->utf8Substr($this->rowsWebsiteLike[$i]['website_domain'],32).'</a>';
+                    echo '<span class="muted">'.$this->utf8Substr($this->rowsWebsiteLike[$i]['website_domain'],32).'</span>';
                 }
                 echo '</td>';
 

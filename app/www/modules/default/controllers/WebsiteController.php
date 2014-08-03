@@ -113,7 +113,7 @@ class WebsiteController extends Www_Controller_Action
     {
     	//获取外部数据
         $this->view->page = $page = $this->getRequest()->getParam('page',1);//排序
-        $this->view->pagesize = $pagesize = $this->getRequest()->getParam('pagesize',10);//每页多少条
+        $this->view->pagesize = $pageSize = $this->getRequest()->getParam('pagesize',30);//每页多少条
         $this->view->order = $order = $this->getRequest()->getParam('order','new');//排序
         $this->view->category = $category = $this->getRequest()->getParam('category',0);//分类
         $this->view->areaFather = $areaFather = $this->getRequest()->getParam('area_father');//大陆
@@ -177,9 +177,9 @@ class WebsiteController extends Www_Controller_Action
         }
         //获取网站数据
         $serviceWebsite = new Diana_Service_Website();
-        $this->view->paginator = $paginator = $serviceWebsite->pageByCondition($page,$pagesize,$condition,$order);
+        $this->view->paginator = $paginator = $serviceWebsite->pageByCondition($page,$pageSize,$condition,$order);
         if($paginator['total'] > 0){
-            $servicePageNum = new Diana_Service_PageNum($paginator['total'],$pagesize,$page);
+            $servicePageNum = new Diana_Service_PageNum($paginator['total'],$pageSize,$page);
             $this->view->pagenum = $pagenum = $servicePageNum->getPageNum();
         }
         //再次SEO

@@ -1,0 +1,22 @@
+<!--头部-->
+<header class="container">
+    <div class="row">
+        <div class="span4"><h3 class="muted" style="line-height: 80px;"><?php echo $this->translate("www_websitename");?><small>&nbsp;&nbsp;
+                    <?php echo $this->translate("www_title_subtitle");?></small></h3></div>
+        <div class="span4">
+            <form id="form_search" class="form-search"  method="get" action="/default/website/search">
+                <div class="input-append" style="line-height: 80px;">
+                    <?php
+                    $cssSpan = 'span3';
+                    if(empty($this->keyword)){
+                        $cssSpan = 'span2';
+                    }
+                    ?>
+                    <input type="text" class="<?php echo $cssSpan;?> search-query" id="input_keyword" name="keyword" value="<?php echo $this->keyword;?>">
+                    <button type="submit" class="btn" style="margin-top: 25px;"><?php echo $this->translate("global_search");?></button>
+                </div>
+            </form>
+        </div>
+        <div class="span4 text-right" id="head_menu_nav"><p style="line-height: 80px;"></p></div>
+    </div>
+</header>

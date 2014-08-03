@@ -1,5 +1,5 @@
 *{font-size:12px;}
-body {font-family: 'Open Sans',"arial","sans-serif";serif;background:#ffffff;}
+body {font-family: 'Open Sans',"arial","sans-serif";background:#ffffff;}
 body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,blockquote{padding:0; margin:0;}   
 table,td,tr,th{font-size:12px;}
 li{list-style-type:none;}
@@ -15,7 +15,7 @@ strong {font-weight:normal;}
 
 footer {
     text-align: center;
-    padding: 30px 0;
+    padding: 10px 0;
     margin-top: 70px;
     border-top: 1px solid #e5e5e5;
     background-color: #f5f5f5;

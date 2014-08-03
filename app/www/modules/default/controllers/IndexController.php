@@ -34,8 +34,11 @@ class IndexController extends Www_Controller_Action
 
 
 	}
-	
-	function testAction()
+
+    /**
+     * 测试
+     */
+    function testAction()
 	{
 		//$this->getHelper("layout")->disableLayout();//关闭布局
 		$this->getHelper("viewRenderer")->setNoRender();//关闭视图
@@ -59,6 +62,9 @@ class IndexController extends Www_Controller_Action
 		$this->_forward("index","website","default") ;
 	}
 
+    /**
+     * 验证码
+     */
     function captchaAction()
     {
         $this->getHelper("layout")->disableLayout();//关闭布局
