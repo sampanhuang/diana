@@ -9,6 +9,8 @@ $this->headScript()->captureEnd();
             singleSelect:false,//允许多行选择
             toolbar:'#toolbar',
             rownumbers: true,
+            checkOnSelect:false,
+            selectOnCheck:false,
             animate: true,
             collapsible: true,
             fitColumns: true,
@@ -36,7 +38,7 @@ $this->headScript()->captureEnd();
         var dialog_id = '';//对话框的ID
         var ids = [];
         var labels = [];
-        var rows = $('#treegrid_menu_index').datagrid('getSelections');
+        var rows = $('#treegrid_menu_index').treegrid('getChecked');
         var iconclass = '';
         if( rows.length == 0){
             $.messager.alert('确认请求','请选择要操作的数据','error');
@@ -136,9 +138,9 @@ $this->headScript()->captureEnd();
      */
     function formatAction(val,row)
     {
-        //var detailLink = '<a href="javascript:openWindowManagerLogDetail(\'dialog-menu-detail\','+ row.menu_id +')">明细</a>';
+        var detailLink = '<a href="javascript:openWindowManagerLogDetail(\'dialog-menu-detail\','+ row.menu_id +')">明细</a>';
         var modifyLink = '<a href="javascript:addTabWithParent(\'系统管理/后台菜单/编辑菜单\',\'/system/manager-menu/update/menu_id/'+row.menu_id+'\',true)" >编辑</a>'
-        return modifyLink ;
+        return detailLink + '&nbsp;&nbsp;' + modifyLink ;
     }
     function openWindowManagerLogDetail(div_id,menu_id)
     {
@@ -147,7 +149,7 @@ $this->headScript()->captureEnd();
             width:690,
             height:390,
             title: '菜单明细',
-            href:'/system/menu/index/menu_detail/yes/menu_id/' + menu_id
+            href:'/system/manager-menu/index/menu_detail/yes/menu_id/' + menu_id
         });
     }
 </script>

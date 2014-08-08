@@ -73,7 +73,7 @@ function gridSelectAll(obj,gridId)
 {
     buttonText = $(obj).linkbutton('options')['text'];
     if(buttonText == '不选'){
-        $('#' + gridId).datagrid('clearSelections');
+        $('#' + gridId).datagrid('clearChecked');
         $(obj).linkbutton({text:'全选'});
     }else{
         $('#' + gridId).datagrid('selectAll');
