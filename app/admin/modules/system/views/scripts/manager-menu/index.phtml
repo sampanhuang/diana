@@ -1,5 +1,5 @@
 <?php
-if(($this->dataget['menu_detail'] == 'yes')&&(!empty($this->dataget['menu_id']))){
+if(($this->requestPaams['menu_detail'] == 'yes')&&(!empty($this->requestPaams['menu_id']))){
     echo $this->render('manager-menu/index-detail.phtml');
 }else{
     echo $this->render('manager-menu/index-tree.phtml');

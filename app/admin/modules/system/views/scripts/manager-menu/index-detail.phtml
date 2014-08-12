@@ -1,14 +1,79 @@
 <div class="div_bg_fa separator_bot">
     <?php if (!empty($this->detail)) { ?>
-        <fieldset border="false" class="fieldset_border separator_bot">
-            <legend>基本资料</legend>
-            <table width="100%" border="0" cellspacing="1" cellpadding="5" class="table_border">
+        <fieldset border="false"  class="fieldset_border separator_bot" >
+            <legend>菜单名称</legend>
+            <table width="100%" border="0" cellspacing="1" cellpadding="5"  class="table_border separator_top separator_bot">
                 <tr>
-                <th width="15%">时间</th>
-                <td></td>
-                <th></th>
-                <td></td>
+                    <th width="20%">简体中文</th>
+                    <td width="80%"><?php echo $this->detail['menu_label_zh-cn'];?></td>
+                </tr>
+                <tr>
+                    <th width="20%">繁体中文</th>
+                    <td width="80%"><?php echo $this->detail['menu_label_zh-tw'];?></td>
+                </tr>
+                <tr>
+                    <th width="20%">英文</th>
+                    <td width="80%"><?php echo $this->detail['menu_label_en-us'];?></td>
+                </tr>
             </table>
         </fieldset>
+        <fieldset border="false"  class="fieldset_border separator_bot" >
+            <legend>菜单属性</legend>
+            <table width="100%" border="0" cellspacing="1" cellpadding="5"  class="table_border separator_top separator_bot">
+                <tr>
+                    <th width="20%">上级菜单</th>
+                    <td width="80%"><?php echo implode('/',array($this->detail['menu_father']['menu_label_'.DIANA_TRANSLATE_CURRENT],$this->detail['menu_father']['menu_father']['menu_label_'.DIANA_TRANSLATE_CURRENT]));?></td>
+                </tr>
+                <tr>
+                    <th width="20%">菜单链接</th>
+                    <td width="80%"><?php echo $this->detail['menu_link'];?></td>
+                </tr>
+                <tr>
+                    <th width="20%">是否显示</th>
+                    <td width="80%">
+                        <?php
+                        if ($this->detail['menu_show'] == 1) {
+                            echo '显示';
+                        }else{
+                            echo '隐藏';
+                        }
+                        ?>
+                    </td>
+                </tr>
+                <tr>
+                    <th width="20%">菜单排序</th>
+                    <td width="80%"><?php echo $this->detail['menu_order'];?></td>
+                </tr>
+            </table>
+        </fieldset>
+        <?php
+        if(!empty($this->detail['menu_insert_time'])){
+        ?>
+        <fieldset border="false"  class="fieldset_border separator_bot" >
+            <legend>数据属性</legend>
+            <table width="100%" border="0" cellspacing="1" cellpadding="5"  class="table_border separator_top separator_bot">
+                <tr>
+                    <th width="20%">添加时间 / IP</th>
+                    <td width="80%"><?php echo date('Y-m-d H:i:s',$this->detail['menu_insert_time']) .'&nbsp;/&nbsp;'. $this->detail['menu_insert_ip'];?></td>
+                </tr>
+                <tr>
+                    <th width="20%">添加人</th>
+                    <td width="80%"><?php echo $this->detail['menu_insert_manName'];?><span class="muted">&lt;<?php echo $this->detail['menu_insert_manEmail'];?>&gt;</span></td>
+                </tr>
+                <?php
+                if(!empty($this->detail['menu_update_time'])){
+                ?>
+                <tr>
+                    <th width="20%">最后更新时间 / IP</th>
+                    <td width="80%"><?php echo date('Y-m-d H:i:s',$this->detail['menu_update_time']) .'&nbsp;/&nbsp;'. $this->detail['menu_update_ip'];?></td>
+                </tr>
+                <tr>
+                    <th width="20%">最后更新人</th>
+                    <td width="80%"><?php echo $this->detail['menu_update_manName'];?><span class="muted">&lt;<?php echo $this->detail['menu_update_manEmail'];?>&gt;</span></td>
+                </tr>
+                <?php }?>
+            </table>
+        </fieldset>
+        <?php }?>
     <?php }?>
 </div>

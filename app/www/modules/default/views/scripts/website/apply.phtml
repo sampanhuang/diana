@@ -36,14 +36,14 @@ function onchangecallback(data){
                 <label class="control-label" for="input_website_name">名称</label>
                 <div class="controls">
                     <input type="text" id="input_website_name" name="website_name" class="span5" placeholder="网站名称" value="<?php echo $this->post['website_name'];?>">
-                    <span class="help-inline" id="help_website_name">必填选</span>
+                    <span class="help-inline muted" id="help_website_name">必填选</span>
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="input_website_domain">域名</label>
                 <div class="controls">
                     <input type="text" id="input_website_domain" name="website_domain" class="span6" placeholder="网站域名" value="<?php echo $this->post['website_domain'];?>">
-                    <span class="help-inline" id="help_website_domain">必填选，域名前如无http://或https://，将默认加上http://</span>
+                    <span class="help-inline muted" id="help_website_domain">必填选，域名前如无http://或https://，将默认加上http://</span>
                 </div>
             </div>
             <div class="control-group">
@@ -93,21 +93,21 @@ function onchangecallback(data){
                         }
                         ?>
                     </select>
-                    <span class="help-inline" id="help_website_country">必选项</span>
+                    <span class="muted help-inline" id="help_website_country">必选项</span>
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="input_website_tag">标签</label>
                 <div class="controls">
                     <input type="text" id="input_website_tag" name="website_tag" class="span6" placeholder="网站标签" value="<?php echo $this->post['website_tag'];?>">
-                    <span class="help-inline">多个标签务请用分隔符隔开，分隔符可以是逗号顿号及空格</span>
+                    <span class="help-inline muted">多个标签务请用分隔符隔开，分隔符可以是逗号顿号及空格</span>
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="input_website_intro">简介</label>
                 <div class="controls">
                     <textarea rows="6" id="input_website_intro" name="website_intro" class="span8" placeholder="简介"><?php echo $this->post['website_intro'];?></textarea>
-                    <span class="help-inline">简介限20000汉字以内</span>
+                    <span class="help-inline muted">简介限20000汉字以内</span>
                 </div>
             </div>
             <?php
@@ -117,14 +117,14 @@ function onchangecallback(data){
                 <label class="control-label" for="input_website_memberEmail">联系邮箱</label>
                 <div class="controls">
                     <input type="text" id="input_website_memberEmail" name="website_memberEmail" class="span6" placeholder="联系邮箱" value="<?php echo $this->post['website_memberEmail'];?>">
-                    <span class="help-inline" id="help_website_memberEmail">务必真实，登录后不需填写，默认为你的密保邮箱</span>
+                    <span class="help-inline muted" id="help_website_memberEmail">务必真实，登录后不需填写，默认为你的密保邮箱</span>
                 </div>
             </div>
             <div class="control-group" id="div_control-group_captcha">
-                <label class="control-label" for="input_website_captcha">验证码</label>
+                <label class="control-label " for="input_website_captcha">验证码</label>
                 <div class="controls">
                     <input type="text" id="input_website_captcha" name="captcha" class="span6" placeholder="验证码" value="<?php echo $this->post['captcha'];?>">
-                    <span class="help-inline" id="help_captcha">登录后不需要输入验证码</span><br/>
+                    <span class="help-inline muted" id="help_captcha">登录后不需要输入验证码</span><br/>
                     <img id="img_captcha" name="img_captcha" width="100" height="40" alt="点击更换验证码" title="点击更换验证码" style="cursor:pointer;">
                 </div>
             </div>

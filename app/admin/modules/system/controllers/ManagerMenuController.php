@@ -18,14 +18,14 @@ class System_ManagerMenuController extends Admin_Controller_Action
      * 菜单索引
      */
     function indexAction(){
-        $dataGet = $this->getRequest()->getParams();
+        $this->view->requestPaams = $requestPaams = $this->getRequest()->getParams();
         $serviceManagerMenu = new Admin_Service_ManagerMenu();
-        if(($dataGet['menu_detail'] == 'yes')&&(!empty($dataGet['menu_id']))){
-            if(!$this->view->detail = $detail = $serviceManagerMenu->getDetailById($dataGet['menu_id'])){
+        if(($requestPaams['menu_detail'] == 'yes')&&(!empty($requestPaams['menu_id']))){
+            if(!$this->view->detail = $detail = $serviceManagerMenu->getDetailById($requestPaams['menu_id'])){
                 $this->setMsgs($serviceManagerMenu->getMsgs());
             }
         }
-        if ($dataGet['data_ajax'] == 'treegrid_data') { // 获取数据
+        if ($requestPaams['data_ajax'] == 'treegrid_data') { // 获取数据
             if($tree = $serviceManagerMenu->makeTree()){
                 echo json_encode($serviceManagerMenu->makeTreeGrid($tree));
             }
