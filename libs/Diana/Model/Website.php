@@ -69,14 +69,26 @@ class Diana_Model_Website extends Diana_Model_Abstract
         return $this->saveData(2,$tmpUpdateData,$condition);
     }
     /**
-     * 通过网站名获取多条纪录
+     * 通过简体网站名获取多条纪录
      *
      * @param int|string|array $id
      * @return array
      */
-    function getRowsByName($refresh = null,$name)
+    function getRowsByNameWithZhCn($refresh = null,$name)
     {
-        $condition = array("website_name" => $name);
+        $condition = array("website_name_zh-cn" => $name);
+        return $this->getRowsByCondition($refresh,$condition);
+    }
+
+    /**
+     * 通过繁体网站名获取多条纪录
+     * @param null $refresh 是否刷新
+     * @param $name 网站名
+     * @return array 数组
+     */
+    function getRowsByNameWithZhTw($refresh = null,$name)
+    {
+        $condition = array("website_name_zh-tw" => $name);
         return $this->getRowsByCondition($refresh,$condition);
     }
 

@@ -26,9 +26,13 @@ class Diana_Service_WebsiteApplyRegister extends Diana_Service_Abstract
         if(!$data = $this->checkApplyParams($data)){
             return false;
         }
-        //判断这个网站名是否已经被注册
+        //判断这个网站名是否已经被注册（简体＼繁体）
         $modelWebsite = new Diana_Model_Website();
-        if($rowsWebsite = $modelWebsite->getRowsByName(null,$data['website_name'])){
+        if($rowsWebsite = $modelWebsite->getRowsByNameWithZhCn(null,$data['website_name'])){
+            $this->setMsgs('当前站点[<a href="/default/website/detail/website_id/'.$rowsWebsite[0]['website_id'].'" target="_blank" title="'.$rowsWebsite[0]['website_name'].'--'.$rowsWebsite[0]['website_domain'].'">'.$data['website_name'].'</a>]已经存在，请不要重复提交');
+            return false;
+        }
+        if($rowsWebsite = $modelWebsite->getRowsByNameWithZhTw(null,$data['website_name'])){
             $this->setMsgs('当前站点[<a href="/default/website/detail/website_id/'.$rowsWebsite[0]['website_id'].'" target="_blank" title="'.$rowsWebsite[0]['website_name'].'--'.$rowsWebsite[0]['website_domain'].'">'.$data['website_name'].'</a>]已经存在，请不要重复提交');
             return false;
         }
@@ -54,7 +58,7 @@ class Diana_Service_WebsiteApplyRegister extends Diana_Service_Abstract
         $memberName = $rowMember['member_name'];
         //写入纪录
         $modelWebsiteApplyRegister = new Diana_Model_WebsiteApplyRegister();
-        if(!$rowsWebsiteApply = $modelWebsiteApplyRegister->postApply($memberId,$data['website_name'],$data['website_domain'],$data['website_tag'],$data['website_categoryId'],$data['website_areaId'])){
+        if(!$rowsWebsiteApply = $modelWebsiteApplyRegister->postApply($memberId,$data['website_name'],$data['website_domain'],$data['website_tag'],$data['website_categoryId'],$data['website_areaId'],$data['register_language'])){
             //删除会员数据
             if($rollbackMember == 1){
                 $modelMember->deleteById($memberId);
@@ -175,8 +179,8 @@ class Diana_Service_WebsiteApplyRegister extends Diana_Service_Abstract
             $registerId = explode(',',$registerId);
         }
         //获取他们的简介
-        $modelWebsiteApplyRegisterInstro = new Diana_Model_WebsiteApplyRegisterIntro();
-        if(!$optionsWebsiteApplyInstro = $modelWebsiteApplyRegisterInstro->getIntroById(null,$registerId)){
+        $modelWebsiteApplyRegisterIntro = new Diana_Model_WebsiteApplyRegisterIntro();
+        if(!$optionsWebsiteApplyIntro = $modelWebsiteApplyRegisterIntro->getIntroById(null,$registerId)){
             return false;
         }
         //已经存在重复网站名和域名的申请ID
@@ -201,42 +205,48 @@ class Diana_Service_WebsiteApplyRegister extends Diana_Service_Abstract
                 $tmpApplyId = $rowWebsiteApply['register_id'];
                 $checkName[$tmpApplyId] = $rowWebsiteApply['website_name'];
                 $checkDomain[$tmpApplyId] = $rowWebsiteApply['website_domain'];
+                $tmpRegisterLanguage = $rowWebsiteApply['register_language'];
                 $tmpInsertData[$tmpApplyId] = array(
                     'website_memberId' => $rowWebsiteApply['website_memberId'],
-                    'website_name' => $rowWebsiteApply['website_name'],
+                    'website_name_'.$tmpRegisterLanguage => $rowWebsiteApply['website_name'],
                     'website_domain' => $rowWebsiteApply['website_domain'],
                     'website_logo' => $rowWebsiteApply['website_logo'],
                     'website_cover' => $rowWebsiteApply['website_cover'],
-                    'website_tag' => $rowWebsiteApply['website_tag'],
+                    'website_tag_'.$tmpRegisterLanguage => $rowWebsiteApply['website_tag'],
                     'website_categoryId' => $rowWebsiteApply['website_categoryId'],
                     'website_areaId' => $rowWebsiteApply['website_areaId'],
                     'website_apply_time' => $rowWebsiteApply['register_insert_time'],
                     'website_apply_ip' => $rowWebsiteApply['register_insert_ip'],
                     'website_applyId' => $rowWebsiteApply['register_id'],
                     'website_insert_time' => time(),
+                    'register_language' => $rowWebsiteApply['register_language'],
                 );
             }
         }
         //找出已经存在的纪录
         $modelWebsite = new Diana_Model_Website();
-        if($rowsWebsiteByName = $modelWebsite->getRowsByName(true,$checkName)){
+        if($rowsWebsiteByName = $modelWebsite->getRowsByNameWithZhCn(true,$checkName)){
             foreach($rowsWebsiteByName as $rowWebsiteByName){
-                $existWebsiteName[] = $rowWebsiteByName['website_name'];
+                $existWebsiteName[] = $rowWebsiteByName['website_name_zh-cn'];
             }
         }
-        if($rowsWebsiteByDoamin = $modelWebsite->getRowsByDomain(true,$checkDomain)){
-            foreach($rowsWebsiteByDoamin as $rowWebsiteByDoamin){
-                $existWebsiteDomain[] = $rowWebsiteByDoamin['website_domain'];
+        if($rowsWebsiteByName = $modelWebsite->getRowsByNameWithZhTw(true,$checkName)){
+            foreach($rowsWebsiteByName as $rowWebsiteByName){
+                $existWebsiteName[] = $rowWebsiteByName['website_name_zh-tw'];
+            }
+        }
+        if($rowsWebsiteByDomain = $modelWebsite->getRowsByDomain(true,$checkDomain)){
+            foreach($rowsWebsiteByDomain as $rowWebsiteByDomain){
+                $existWebsiteDomain[] = $rowWebsiteByDomain['website_domain'];
             }
         }
         //剔除已经存在的纪录，避免重复提交
         foreach($tmpInsertData as $keyApplyId => $valApply){
-            if(in_array($valApply['website_name'],$existWebsiteName)){
-                //echo $valApply['website_name'];
+            $tmpRegisterLanguage = $valApply['register_language'];
+            if(in_array($valApply['website_name_'.$tmpRegisterLanguage],$existWebsiteName)){
                 break;
             }
             if(in_array($valApply['website_domain'],$existWebsiteDomain)){
-                //$valApply['website_domain'];
                 break;
             }
             $insertData[$keyApplyId] = $valApply;
@@ -253,7 +263,7 @@ class Diana_Service_WebsiteApplyRegister extends Diana_Service_Abstract
             $modelWebsiteIntro = new Diana_Model_WebsiteIntro();
             foreach($insertData as $keyApplyId => $valWebsite){
                 if($tmpRowsWebsite = $modelWebsite->saveData(1,$valWebsite)){
-                    $modelWebsiteIntro->saveIntro($tmpRowsWebsite[0]['website_id'],$optionsWebsiteApplyInstro[$tmpRowsWebsite[0]['website_applyId']]);
+                    $modelWebsiteIntro->saveIntro($tmpRowsWebsite[0]['website_id'],$optionsWebsiteApplyIntro[$tmpRowsWebsite[0]['website_applyId']]);
                     if(!$serviceWebsiteTag->updateWebsiteTag($tmpRowsWebsite[0]['website_id'],$tmpRowsWebsite[0]['website_tag'])){
                         $this->setMsgs($serviceWebsiteTag->getMsgs());
                     }

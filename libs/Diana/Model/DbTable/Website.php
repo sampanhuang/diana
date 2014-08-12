@@ -53,9 +53,14 @@ class Diana_Model_DbTable_Website extends Diana_Model_DbTable_Abstract
             $tmpWheres = $this->getWhereByCondition("website_memberId",$condition["website_memberId"],1);
             $wheres = array_merge($wheres,$tmpWheres);
         }
-        if (!empty($condition["website_name"])) {//网站名称
+        if (!empty($condition["website_name_zh-cn"])) {//网站名称
             $tmpWheres = array();
-            $tmpWheres = $this->getWhereByCondition("website_name",$condition["website_name"],2);
+            $tmpWheres = $this->getWhereByCondition("website_name_zh-cn",$condition["website_name_zh-cn"],2);
+            $wheres = array_merge($wheres,$tmpWheres);
+        }
+        if (!empty($condition["website_name_zh-tw"])) {//网站名称
+            $tmpWheres = array();
+            $tmpWheres = $this->getWhereByCondition("website_name_zh-tw",$condition["website_name_zh-tw"],2);
             $wheres = array_merge($wheres,$tmpWheres);
         }
         if (!empty($condition["website_domain"])) {//网站域名

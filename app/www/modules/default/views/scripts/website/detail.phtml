@@ -18,7 +18,7 @@ if(!empty($this->detailWebsite)) {
         <p><?php echo nl2br($this->detailWebsite['website_intro_'.DIANA_TRANSLATE_CURRENT]);?></p>
         <p><?php
             $tmpHtml = array();
-            $tmpWebsiteTag = explode(',',$this->detailWebsite['website_tag']);
+            $tmpWebsiteTag = explode(',',$this->detailWebsite['website_tag_'.DIANA_TRANSLATE_CURRENT]);
             $tmpWebsiteTag = array_filter($tmpWebsiteTag);
             $tmpWebsiteTag = array_unique($tmpWebsiteTag);
             foreach($tmpWebsiteTag as $valTmpWebsiteTag){
