@@ -1,11 +1,12 @@
 <script type="text/javascript">
 $(function(){
     $('#dialog_forgetpwd').dialog({
-        //buttons: '#dialog-buttons',
-        iconCls:'icon-user',
+        buttons: '#dialog_buttons_forgetpwd',
+        iconCls:'icon-help',
         closable:false,
         modal:true,
-        title:'取回密码'
+        shadow:false,//不显示阴影
+        title:'取回密码 - <?php echo DIANA_DOMAIN_ADMIN;?>'
     });
     var urlcaptcha = "/default/guest/captcha/key/manager-forgetpwd";
     var imgcaptcha = "#img_captcha";
@@ -99,30 +100,47 @@ $(function(){
     }
 });
 </script>
-<div id="dialog_forgetpwd" class="easyui-dialog" style="width:780px;height:260px;padding:10px">
+<div id="dialog_forgetpwd" class="easyui-dialog" style="width:780px;height:360px;padding:0px">
 <form class="form-horizontal" id="form_forgetpwd" name="form_forgetpwd" method="post">
-
-    <table width="100%" border="0" cellspacing="1" cellpadding="5" class="table_border separator_top separator_bot">
+    <img src="/static/custom/image/bg_title_login.jpg" style="padding-bottom: 20px;">
+    <table width="500px" border="0" cellspacing="0" cellpadding="5"  align="center" >
         <tr>
-            <th>登录帐号</th>
-            <td>
+            <td width="100px" align="right"><strong>登录帐号</strong></td>
+            <td width="200px">
                 <input type="text" id="input_email" name="email" tabindex="1" class="span4" placeholder="登录帐号" value=""style="width:200px;">
-                <span class="help-inline muted" id="help_email">必填选，帐号不能为空</span>
+            </td>
+            <td width="200px">
+                <span class="help-inline span_notice"  id="help_email">必填选，帐号不能为空</span>
             </td>
         </tr>
         <tr>
-            <th>验证字符</th>
+            <td align="right"><strong>验证字符</strong></td>
             <td>
                 <input type="text" id="input_captcha" name="captcha" tabindex="3" class="span4" placeholder="验证字符" value=""style="width:200px;">
-                <span class="help-inline" id="help_captcha">请输入下面图片内的字符</span><br>
+            </td>
+            <td>
+                <span class="help-inline span_notice"  id="help_captcha">请输入下面图片内的字符</span>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
                 <img id="img_captcha" name="img_captcha" width="100" height="40" alt="点击更换验证码" title="点击更换验证码" style="cursor:pointer;">
+            </td>
+            <td></td>
+        </tr>
+    </table>
+</form>
+</div>
+<div id="dialog_buttons_forgetpwd" name="dialog_buttons_forgetpwd" border="false" class="div_btn">
+    <table width="500px" border="0" cellspacing="0" cellpadding="0"  align="center" >
+        <tr>
+            <th width="80px"></th>
+            <td align="left">
+                <a id="linkbtn_submit" class="easyui-linkbutton" iconCls="icon-ok">确定</a>
+                <a id="linkbtn_cancel" class="easyui-linkbutton" iconCls="icon-cancel">取消</a>
+                <a id="linkbtn_login" class="easyui-linkbutton" iconCls="icon-user"  href="<?php echo $this->url(array('action' => 'login'));?>">用户登录</a>
             </td>
         </tr>
     </table>
-    <div border="false" class="div_btn">
-        <a id="linkbtn_submit" class="easyui-linkbutton" iconCls="icon-ok">确定</a>
-        <a id="linkbtn_cancel" class="easyui-linkbutton" iconCls="icon-cancel">取消</a>
-        <a id="linkbtn_login" class="easyui-linkbutton" iconCls="icon-help" href="<?php echo $this->url(array('action' => 'login'));?>">用户登录</a>
-    </div>
-</form>
 </div>

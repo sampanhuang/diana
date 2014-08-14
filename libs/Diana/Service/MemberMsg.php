@@ -6,7 +6,7 @@
  * Time: 下午5:23
  * To change this template use File | Settings | File Templates.
  */
-class Diana_Service_MemberMsg extends Diana_Service_Abstract
+class Star_Service_MemberMsg extends Star_Service_Abstract
 {
     function __construct()
     {
@@ -29,7 +29,7 @@ class Diana_Service_MemberMsg extends Diana_Service_Abstract
             $this->setMsgs('参数错误 - msgId');
             return false;
         }
-        $modelMemberMsg = new Diana_Model_MemberMsg();
+        $modelMemberMsg = new Star_Model_MemberMsg();
         //过滤及校验$msgId
         if((!empty($msgId))&&(is_numeric($msgId))){
             if(!$tmpRowsMemberMsg = $modelMemberMsg->getRowsById(null,$msgId)){
@@ -73,9 +73,9 @@ class Diana_Service_MemberMsg extends Diana_Service_Abstract
         if($isSystem){$data['msg_source'] = 0;}
         if(empty($isSystem)){//不是系统邮件就需要限制发送数据
             //获取已发送的数量
-            $modelMemberMsg = new Diana_Model_MemberMsg();
+            $modelMemberMsg = new Star_Model_MemberMsg();
             $countWithOutboxByMnanager = $modelMemberMsg->getCountWithOutboxByMnanager($data['msg_source']);
-            $modelConfig = new Diana_Model_Config();
+            $modelConfig = new Star_Model_Config();
             if(!$configMessageSendCountMember = $modelConfig->getValueByKey(null,'message_send_count_member')){
                 $this->setMsgs('配置获取失败 - message_send_count_member');
                 return false;

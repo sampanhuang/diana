@@ -1,4 +1,12 @@
 <?php
+$this->headStyle()->captureStart();
+?>
+    body {
+    background:url("/static/custom/image/bg_tue2_2560x1600.jpg");
+    background-repeat:repeat-x;
+    }
+<?php
+$this->headStyle()->captureEnd();
 if($this->step == '2'){
     echo $this->render('guest/forgetpwd_acceptmail.phtml');
 }else{
