@@ -47,7 +47,7 @@ class Diana_Model_DbTable_ManagerMsgInbox extends Diana_Model_DbTable_Abstract
             $tmpWheres = $this->getWhereByCondition("inbox_msgId",$condition["inbox_msgId"],1);
             $wheres = array_merge($wheres,$tmpWheres);
         }
-        if (!empty($condition["inbox_managerId"])) {//根据收件人来查询
+        if (!empty($condition["inbox_manId"])) {//根据收件人来查询
             $tmpWheres = array();
             $tmpWheres = $this->getWhereByCondition("inbox_manId",$condition["inbox_manId"],1);
             $wheres = array_merge($wheres,$tmpWheres);

@@ -59,6 +59,11 @@ function addTabWithParent(subtitle,url,refresh){
         parent.$('#tabs').tabs('select',subtitle);
     }
 }
+/**
+ * 创建一个框架
+ * @param url
+ * @returns {string}
+ */
 function createFrame(url)
 {
     var s = '<iframe scrolling="auto" frameborder="0"  src="'+url+'" style="width:100%;height:99%;"></iframe>';

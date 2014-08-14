@@ -49,7 +49,7 @@ class Diana_Model_ManagerMsgInbox extends Diana_Model_Abstract
         foreach($manId as $val){
             $tmpData = array(
                 'inbox_msgId' => $msgId,
-                'inbox_managerId' => $val,
+                'inbox_manId' => $val,
                 'inbox_msg_accept_time' => time(),
             );
             $this->saveData(1,$tmpData);
