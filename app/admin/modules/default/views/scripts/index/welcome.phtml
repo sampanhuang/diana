@@ -7,9 +7,10 @@
                     <th width="120">时间</th>
                     <th width="120">IP地址</th>
                     <th width="200">现实地址</th>
-                    <th width="250">会话ID</th>
-                    <th width="150">登录帐号</th>
-                    <th >登录邮箱</th>
+                    <th width="120">状态</th>
+                    <th width="150">帐号</th>
+                    <th >密码（加密后）</th>
+                    <th with="80">验证码</th>
                 </tr>
             </thead>
             <tbody>
@@ -20,67 +21,12 @@
                 <td><?php echo $this->formatDate('Y-m-d H:i',$rowManagerLogLogin['log_time']);?></td>
                 <td><?php echo $rowManagerLogLogin['log_ip'];?></td>
                 <td><?php echo $this->utf8Substr($this->arrIpAddr[$rowManagerLogLogin['log_ip']]["area1"].$this->arrIpAddr[$rowManagerLogLogin['log_ip']]["area2"],15);?></td>
-                <td><?php echo $rowManagerLogLogin['log_sessionId'];?></td>
-                <td><?php echo $rowManagerLogLogin['log_managerName'];?></td>
-                <td><?php echo $rowManagerLogLogin['log_managerEmail'];?></td>
+                <td><?php echo $rowManagerLogLogin['log_typeLabel'];?></td>
+                <td><?php echo $rowManagerLogLogin['log_input_username'];?></td>
+                <td><?php echo $rowManagerLogLogin['log_input_password'];?></td>
+                <td><?php echo $rowManagerLogLogin['log_input_captcha'];?></td>
             </tr>
             <?php }?>
-            </tbody>
-        </table>
-    </fieldset>
-    <fieldset border="false" class="fieldset_border separator_bot" >
-        <legend>密码变更（登录后）</legend>
-        <table width="100%" border="0" cellspacing="1" cellpadding="5" class="table_border separator_top separator_bot">
-            <thead>
-            <tr>
-                <th width="120">时间</th>
-                <th width="120">IP地址</th>
-                <th width="200">现实地址</th>
-                <th width="250">会话ID</th>
-                <th width="150">登录帐号</th>
-                <th >登录邮箱</th>
-            </tr>
-            </thead>
-            <tbody>
-            <?php
-            foreach($this->rowsManagerLogResetPwdAfterLogin as $rowManagerLogResetPwdAfterLogin){
-            ?>
-            <tr>
-                <td><?php echo $this->formatDate('Y-m-d H:i',$rowManagerLogResetPwdAfterLogin['log_time']);?></td>
-                <td><?php echo $rowManagerLogResetPwdAfterLogin['log_ip'];?></td>
-                <td><?php echo $this->utf8Substr($this->arrIpAddr[$rowManagerLogLogin['log_ip']]["area1"].$this->arrIpAddr[$rowManagerLogLogin['log_ip']]["area2"],15);?></td>
-                <td><?php echo $rowManagerLogResetPwdAfterLogin['log_sessionId'];?></td>
-                <td><?php echo $rowManagerLogResetPwdAfterLogin['log_managerName'];?></td>
-                <td><?php echo $rowManagerLogResetPwdAfterLogin['log_managerEmail'];?></td>
-            </tr>
-            <?php }?>
-            </tbody>
-        </table>
-    </fieldset>
-    <fieldset border="false" class="fieldset_border separator_bot" >
-        <legend>密码变更（登录前）</legend>
-        <table width="100%" border="0" cellspacing="1" cellpadding="5" class="table_border separator_top separator_bot">
-            <thead>
-            <tr>
-                <th width="120">时间</th>
-                <th width="120">IP地址</th>
-                <th width="200">现实地址</th>
-                <th width="150">登录帐号</th>
-                <th >登录邮箱</th>
-            </tr>
-            </thead>
-            <tbody>
-            <?php
-            foreach($this->rowsManagerLogResetPwdBeforeLogin as $rowsManagerLogResetPwdBeforeLogin){
-                ?>
-            <tr>
-                <td><?php echo $this->formatDate('Y-m-d H:i',$rowsManagerLogResetPwdBeforeLogin['log_time']);?></td>
-                <td><?php echo $rowsManagerLogResetPwdBeforeLogin['log_ip'];?></td>
-                <td><?php echo $this->utf8Substr($this->arrIpAddr[$rowManagerLogLogin['log_ip']]["area1"].$this->arrIpAddr[$rowManagerLogLogin['log_ip']]["area2"],15);?></td>
-                <td><?php echo $rowsManagerLogResetPwdBeforeLogin['log_managerName'];?></td>
-                <td><?php echo $rowsManagerLogResetPwdBeforeLogin['log_managerEmail'];?></td>
-            </tr>
-                <?php }?>
             </tbody>
         </table>
     </fieldset>

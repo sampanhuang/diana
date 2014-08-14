@@ -32,23 +32,11 @@ class IndexController extends Admin_Controller_Action
         //获取日志
         $serviceManagerLog = new Admin_Service_ManagerLog();
 
-        if($dataManagerLogLogin = $serviceManagerLog->makeDataGrid(array('page' => 1,'rows' => 5,'log_type' => DIANA_MANAGERLOG_TYPE_LOGIN))){
+        if($dataManagerLogLogin = $serviceManagerLog->makeDataGridBeforeLogin(array('page' => 1,'rows' => 5))){
             foreach($dataManagerLogLogin['rows'] as $tmpRow){
                 $arrIpAddr[$tmpRow['log_ip']] = '';
             }
             $this->view->rowsManagerLogLogin = $dataManagerLogLogin['rows'];//登录日志
-        }
-        if($dataManagerLogResetPwdAfterLogin = $serviceManagerLog->makeDataGrid(array('page' => 1,'rows' => 5,'log_type' => DIANA_MANAGERLOG_TYPE_RESETPWD_AFTER_LOGIN))){
-            foreach($dataManagerLogResetPwdAfterLogin['rows'] as $tmpRow){
-                $arrIpAddr[$tmpRow['log_ip']] = '';
-            }
-            $this->view->rowsManagerLogResetPwdAfterLogin = $dataManagerLogResetPwdAfterLogin['rows'];//修改密码，登录后
-        }
-        if($dataManagerLogResetPwdBeforeLogin = $serviceManagerLog->makeDataGrid(array('page' => 1,'rows' => 5,'log_type' => DIANA_MANAGERLOG_TYPE_RESETPWD_BEFORE_LOGIN))){
-            foreach($dataManagerLogResetPwdBeforeLogin['rows'] as $tmpRow){
-                $arrIpAddr[$tmpRow['log_ip']] = '';
-            }
-            $this->view->rowsManagerLogResetPwdBeforeLogin = $dataManagerLogResetPwdBeforeLogin['rows'];//修改密码，登录前
         }
         //IP转换地址
         if(!empty($arrIpAddr)){

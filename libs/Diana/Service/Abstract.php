@@ -11,6 +11,7 @@ abstract class Diana_Service_Abstract
 	
 	function __construct()
 	{
+        $this->getTranslator();
 		
 	}
 

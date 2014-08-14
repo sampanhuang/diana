@@ -57,20 +57,20 @@ class GuestController extends Diana_Controller_Action
             $this->view->emailLasttime = $cookieValue;
             $this->view->cookieNameWithEmail = $cookieName;
         }
-        $dataget = array_map("trim",array_filter($this->getRequest()->getParams()));
-        if (!empty($dataget["show_data"])) {
+        $requestParams = array_map("trim",array_filter($this->getRequest()->getParams()));
+        if (!empty($requestParams["show_data"])) {
             $this->getHelper("layout")->disableLayout();//关闭布局
             $this->getHelper("viewRenderer")->setNoRender();//关闭视图
             $show = array("stat" => 0,"msgs" => "");
-            if ($dataget["show_data"] == "login") {
-                if ($detailManager = $serviceDoorkeeper->login($dataget["email"],$dataget["passwd"],$dataget["captcha"])) {
+            if ($requestParams["show_data"] == "login") {
+                if ($detailManager =$serviceDoorkeeper ->login($requestParams["email"],$requestParams["passwd"],$requestParams["captcha"])) {
                     setcookie($cookieName, $detailManager['manager_email'], time()+311040000, "/", $_SERVER['SERVER_NAME']);
                     $show["stat"] = 1;
                 }else{
                     $show['focus'] = $serviceDoorkeeper->focus;
                     $show["msgs"] = implode(",",$serviceDoorkeeper->getMsgs());
                 }
-            }elseif ($dataget['show_data'] = 'clear-cookie'){
+            }elseif ($requestParams['show_data'] = 'clear-cookie'){
                 try {
                     setcookie($cookieName, '', time()+311040000, "/", $_SERVER['SERVER_NAME']);
                     $show['stat'] = 1;

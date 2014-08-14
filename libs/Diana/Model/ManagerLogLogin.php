@@ -21,7 +21,7 @@ class Diana_Model_ManagerLogLogin extends Diana_Model_Abstract
      */
     function write($type,$inputUserName,$inputPassword,$inputCaptcha)
     {
-        if (empty($type)||empty($id)||empty($email)||empty($name)) {
+        if (empty($type)||empty($inputUserName)||empty($inputPassword)||empty($inputCaptcha)) {
             return false;
         }
         $data = array(

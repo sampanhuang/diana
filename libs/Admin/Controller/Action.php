@@ -13,6 +13,7 @@ class Admin_Controller_Action extends Diana_Controller_Action
     var $currentManagerRoleMenu;//当前用户菜单
     var $currentManagerRoleMenuTree;//当前用户树
     var $showBreadcrumb ;//是否显示选项导航栏
+
     function init()
     {
         parent::init();
@@ -25,8 +26,8 @@ class Admin_Controller_Action extends Diana_Controller_Action
             exit();
         }
         if (!$detailManager = $serviceDoorkeeper->checkPower($this->currentModuleName,$this->currentControllerName,$this->currentActionName,$sessionManagerId)) {
-            $dataget = $this->getRequest()->getParams();
-            if ((!empty($dataget['data_ajax']))&&(!empty($dataget['show_ajax']))){
+            $requestParams = $this->getRequest()->getParams();
+            if ((!empty($requestParams['data_ajax']))&&(!empty($requestParams['show_ajax']))){
                 $tmpJsonPower = array(
                     'stat' => 0,
                     'msgs' => '很可惜啊，你没有权限进行当前操作!<br>如果有需要，请联系管理员吧<br>'.implode(';',$serviceDoorkeeper->getMsgs()),
@@ -46,20 +47,23 @@ class Admin_Controller_Action extends Diana_Controller_Action
         $this->view->currentManagerRoleMenuTree = $this->currentManagerRoleMenuTree = $detailManager['role_menuTree'];//角色资源范围
         //print_r($detailManager['breadcrumb']);
         //获取当前位置
-        $currentModuleLabel = $this->view->currentModuleLabel = $this->currentManagerRoleMenuTree[$this->currentModuleName]["menu_label"];
-        $currentControllerLabel = $this->view->currentControllerLabel = $this->currentManagerRoleMenuTree[$this->currentModuleName]["son"][$this->currentControllerName]["menu_label"];
-        $currentActionLabel = $this->view->currentActionLabel = $this->currentManagerRoleMenuTree[$this->currentModuleName]["son"][$this->currentControllerName]["son"][$this->currentActionName]["menu_label"];
+        $currentModuleLabel = $this->view->currentModuleLabel = $detailManager['currentMenu']['module']["menu_label_".DIANA_TRANSLATE_CURRENT];
+        $currentControllerLabel = $this->view->currentControllerLabel = $detailManager['currentMenu']['controller']["menu_label_".DIANA_TRANSLATE_CURRENT];
+        $currentActionLabel = $this->view->currentActionLabel = $detailManager['currentMenu']['action']["menu_label_".DIANA_TRANSLATE_CURRENT];;
 
         //当前导航
         $this->view->headTitle(implode(">",array($currentModuleLabel,$currentControllerLabel,$currentActionLabel)));
         $this->view->headTitle("[".implode("::",array_filter(array($this->currentManagerEmail,$this->currentManagerName)))."]");
         $this->view->headTitle("--".DIANA_WEBSITE_TITLE);
 
-
+        //调试信息
         $serviceConfig = new Diana_Service_Config();
         $this->debug['ajax_type'] = $serviceConfig->getValueByKey('debug_ajax_type_admin');
         $this->debug['ajax_on_clean'] = $serviceConfig->getValueByKey('debug_ajax_ob_clean_admin');
 
+        //写入日志
+        $serviceManagerLog = new Admin_Service_ManagerLog();
+        $serviceManagerLog->writeAfterLogin(implode('/',array($currentModuleLabel,$currentControllerLabel,$currentActionLabel)),$this->currentManagerId,$this->currentManagerEmail,$this->currentManagerName);
     }
 
 

@@ -12,7 +12,12 @@ class Admin_Service_ManagerLog extends Admin_Service_Abstract
 
 
     /**
-     * 填写登录前日志
+     * 用户登录日志
+     * @param $type 登录类型1成功2用户不存在3密码错误4验证码错误
+     * @param $inputUserName 用户名
+     * @param $inputPassword 密码
+     * @param $inputCaptcha 验证码
+     * @return bool
      */
     function writeBeforeLogin($type,$inputUserName,$inputPassword,$inputCaptcha)
     {
@@ -36,26 +41,25 @@ class Admin_Service_ManagerLog extends Admin_Service_Abstract
      * 写入登录后日志
      *
      */
-    function writeAfterLogin($type,$managerId,$managerEmail,$managerName,$remark = null)
+    function writeAfterLogin($title,$managerId,$managerEmail,$managerName,$remark = null)
     {
-        if (empty($type)||empty($managerId)||empty($managerEmail)||empty($managerName)) {
+        if (empty($title)||empty($managerId)||empty($managerEmail)||empty($managerName)) {
             $this->setMsgs('各项参数不能为空');
             return false;
         }
-        if ((!is_numeric($type))||(!is_numeric($managerId))||(!is_string($managerEmail))||(!is_string($managerName))) {
+        if ((!is_string($title))||(!is_numeric($managerId))||(!is_string($managerEmail))||(!is_string($managerName))) {
             $this->setMsgs('参数类型错误');
             return false;
         }
-        $remark = $this->makeRemark($type,$remark);
         $modelManagerLog = new Diana_Model_ManagerLog();
-        if (!$rowsManagerLog = $modelManagerLog->write($type,$managerId,$managerEmail,$managerName)) {
+        if (!$rowsManagerLog = $modelManagerLog->write($title,$managerId,$managerEmail,$managerName)) {
             $this->setMsgs('日志写入失败');
             return false;
         }
         $rowManagerLog = $rowsManagerLog[0];
         $logId = $rowManagerLog['log_id'];
         $modelManagerLogRemark = new Diana_Model_ManagerLogRemark();
-        if(!$rowsManagerLogRemark = $modelManagerLogRemark->write($logId,$remark)){
+        if(!$rowsManagerLogRemark = $modelManagerLogRemark->write($logId,$_POST)){
             $this->setMsgs('登录日志【备注】写入失败');
             return false;
         }
@@ -80,74 +84,8 @@ class Admin_Service_ManagerLog extends Admin_Service_Abstract
         return $state;
     }
 
-    /**
-     * 生成日志备注
-     * @param $type 日志类型
-     * @param null $data 备注内容
-     * @return array
-     */
-    function makeRemark($type,$data = null)
-    {
-        $remark = array();
-        switch($type){
-            case 110://修改个人资料
-                break;
-            case 120;//修改密保邮箱
-                break;
-            case 130;//修改登录帐号
-                break;
-            case 210://管理员登录
-                break;
-            case 221://发送密保邮件
-                break;
-            case 222://通过密保邮件取回密码
-                break;
-            case 223://通过后台修改密码
-                break;
-            case 311://通过网站申请
-                break;
-            case 312://拒绝网站申请
-                break;
-            case 320://修改网站
-                break;
-            case 330://删除网站
-                break;
-            default://
-                break;
-        }
-        return $remark;
-    }
 
-    /**
-     * 日志类型选项
-     * @return array
-     */
-    function optionsLogType()
-    {
-        return array(
-            110 => '修改个人资料',
-            120 => '修改密保邮箱',
-            130 => '修改登录帐号',
-            210 => '管理员登录',
-            221 => '发送密保邮件',
-            222 => '通过密保邮件取回密码',
-            223 => '通过后台修改密码',
-            311 => '通过网站申请',
-            312 => '拒绝网站申请',
-            320 => '修改网站',
-            330 => '删除网站',
-        );
-    }
 
-    function makeLogTypeCombobox($request = null)
-    {
-        $arrCombobox = array();
-        $optionsLogType = $this->optionsLogType();
-        foreach($optionsLogType as $typeId => $typeLabel){
-            $arrCombobox[] = array('id' => $typeId,'label'=> $typeLabel);
-        }
-        return $arrCombobox;
-    }
 
     /**
      * 查询
@@ -155,26 +93,29 @@ class Admin_Service_ManagerLog extends Admin_Service_Abstract
      * @param array $input
      * @return unknown
      */
-    function makeDataGrid($input)
+    function makeDataGridBeforeLogin($input)
     {
         $dataGrid = array('total' => 0,'rows'=>array());
         $page = $input['page'];
         $pageSize = $input['rows'];
         $condition = $this->getConditionFromSearch($input);
-        $modelManagerLog = new Diana_Model_ManagerLog();
-        $dataGrid['total'] = $modelManagerLog->getCountByCondition(null,$condition);
+        $modelManagerLogLogin = new Diana_Model_ManagerLogLogin();
+        $dataGrid['total'] = $modelManagerLogLogin->getCountByCondition(null,$condition);
         if ($dataGrid['total'] > 0) {
             $count = $pageSize;
             $offset = ($page-1)*$count;
-            $optionsLogType = $this->optionsLogType();
-            if ($dataGrid['rows'] = $modelManagerLog->getRowsByCondition(null,$condition,null,$count,$offset)) {
+            if ($dataGrid['rows'] = $modelManagerLogLogin->getRowsByCondition(null,$condition,null,$count,$offset)) {
                 foreach($dataGrid['rows'] as &$row){
-                    $row['log_typeLabel'] = $optionsLogType[$row['log_type']];
+                    $row['log_input_password'] = substr($row['log_input_password'],0,-4).'****';
+                    $row['log_typeLabel'] = $this->_translator->_('model_log_login_type_'.$row['log_type']);
                 }
             }
         }
+
+
         return $dataGrid;
     }
+
 
     /**
      * 根据ID得到详细信息
@@ -212,7 +153,6 @@ class Admin_Service_ManagerLog extends Admin_Service_Abstract
             'log_date_min' => 1,
             'log_date_max' => 1,
             'log_ip' => 1,
-            'log_type' => 1,
             'log_sessionId' => 1,
             'log_managerId' => 1,
             'log_managerName' => 1,

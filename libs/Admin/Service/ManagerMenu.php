@@ -185,18 +185,25 @@ class Admin_Service_ManagerMenu extends Admin_Service_Abstract
      * @param $module 模块
      * @param $controller 控制器
      * @param $action 选项
-     * @return bool
+     * @return array 当前ＵＲＬ所属的菜单
      */
     function check($tree,$module,$controller,$action)
     {
-        foreach($tree as $moduleId => $rowMoudle){
-            if(!empty($rowMoudle['son'])){
-                foreach($rowMoudle['son'] as $controllerId => $rowController){
+        foreach($tree as $moduleId => $rowModule){
+            if(!empty($rowModule['son'])){
+                foreach($rowModule['son'] as $controllerId => $rowController){
                     if(!empty($rowController['son'])){
                         foreach($rowController['son'] as $actionId => $rowActon){
                             $tmpUrl = parse_url($rowActon['menu_link']);
                             if(strtolower(trim($tmpUrl['path'])) == strtolower(trim(implode('/',array($module,$controller,$action))))){
-                                return true;
+                                unset($rowModule['son']);
+                                unset($rowController['son']);
+                                $currentMenu = array(
+                                    'module' => $rowModule,
+                                    'controller' => $rowController,
+                                    'action' => $rowActon,
+                                );
+                                return $currentMenu;
                             }
                         }
                     }

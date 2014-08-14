@@ -17,6 +17,8 @@ class Admin_Controller_ActionDec extends Admin_Controller_Action
     }
 
 
+
+
     function setViewPageSize()
     {
         $pageSize = $this->getRequest()->getParam('rows',DIANA_DATAGRID_PAGESIZE_ADMIN);

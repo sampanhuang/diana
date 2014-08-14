@@ -13,21 +13,22 @@ class Diana_Model_ManagerLog extends Diana_Model_Abstract
 
     /**
      * 写入日志
-     *
-     * @param int $uid 用户ID
+     * @param string $title 标题
+     * @param int $id 用户ID
      * @param string $email 邮箱
      * @param string $name 用户名
      * @return array
      */
-    function write($type,$id,$email,$name)
+    function write($title,$id,$email,$name)
     {
-        if (empty($type)||empty($id)||empty($email)||empty($name)) {
+        if (empty($title)||empty($id)||empty($email)||empty($name)) {
             return false;
         }
         $data = array(
             "log_time" => time(),
             "log_ip" => $_SERVER['REMOTE_ADDR'],
-            "log_type" => $type,
+            'log_url' => $_SERVER['REQUEST_URI'],
+            "log_title" => $title,
             "log_sessionId" => session_id(),
             "log_managerId" => $id,
             "log_managerName" => $name,

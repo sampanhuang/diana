@@ -34,20 +34,20 @@ class Admin_Service_Doorkeeper extends Admin_Service_Abstract
      * 判断当前用户是否具有权限可以进入这个功能执行模块里面
      *
      * @param string $module 模块名
-     * @param string $contro 控制器
+     * @param string $controller 控制器
      * @param string $action 选项
      * @param array $manager 用户会话信息，从session中取得，一般是从checkLogin()返回
      * @return bool
      */
-    function checkPower($module,$contro,$action,$managerId)
+    function checkPower($module,$controller,$action,$managerId)
     {
         //各项参数不能为空
-        if ((empty($module))||empty($contro)||empty($action)||empty($managerId)) {
-            $this->setMsgs("个别参数不能为空".implode(',',array($module,$contro,$action,$managerId)));
+        if ((empty($module))||empty($controller)||empty($action)||empty($managerId)) {
+            $this->setMsgs("个别参数不能为空".implode(',',array($module,$controller,$action,$managerId)));
             return false;
         }
         //各项参数类型必须正确
-        if ((!is_string($module))||(!is_string($contro))||(!is_string($action))||(!is_numeric($managerId))) {
+        if ((!is_string($module))||(!is_string($controller))||(!is_string($action))||(!is_numeric($managerId))) {
             $this->setMsgs("个别参数类型错误");
             return false;
         }
@@ -56,16 +56,14 @@ class Admin_Service_Doorkeeper extends Admin_Service_Abstract
             $this->setMsgs("无效的会话数据 - {$managerId}");
             return false;
         }
-        if($detailManager['role_admin'] == 1){
-            return $detailManager;
-        }
         //判断权限
         if($module <> 'default'){
             $serviceMenu = new Admin_Service_ManagerMenu();
-            if (!$serviceMenu->check($detailManager['role_menuTree'],$module,$contro,$action)) {
+            if (!$currentMenu = $serviceMenu->check($detailManager['role_menuTree'],$module,$controller,$action)) {
                 $this->setMsgs('你并没有载入当前功能的权限');
                 return false;
             }
+            $detailManager['currentMenu'] = $currentMenu;
         }
         return $detailManager;
     }
@@ -78,32 +76,47 @@ class Admin_Service_Doorkeeper extends Admin_Service_Abstract
      * @param string $captcha 验证码
      * @return array
      */
-    function login($email,$passwd,$captcha)
+    function login($email,$password,$captcha)
     {
         //确认外部参数是否正确
-        if (empty($email)||empty($passwd)||empty($captcha)) {
+        if (empty($email)||empty($password)||empty($captcha)) {
             $this->setMsgs("各项参数不能为空");
             return false;
         }
-        if ((!is_scalar($email))||(!is_scalar($passwd))||(!is_scalar($captcha))) {
+        if ((!is_scalar($email))||(!is_scalar($password))||(!is_scalar($captcha))) {
             $this->setMsgs("各项参数必须为标量");
             return false;
         }
+        $serviceManagerLog = new Admin_Service_ManagerLog();
+        $serviceManagerLog->getMsgs();
         //判断验证码是否正确
         $serviceCaptcha = new Diana_Service_Captcha();
         if (!$serviceCaptcha->checkCaptchaWord($captcha,"admin-manager-login")) {
             $this->focus = 3;
             $this->setMsgs($serviceCaptcha->getMsgs());
+            //写入日志
+
+            if (!$serviceManagerLog->writeBeforeLogin(4,$email,$password,$captcha)) {
+                $this->setMsgs($serviceManagerLog->getMsgs());
+            }
             return false;
         }
         //判断用户是否为正确的用户
         if (!$detailManager = $this->checkManager(null,$email)) {
             $this->focus = 1;
+            //写入日志
+            if (!$serviceManagerLog->writeBeforeLogin(3,$email,$password,$captcha)) {
+                $this->setMsgs($serviceManagerLog->getMsgs());
+            }
             return false;
         }
-        if ($detailManager['manager_passwd'] <> $passwd) {
+        if ($detailManager['manager_passwd'] <> $password) {
             $this->focus = 2;
             $this->setMsgs("密码输入错误！");
+            //写入日志
+            if (!$serviceManagerLog->writeBeforeLogin(2,$email,$password,$captcha)) {
+                $this->setMsgs($serviceManagerLog->getMsgs());
+            }
             return false;
         }
         //更新最后登录时间
@@ -111,9 +124,8 @@ class Admin_Service_Doorkeeper extends Admin_Service_Abstract
         if ($rowsManager = $modelManager->updateWithLogin($detailManager['manager_id'])) {
             $detailManager = array_merge($detailManager,$rowsManager[0]);//更新值
         }
-        //写入登录纪录
-        $serviceManagerLog = new Admin_Service_ManagerLog();
-        if (!$serviceManagerLog = $serviceManagerLog->write(210,$detailManager['manager_id'],$detailManager['manager_email'],$detailManager['manager_name'])) {
+        //写入日志
+        if (!$serviceManagerLog->writeBeforeLogin(1,$email,$password,$captcha)) {
             $this->setMsgs($serviceManagerLog->getMsgs());
         }
         //写入会话

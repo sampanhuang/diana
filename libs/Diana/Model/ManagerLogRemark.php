@@ -28,7 +28,7 @@ class Diana_Model_ManagerLogRemark extends Diana_Model_Abstract
             'log_user_agent' => $_SERVER['HTTP_USER_AGENT'],
         );
         if(!empty($remark)){
-            $data['log_remark'] = json_encode($remark);
+            $data['log_remark'] = var_export($remark,true);
         }
         return $this->saveData(1,$data);
     }
