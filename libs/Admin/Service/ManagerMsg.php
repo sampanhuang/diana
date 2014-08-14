@@ -150,14 +150,14 @@ class Admin_Service_ManagerMsg extends Admin_Service_Abstract
      */
     function deleteWithOutbox($outboxId,$managerId)
     {
+        //确认$outboxId是否正确，得到发件箱ＩＤ
         $modelManagerMsgOutbox = new Diana_Model_ManagerMsgOutbox();
         if(!$rowsManagerMsgOutbox = $modelManagerMsgOutbox->getRowsById(null,$outboxId)){
             $this->setMsgs('无效的ID');
             return false;
         }
         $delOutboxId = array();//要删除的发件消息ID
-        $delMsgId = array();//要删除的
-        $msgId = array();
+        $msgId = array();//哪一些msgId会被删除
         foreach($rowsManagerMsgOutbox as $rowManagerMsgOutbox){
             if($rowManagerMsgOutbox['outbox_manId'] == $managerId){
                 $delOutboxId[] = $rowManagerMsgOutbox['outbox_id'];
@@ -168,16 +168,12 @@ class Admin_Service_ManagerMsg extends Admin_Service_Abstract
             $this->setMsgs('删除失败');
             return false;
         }
-        $modelManagerMsg = new Diana_Model_ManagerMsg();
+
         //看看还有哪个相同msgid剩下的
-        if($rowsManagerMsgOutbox = $modelManagerMsgOutbox->getRowsByMsgManager(null,$msgId)){
-            foreach($rowsManagerMsgOutbox as $rowManagerMsgOutbox){
-                $delMsgId[] = $rowManagerMsgOutbox['outbox_msgId'];
-            }
-        }else{
-            $delMsgId = $msgId;
+        if(!$rowsManagerMsgOutbox = $modelManagerMsgOutbox->getRowsByMsgManager(null,$msgId)){
+            $modelManagerMsg = new Diana_Model_ManagerMsg();
+            $modelManagerMsg->updateInboxOutbox($msgId,null,true);
         }
-        $modelManagerMsg->updateInboxOutbox($delMsgId,null,true);
         $this->deleteWithMsg();
         return count($delOutboxId);
     }
@@ -227,7 +223,6 @@ class Admin_Service_ManagerMsg extends Admin_Service_Abstract
             return false;
         }
         $delInboxId = array();//要删除的收件消息ID
-        $delMsgId = array();//要删除的
         $msgId = array();
         foreach($rowsManagerMsgInbox as $rowManagerMsgInbox){
             if($rowManagerMsgInbox['inbox_manId'] == $managerId){
@@ -243,16 +238,12 @@ class Admin_Service_ManagerMsg extends Admin_Service_Abstract
             $this->setMsgs('数据删除失败');
             return false;
         }
-        $modelManagerMsg = new Diana_Model_ManagerMsg();
-        //看看还有哪个相同msgid剩下的
-        if($rowsManagerMsgInbox = $modelManagerMsgInbox->getRowsByMsgManager(null,$msgId)){
-            foreach($rowsManagerMsgInbox as $rowsManagerMsgInbox){
-                $delMsgId[] = $rowManagerMsgInbox['inbox_msgId'];
-            }
-        }else{
-            $delMsgId = $msgId;
+        //看看还有哪个相同msgid剩下的,如果没有了，就删除了
+        if(!$rowsManagerMsgInbox = $modelManagerMsgInbox->getRowsByMsgManager(null,$msgId)){
+            $modelManagerMsg = new Diana_Model_ManagerMsg();
+            $modelManagerMsg->updateInboxOutbox($msgId,true);
         }
-        $modelManagerMsg->updateInboxOutbox($delMsgId,true);
+
         $this->deleteWithMsg();
         return count($delInboxId);
     }

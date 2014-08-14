@@ -10,11 +10,33 @@ class Admin_Service_ManagerLog extends Admin_Service_Abstract
         parent::__construct();
     }
 
+
     /**
-     * 写入登录日志
+     * 填写登录前日志
+     */
+    function writeBeforeLogin($type,$inputUserName,$inputPassword,$inputCaptcha)
+    {
+        if (empty($type)||empty($inputUserName)||empty($inputPassword)||empty($inputCaptcha)) {
+            $this->setMsgs('各项参数不能为空');
+            return false;
+        }
+        if ((!is_scalar($type))||(!is_scalar($inputUserName))||(!is_scalar($inputPassword))||(!is_scalar($inputCaptcha))) {
+            $this->setMsgs('参数类型错误');
+            return false;
+        }
+        $modelManagerLogLogin = new Diana_Model_ManagerLogLogin();
+        if (!$rowsManagerLogLogin = $modelManagerLogLogin->write($type,$inputUserName,$inputPassword,$inputCaptcha)) {
+            $this->setMsgs('日志写入失败');
+            return false;
+        }
+        return $rowsManagerLogLogin[0];
+    }
+
+    /**
+     * 写入登录后日志
      *
      */
-    function write($type,$managerId,$managerEmail,$managerName,$remark = null)
+    function writeAfterLogin($type,$managerId,$managerEmail,$managerName,$remark = null)
     {
         if (empty($type)||empty($managerId)||empty($managerEmail)||empty($managerName)) {
             $this->setMsgs('各项参数不能为空');
@@ -198,6 +220,7 @@ class Admin_Service_ManagerLog extends Admin_Service_Abstract
         );
         return array_filter(array_intersect_key($post,$exp));
     }
+
 
     function getConditionFromSearch($formData)
     {

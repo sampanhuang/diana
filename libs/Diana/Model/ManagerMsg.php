@@ -15,6 +15,13 @@ class Diana_Model_ManagerMsg extends Diana_Model_Abstract
         $this->dt = new Diana_Model_DbTable_ManagerMsg();
     }
 
+    /**
+     * 更新邮件的原件删除状态
+     * @param $msgId
+     * @param null $inBox
+     * @param null $outBox
+     * @return array|bool
+     */
     function updateInboxOutbox($msgId,$inBox = null,$outBox = null)
     {
         if(empty($msgId)&&(empty($inBox)||empty($outBox))){
@@ -59,6 +66,10 @@ class Diana_Model_ManagerMsg extends Diana_Model_Abstract
         return $this->saveData($type,$data,$condition);
     }
 
+    /**
+     * 获取可以删除的消息原件
+     * @return array|bool
+     */
     function getIdWithDelete()
     {
         $msgId = array();

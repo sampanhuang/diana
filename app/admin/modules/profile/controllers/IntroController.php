@@ -28,19 +28,7 @@ class Profile_IntroController extends Admin_Controller_ActionDec
     function logAction()
     {
         $serviceManagerLog = new Admin_Service_ManagerLog();
-        $resultDataGridColumns = array(
 
-        );
-        //DataGridColumns
-        $configDataGridColumns = array(
-            'frozen' => array(
-
-            ),
-            'mobile' => array(
-
-            ),
-        );
-        $this->setDataGridColumns($configDataGridColumns);
         //ajax处理配置
         $configHandle = array(
             'datagrid_result' => array(//查询
