@@ -51,16 +51,8 @@ class Website_IndexController extends Admin_Controller_ActionDec
     {
         $request = $this->getRequest()->getParams();
         $serviceWebsite = new Diana_Service_Website();
-        if ($this->getRequest()->isPost()) {
-            if($request['handle'] = 'query'){
-                if(!$detailMember = $serviceWebsite->getDetail($request['query_column'],$request['query_key'])){
-                    $this->setMsgs('查询失败');
-                    $this->setMsgs($serviceWebsite->getMsgs());
-                }
-            }
-        }
-        if((empty($detailMember))&&(!empty($request['website_id']))){
-            if(!$detailMember = $serviceWebsite->getDetail('id',$request['website_id'])){
+        if($request['handle'] = 'query'){
+            if(!$detailMember = $serviceWebsite->getDetail($request['query_column'],$request['query_key'])){
                 $this->setMsgs('查询失败');
                 $this->setMsgs($serviceWebsite->getMsgs());
             }
