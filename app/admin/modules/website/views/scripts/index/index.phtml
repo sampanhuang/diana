@@ -264,7 +264,7 @@ function formatUpdateStat(val,row)
  */
 function formatWebsiteName(val,row)
 {
-    var detailLink = '<a href="javascript:addTabWithParent(\'网站导航/注册网站/网站明细\',\'/website/index/detail/website_id/' + row.website_id + '\',true)" >' + row.website_name + '</a>';
+    var detailLink = '<a href="javascript:addTabWithParent(\'网站导航/注册网站/网站明细\',\'/website/index/detail/handle/query/query_column/id/query_key/' + row.website_id + '\',true)" >' + row['website_name_<?php echo DIANA_TRANSLATE_CURRENT;?>'] + '</a>';
     //var modifyLink = '<a href="javascript:addTabWithParent(\'会员管理/注册会员/会员明细\',\'/apply/website-register/detail/register_id/'+row.register_id+'\',true)" >编辑</a>'
     //return detailLink + '&nbsp;' +  modifyLink ;
     return detailLink;
@@ -337,7 +337,7 @@ function formatWebsiteName(val,row)
             echo '<th data-options="field:\'website_update_count\',width:80">更新次数</th>';
         }
         ?>
-        <th data-options="field:'website_name',width:120" formatter="formatWebsiteName">网站名称</th>
+        <th data-options="field:'website_name_<?php echo DIANA_TRANSLATE_CURRENT;?>',width:150" formatter="formatWebsiteName">网站名称</th>
         <th data-options="field:'website_domain',width:200,align:'left'" >网站域名</th>
         <th data-options="field:'website_areaId',width:120,align:'left'"  formatter="formatWebsiteArea">地区</th>
         <th data-options="field:'website_categoryId',width:120,align:'left'"  formatter="formatWebsiteCategory">类别</th>
@@ -348,8 +348,8 @@ function formatWebsiteName(val,row)
     </thead>
     <thead>
     <tr>
-        <th data-options="field:'website_apply_time',width:180,align:'left'"  formatter="formatTimeStamp">网站注册时间</th>
-        <th data-options="field:'website_insert_time',width:180,align:'left'" formatter="formatTimeStamp">网站审核时间</th>
+        <th data-options="field:'website_apply_time',width:120,align:'left'"  formatter="formatTimeStamp">网站注册时间</th>
+        <th data-options="field:'website_insert_time',width:120,align:'left'" formatter="formatTimeStamp">网站审核时间</th>
     </tr>
     </thead>
 </table>
