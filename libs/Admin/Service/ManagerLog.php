@@ -14,23 +14,25 @@ class Admin_Service_ManagerLog extends Admin_Service_Abstract
     /**
      * 用户登录日志
      * @param $type 登录类型1成功2用户不存在3密码错误4验证码错误
+     * @param $manId 用户ID
      * @param $inputUserName 用户名
      * @param $inputPassword 密码
      * @param $inputCaptcha 验证码
      * @return bool
      */
-    function writeBeforeLogin($type,$inputUserName,$inputPassword,$inputCaptcha)
+    function writeBeforeLogin($type = 0,$manId = 0,$inputUserName,$inputPassword,$inputCaptcha)
     {
         if (empty($type)||empty($inputUserName)||empty($inputPassword)||empty($inputCaptcha)) {
             $this->setMsgs('各项参数不能为空');
             return false;
         }
+
         if ((!is_scalar($type))||(!is_scalar($inputUserName))||(!is_scalar($inputPassword))||(!is_scalar($inputCaptcha))) {
             $this->setMsgs('参数类型错误');
             return false;
         }
         $modelManagerLogLogin = new Diana_Model_ManagerLogLogin();
-        if (!$rowsManagerLogLogin = $modelManagerLogLogin->write($type,$inputUserName,$inputPassword,$inputCaptcha)) {
+        if (!$rowsManagerLogLogin = $modelManagerLogLogin->write($type,$manId,$inputUserName,$inputPassword,$inputCaptcha)) {
             $this->setMsgs('日志写入失败');
             return false;
         }
@@ -85,15 +87,41 @@ class Admin_Service_ManagerLog extends Admin_Service_Abstract
     }
 
 
-
-
     /**
-     * 查询
+     * 查询登录日志
      *
      * @param array $input
      * @return unknown
      */
-    function makeDataGridBeforeLogin($input)
+    function makeDataGrid($input)
+    {
+        $dataGrid = array('total' => 0,'rows'=>array());
+        $page = $input['page'];
+        $pageSize = $input['rows'];
+        $condition = $this->getConditionFromSearch($input);
+        $modelManagerLog = new Diana_Model_ManagerLog();
+        $dataGrid['total'] = $modelManagerLog->getCountByCondition(null,$condition);
+        if ($dataGrid['total'] > 0) {
+            $count = $pageSize;
+            $offset = ($page-1)*$count;
+            if ($dataGrid['rows'] = $modelManagerLog->getRowsByCondition(null,$condition,null,$count,$offset)) {
+                foreach($dataGrid['rows'] as &$row){
+                    $row['log_input_password'] = substr($row['log_input_password'],0,-4).'****';
+                    $row['log_typeLabel'] = $this->_translator->_('model_log_login_type_'.$row['log_type']);
+                }
+            }
+        }
+        return $dataGrid;
+    }
+
+
+    /**
+     * 查询登录日志
+     *
+     * @param array $input
+     * @return unknown
+     */
+    function makeDataGridWithLogin($input)
     {
         $dataGrid = array('total' => 0,'rows'=>array());
         $page = $input['page'];
@@ -111,8 +139,6 @@ class Admin_Service_ManagerLog extends Admin_Service_Abstract
                 }
             }
         }
-
-
         return $dataGrid;
     }
 
@@ -131,13 +157,47 @@ class Admin_Service_ManagerLog extends Admin_Service_Abstract
             return false;
         }
         $detailManagerLog = $rowsManagerLog[0];
-        $optionsLogType = $this->optionsLogType();
-        $detailManagerLog['log_typeLabel'] = $optionsLogType[$detailManagerLog['log_type']];
         $modelManagerLogRemark = new Diana_Model_ManagerLogRemark();
         if($rowsManagerLogRemark = $modelManagerLogRemark->getRowsById(null,$logId)){
             $detailManagerLog = array_merge($detailManagerLog,$rowsManagerLogRemark[0]);
         }
         return $detailManagerLog;
+    }
+
+    /**
+     * 根据ID得到详细信息
+     * @param $input
+     * @return array|bool
+     */
+    function getDetailByIdWithLogin($input)
+    {
+        $logId = $input['log_id'];
+        $modelManagerLogLogin = new Diana_Model_ManagerLogLogin();
+        if(!$rowsManagerLogLogin = $modelManagerLogLogin->getRowsById(null,$logId)){
+            $this->setMsgs("无效的ID");
+            return false;
+        }
+        $detailManagerLogLogin = $rowsManagerLogLogin[0];
+        $detailManagerLogLogin['log_typeLabel'] = $this->_translator->_('model_log_login_type_'.$detailManagerLogLogin['log_type']);
+        return $detailManagerLogLogin;
+    }
+
+    /**
+     * 获取登录日志
+     * @return array
+     */
+    function optionsTypeLabelWithLogin()
+    {
+        //登录状态类型
+        $logTypeIds = array(1,2,3,4);
+        $logTypeLabel = array();
+        foreach($logTypeIds as $logTypeId){
+            $logTypeLabel[] = array(
+                'id' => $logTypeId,
+                'label' =>$this->_translator->_('model_log_login_type_'.$logTypeId),
+            );
+        }
+        return $logTypeLabel;
     }
 
 

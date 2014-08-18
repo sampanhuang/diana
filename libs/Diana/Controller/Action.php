@@ -10,10 +10,16 @@ class Diana_Controller_Action extends Zend_Controller_Action
 	var $currentModuleName;
 	var $currentControllerName;
 	var $currentActionName;
+    var $requestParams;//外部请求参数，包含POST
+    var $requestParamsPost;//外部请求参数，只包含POST
 	
 	function init()
 	{
 		parent::init();
+        $this->requestParams = $this->view->requestParams = $this->getRequest()->getParams();
+        if ($this->getRequest()->isPost()) {
+            $this->requestParamsPost = $this->view->requestParamsPost = $this->getRequest()->getPost();
+        }
 		$this->view->addBasePath(DIANA_APP_DIR."/views");
 		//获取当前位置
 		$this->view->currentModuleName = $this->currentModuleName = $this->getRequest()->getModuleName();//获取当前模块
@@ -21,16 +27,14 @@ class Diana_Controller_Action extends Zend_Controller_Action
 		$this->view->currentActionName = $this->currentActionName = $this->getRequest()->getActionName();//获取当前选项
 
         //打印JSON
-        $request = $this->getRequest()->getParams();
-        if ((!empty($request['show_ajax']))||(!empty($request['ajax_show']))) {//打印ajax
+        if ((!empty($this->requestParams['show_ajax']))||(!empty($this->requestParams['ajax_show']))) {//打印ajax
             $this->getHelper("layout")->disableLayout();//关闭布局
             $this->getHelper("viewRenderer")->setNoRender();//关闭视图
-            if ($request['show_ajax'] == 'json' || $request['ajax_show'] == 'json') {
+            if ($this->requestParams['show_ajax'] == 'json' || $this->requestParams['ajax_show'] == 'json') {
                 ob_clean();
                 header('content-type: application/json; charset=utf-8');
             }
         }
-
         //调试模式设定
         $this->debug = array(
             'ajax_type' => 'GET',//AJAX清求方法
@@ -108,8 +112,8 @@ class Diana_Controller_Action extends Zend_Controller_Action
      */
     function handleAjax($configHandle)
     {
-        $request = $configHandle['_input']?$configHandle['_input']:$this->getRequest()->getParams();
-        $ajaxPrint = strtolower(trim($request['ajax_print']));//打印方式，如果是json则是json，如果是xml则是xml
+        $input = $configHandle['_input']?$configHandle['_input']:$this->requestParams;
+        $ajaxPrint = strtolower(trim($input['ajax_print']));//打印方式，如果是json则是json，如果是xml则是xml
         if(empty($ajaxPrint)){
             return false;
         }
@@ -172,7 +176,7 @@ class Diana_Controller_Action extends Zend_Controller_Action
      */
     function decHandle($configHandle)
     {
-        $request = $configHandle['_input']?$configHandle['_input']:$this->getRequest()->getParams();
+        $request = $configHandle['_input']?$configHandle['_input']:$this->requestParams;
         $reqHandle = strtolower(trim($request['req_handle']));//请求处理的事务
         //如果不是ajax请求，则忽略
         if(empty($reqHandle)){
@@ -195,7 +199,6 @@ class Diana_Controller_Action extends Zend_Controller_Action
             $this->setMsgs('无效的方法 - '.$method);
             return false;
         }
-
         //执行查询
         $result = $object->$method($input);
         $this->setMsgs($object->getMsgs());

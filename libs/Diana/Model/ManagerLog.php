@@ -24,10 +24,15 @@ class Diana_Model_ManagerLog extends Diana_Model_Abstract
         if (empty($title)||empty($id)||empty($email)||empty($name)) {
             return false;
         }
+        $logIsPost = 1;
+        if(empty($_POST)){
+            $logIsPost = 2;
+        }
         $data = array(
             "log_time" => time(),
             "log_ip" => $_SERVER['REMOTE_ADDR'],
             'log_url' => $_SERVER['REQUEST_URI'],
+            "log_post" => $logIsPost,
             "log_title" => $title,
             "log_sessionId" => session_id(),
             "log_managerId" => $id,

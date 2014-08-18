@@ -21,10 +21,9 @@ class Profile_MessageController extends Admin_Controller_Action
         $dataGet = $this->view->dataget = $this->getRequest()->getParams();
         $queryGrid = array('show_ajax' => 'json','data_ajax' => 'datagrid_msg');
         $serviceManagerMsg = new Admin_Service_ManagerMsg();
-        if ($this->getRequest()->isPost()) {
-            $dataPost = $this->getRequest()->getPost();
-            $this->view->datapost = $dataPost;
-            $queryGridPost = $serviceManagerMsg->filterFormSearchAboutInbox($dataPost);
+        if (!empty($this->requestParamsPost)) {
+            $this->view->datapost = $this->requestParamsPost;
+            $queryGridPost = $serviceManagerMsg->filterFormSearchAboutInbox($this->requestParamsPost);
             $queryGrid = array_merge($queryGrid,$queryGridPost);
         }
         $this->view->queryGrid = $queryGrid;

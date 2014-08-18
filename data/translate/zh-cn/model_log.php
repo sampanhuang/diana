@@ -25,6 +25,7 @@ return array(
     "model_log_user_agent" => '用户代理',
     "model_log_remark" => '日志备注',
     'model_log_login_type' => '登录状态',
+    'model_log_login_type_0' => '请选择',
     'model_log_login_type_1' => '登录成功',
     'model_log_login_type_2' => '密码不正确',
     'model_log_login_type_3' => '用户/邮箱不存在',

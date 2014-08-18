@@ -96,7 +96,7 @@ class Admin_Service_Doorkeeper extends Admin_Service_Abstract
             $this->setMsgs($serviceCaptcha->getMsgs());
             //写入日志
 
-            if (!$serviceManagerLog->writeBeforeLogin(4,$email,$password,$captcha)) {
+            if (!$serviceManagerLog->writeBeforeLogin(4,0,$email,$password,$captcha)) {
                 $this->setMsgs($serviceManagerLog->getMsgs());
             }
             return false;
@@ -105,7 +105,7 @@ class Admin_Service_Doorkeeper extends Admin_Service_Abstract
         if (!$detailManager = $this->checkManager(null,$email)) {
             $this->focus = 1;
             //写入日志
-            if (!$serviceManagerLog->writeBeforeLogin(3,$email,$password,$captcha)) {
+            if (!$serviceManagerLog->writeBeforeLogin(3,0,$email,$password,$captcha)) {
                 $this->setMsgs($serviceManagerLog->getMsgs());
             }
             return false;
@@ -114,7 +114,7 @@ class Admin_Service_Doorkeeper extends Admin_Service_Abstract
             $this->focus = 2;
             $this->setMsgs("密码输入错误！");
             //写入日志
-            if (!$serviceManagerLog->writeBeforeLogin(2,$email,$password,$captcha)) {
+            if (!$serviceManagerLog->writeBeforeLogin(2,$detailManager['manager_id'],$email,$password,$captcha)) {
                 $this->setMsgs($serviceManagerLog->getMsgs());
             }
             return false;
@@ -125,7 +125,7 @@ class Admin_Service_Doorkeeper extends Admin_Service_Abstract
             $detailManager = array_merge($detailManager,$rowsManager[0]);//更新值
         }
         //写入日志
-        if (!$serviceManagerLog->writeBeforeLogin(1,$email,$password,$captcha)) {
+        if (!$serviceManagerLog->writeBeforeLogin(1,$detailManager['manager_id'],$email,$password,$captcha)) {
             $this->setMsgs($serviceManagerLog->getMsgs());
         }
         //写入会话

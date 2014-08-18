@@ -67,6 +67,11 @@ class Diana_Model_DbTable_ManagerLogLogin extends Diana_Model_DbTable_Abstract
             $tmpWheres = $this->getWhereByCondition("log_type",$condition["log_type"],2);
             $wheres = array_merge($wheres,$tmpWheres);
         }
+        if (!empty($condition["log_manId"])) {//IP地址
+            $tmpWheres = array();
+            $tmpWheres = $this->getWhereByCondition("log_manId",$condition["log_manId"],2);
+            $wheres = array_merge($wheres,$tmpWheres);
+        }
 
         return $wheres;
     }

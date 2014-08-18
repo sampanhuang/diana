@@ -50,7 +50,10 @@ $(function(){
      */
     function formatAction(val,row)
     {
-        var detailLink = '<a href="javascript:openWindowManagerLogDetail(\'dialog-manager-log-detail\','+ row.log_id +')">明细</a>';
+        var detailLink = '无';
+        if(row.log_post == 1){
+            detailLink = '<a href="javascript:openWindowManagerLogDetail(\'dialog-manager-log-detail\','+ row.log_id +')">POST内容</a>';
+        }
         return detailLink;
     }
     function openWindowManagerLogDetail(div_id,log_id)
@@ -59,10 +62,10 @@ $(function(){
             //top:($(window).height() - 690) * 0.5,
             //left:($(window).width() - 390) * 0.5,
             closed:false,
-            width:690,
-            height:390,
+            width:730,
+            height:500,
             title: '日志明细',
-            href:'/system/manager/log/log_detail/yes/log_id/' + log_id
+            href:'/profile/intro/log/log_detail/yes/log_id/' + log_id
         });
     }
 </script>
@@ -81,23 +84,8 @@ $(function(){
                 <tr>
                     <th width="10%">IP地址</th>
                     <td width="40%"><input type="text" name="log_ip" id="input_log_ip" style="width:80%;" value="<?php echo $this->datapost['log_ip'];?>" /></td>
-                    <th width="10%">日志类型</th>
-                    <td width="40%">
-                        <input type="text" name="log_typeLabel" id="input_log_typeLabel" class="easyui-combobox" style="width:300px;"  " />
-                        <input id="input_log_type" name="log_type" type="hidden" value="<?php echo $this->datapost['log_type'];?>"
-                    </td>
-                </tr>
-                <tr>
                     <th width="10%">会话ID</th>
                     <td width="40%"><input type="text" name="log_sessionId" id="input_log_sessionId" style="width:80%;" value="<?php echo $this->datapost['log_sessionId'];?>" /></td>
-                    <th width="10%"></th>
-                    <td width="40%"></td>
-                </tr>
-                <tr>
-                    <th width="10%">管理员邮箱</th>
-                    <td width="40%"><input type="text" name="log_managerEmail" id="input_log_managerEmail" style="width:80%;" value="<?php echo $this->datapost['log_managerEmail'];?>" /></td>
-                    <th width="10%">管理员姓名</th>
-                    <td width="40%"><input type="text" name="log_managerName" id="input_log_managerName" style="width:80%;"  value="<?php echo $this->datapost['log_managerName'];?>" /></td>
                 </tr>
             </table>
         </form>
@@ -126,18 +114,12 @@ $(function(){
     <tr>
         <!--<th data-options="field:'ck',checkbox:true"></th>
         <th data-options="field:'log_id',width:60">流水号</th>-->
-        <th data-options="field:'log_time',width:120,align:'left'" formatter="formatTimeStamp">时间</th>
-        <th data-options="field:'log_ip',width:100,align:'left'" >IP地址</th>
-        <th data-options="field:'log_typeLabel',width:100,align:'left'" >类型</th>
+        <th data-options="field:'log_time',width:150,align:'left'" formatter="formatTimeStamp">时间</th>
+        <th data-options="field:'log_ip',width:120,align:'left'" >IP地址</th>
         <th data-options="field:'log_sessionId',width:200,align:'left'" >会话ID</th>
-        <th data-options="field:'log_action',width:100,align:'left'" formatter="formatAction">选项</th>
-    </tr>
-    </thead>
-    <thead>
-    <tr>
-        <th data-options="field:'log_managerId',width:100,align:'left'" >管理员ID</th>
-        <th data-options="field:'log_managerEmail',width:200,align:'left'" >管理员邮箱</th>
-        <th data-options="field:'log_managerName',width:200,align:'left'">管理员姓名</th>
+        <th data-options="field:'log_post',width:80,align:'left'" formatter="formatAction">POST内容</th>
+        <th data-options="field:'log_title',width:200,align:'left'" >标题</th>
+        <th data-options="field:'log_url',width:400,align:'left'" >访问URL</th>
     </tr>
     </thead>
 </table>

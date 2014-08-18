@@ -6,7 +6,7 @@
 function formatTimeStamp(time)
 {
     if (time > 0){
-        return date('Y-m-d H:i',time)
+        return date('Y-m-d H:i:s',time)
     } else {
         return '';
     }

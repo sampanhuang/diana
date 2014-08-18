@@ -19,18 +19,19 @@ class Diana_Model_ManagerLogLogin extends Diana_Model_Abstract
      * @param $inputCaptcha 验证码
      * @return array|bool
      */
-    function write($type,$inputUserName,$inputPassword,$inputCaptcha)
+    function write($type,$manId = 0,$inputUserName,$inputPassword,$inputCaptcha)
     {
         if (empty($type)||empty($inputUserName)||empty($inputPassword)||empty($inputCaptcha)) {
             return false;
         }
         $data = array(
-            "log_time" => time(),
-            "log_ip" => $_SERVER['REMOTE_ADDR'],
-            "log_type" => $type,
-            "log_input_username" => $inputUserName,
-            "log_input_password" => $inputPassword,
-            "log_input_captcha" => $inputCaptcha,
+            'log_time' => time(),
+            'log_ip' => $_SERVER['REMOTE_ADDR'],
+            'log_type' => $type,
+            'log_manId' => $manId,
+            'log_input_username' => $inputUserName,
+            'log_input_password' => $inputPassword,
+            'log_input_captcha' => $inputCaptcha,
         );
         return $this->saveData(1,$data);
     }
@@ -43,9 +44,7 @@ class Diana_Model_ManagerLogLogin extends Diana_Model_Abstract
      */
     function getRowsById($refresh = null,$id)
     {
-        $condition = array("log_id" => $id);
+        $condition = array('log_id' => $id);
         return $this->getRowsByCondition($refresh,$condition);
     }
-
-
 }

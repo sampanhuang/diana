@@ -10,19 +10,25 @@
                     <td width="35%"><?php echo $this->detailManagerLog['log_ip']; ?></td>
                 </tr>
                 <tr>
-                    <th>类型</th>
-                    <td><?php echo $this->detailManagerLog['log_typeLabel']; ?></td>
-                    <th>会话ID</th>
-                    <td><?php echo $this->detailManagerLog['log_sessionId']; ?></td>
+                    <th>管理员姓名</th>
+                    <td><?php echo $this->detailManagerLog['log_managerName']; ?></td>
+                    <th>管理员邮箱</th>
+                    <td><?php echo $this->detailManagerLog['log_managerEmail']; ?></td>
                 </tr>
                 <tr>
-                    <th>管理员邮箱</th>
-                    <td><?php echo $this->detailManagerLog['log_managerName']; ?></td>
-                    <th>管理员姓名</th>
-                    <td><?php echo $this->detailManagerLog['log_managerEmail']; ?></td>
+                    <th>会话ID</th>
+                    <td><?php echo $this->detailManagerLog['log_sessionId']; ?></td>
+                    <th>标题</th>
+                    <td><?php echo $this->detailManagerLog['log_title']; ?></td>
                 </tr>
             </table>
         </fieldset>
+        <?php if(!empty($this->detailManagerLog['log_user_agent'])){?>
+            <fieldset border="false" class="fieldset_border separator_bot">
+                <legend>URL信息</legend>
+                <p><?php echo $this->detailManagerLog['log_url']; ?></td></p>
+            </fieldset>
+        <?php }?>
         <?php if(!empty($this->detailManagerLog['log_user_agent'])){?>
         <fieldset border="false" class="fieldset_border separator_bot">
             <legend>浏览器信息</legend>
@@ -32,7 +38,7 @@
         <?php if(!empty($this->detailManagerLog['log_remark'])){?>
         <fieldset border="false" class="fieldset_border separator_bot">
             <legend>备注信息</legend>
-            <p><?php echo $this->detailManagerLog['log_remark']; ?></p>
+            <pre><?php echo $this->detailManagerLog['log_remark']; ?></pre>
         </fieldset>
         <?php }?>
     <?php }?>

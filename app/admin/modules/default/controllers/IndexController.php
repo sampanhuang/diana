@@ -8,7 +8,6 @@ class IndexController extends Admin_Controller_Action
 	function init()
 	{
 		parent::init();
-		
 	}
 	
 	/**
@@ -32,7 +31,7 @@ class IndexController extends Admin_Controller_Action
         //获取日志
         $serviceManagerLog = new Admin_Service_ManagerLog();
 
-        if($dataManagerLogLogin = $serviceManagerLog->makeDataGridBeforeLogin(array('page' => 1,'rows' => 5))){
+        if($dataManagerLogLogin = $serviceManagerLog->makeDataGridWithLogin(array('page' => 1,'rows' => 5))){
             foreach($dataManagerLogLogin['rows'] as $tmpRow){
                 $arrIpAddr[$tmpRow['log_ip']] = '';
             }
