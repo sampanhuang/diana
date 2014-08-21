@@ -70,6 +70,46 @@ class Diana_Model_Manager extends Diana_Model_Abstract
     }
 
     /**
+     * 变更密码
+     *
+     * @param int $id 用户ID
+     * @param string $newPwd 新密码
+     * @return array
+     */
+    function updateWithName($id,$name)
+    {
+        $data = array(
+            "manager_name" => $name,
+            "manager_name_change_time" => time(),
+            "manager_name_change_ip" => $_SERVER['REMOTE_ADDR'],
+            "manager_name_change_count" => new Zend_Db_Expr("manager_name_change_count + 1"),
+        );
+        $condition = array("manager_id" => $id);
+        return $this->saveData(2,$data,$condition);
+    }
+
+    /**
+     * 变更密码
+     *
+     * @param int $id 用户ID
+     * @param string $newPwd 新密码
+     * @return array
+     */
+    function updateWithEmail($id,$email)
+    {
+        $data = array(
+            "manager_email" => $email,
+            "manager_email_change_time" => time(),
+            "manager_email_change_ip" => $_SERVER['REMOTE_ADDR'],
+            "manager_email_change_count" => new Zend_Db_Expr("manager_email_change_count + 1"),
+        );
+        $condition = array("manager_id" => $id);
+        return $this->saveData(2,$data,$condition);
+    }
+
+
+
+    /**
      * 用于登录的更新
      *
      */

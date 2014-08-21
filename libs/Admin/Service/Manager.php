@@ -127,42 +127,36 @@ class Admin_Service_Manager extends Admin_Service_Abstract
             $this->setMsgs('错误的用户ID');
             return false;
         }
-        $managerName = $rowsManager[0]['manager_name'];
-        $managerEmail = $rowsManager[0]['manager_email'];
-        $logType = 0;//日志类型
-        $logRemark = array('old'=>'','new' => $input);//日志备注
+        $tmpMethodNameExists = '';//判断对象（帐号、邮箱）是否存在的方法名
+        $tmpMethodNameUpdate = '';//更新对象（帐号、邮箱）值的方法名
+        $tmpManagerField = '';
+        $tmpManagerFieldLabel = '';
         if($type == 'name'){//帐号判断
-            if(strtolower($input) == strtolower($managerName)){
-                $this->setMsgs('未进行任何帐号变更操作');
-                return false;
-            }
-            if(!$this->isExistsWithName($input,$id)){
-                $this->setMsgs('帐号'.$input.'已经被使用');
-                return false;
-            }
-            $logType =130;
-            $logRemark['old'] = $managerName;
-            $dataUpdate = array('manager_name' => $input);
+            $tmpManagerField = 'manager_name';
+            $tmpManagerFieldLabel = '帐号';
+            $tmpMethodNameExists = 'isExistsWithName';
+            $tmpMethodNameUpdate = 'updateWithName';
         }elseif($type == 'email'){//邮箱判官
-            if(strtolower($input) == strtolower($managerEmail)){
-                $this->setMsgs('未进行任何邮箱变更操作');
-                return false;
-            }
-            if(!$this->isExistsWithEmail($input,$id)){
-                $this->setMsgs('邮箱'.$input.'已经被使用');
-                return false;
-            }
-            $logType =120;
-            $logRemark['old'] = $managerEmail;
-            $dataUpdate = array('manager_email' => $input);
-
+            $tmpManagerField = 'manager_email';
+            $tmpManagerFieldLabel = '邮箱';
+            $tmpMethodNameExists = 'isExistsWithName';
+            $tmpMethodNameUpdate = 'updateWithEmail';
         }else{
             $this->setMsgs('无效的参数Type');
             return false;
         }
+        //判断今晚有咩变更
+        if(strtolower($input) == strtolower($rowsManager[0][$tmpManagerField])){
+            $this->setMsgs('未进行任何'.$tmpManagerFieldLabel.'变更操作');
+            return false;
+        }
+        if(!$this->$tmpMethodNameExists($input,$id)){
+            $this->setMsgs($tmpManagerFieldLabel.$input.'已经被使用');
+            return false;
+        }
         //更新数据
-        if(!$modelManager->saveData(2,$dataUpdate,array('manager_id' => $id))){
-            $this->setMsgs('数据保存失败!');
+        if(!$modelManager->$tmpMethodNameUpdate($id,$input)){
+            $this->setMsgs($tmpManagerFieldLabel.'保存失败!');
             return false;
         }
         //写入新session
@@ -172,12 +166,6 @@ class Admin_Service_Manager extends Admin_Service_Abstract
         }
         $serviceDoorkeeper = new Admin_Service_Doorkeeper();
         $serviceDoorkeeper->writeSession($detailManager);
-        //更新日志
-        $serviceManagerLog = new Admin_Service_ManagerLog();
-        if (!$serviceManagerLog->write($logType,$id,$detailManager['manager_email'],$detailManager['manager_name'],$logRemark)) {
-            $this->setMsgs('当前用户【'.$detailManager['manager_email'].'】密码变更日志写入失败');
-            //return false;//日志更新失败不鸟他
-        }
         return $detailManager;
     }
 

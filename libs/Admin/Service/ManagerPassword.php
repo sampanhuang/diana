@@ -237,12 +237,6 @@ class Admin_Service_ManagerPassword extends Admin_Service_Abstract
             $this->setMsgs("密码更新失败");
             return false;
         }
-        //写入纪录
-        $serviceManagerLog = new Admin_Service_ManagerLog();
-        if (!$serviceManagerLog->write(223,$id,$email,$name)) {
-            $this->setMsgs("当前用户【{$email}】密码变更日志写入失败");
-            //return false;
-        }
         return true;
     }
 

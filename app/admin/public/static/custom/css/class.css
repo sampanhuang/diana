@@ -5,6 +5,8 @@ p.footer {
 /*分隔专用*/
 .separator_top{margin-top:5px;}
 .separator_bot{margin-bottom:5px;}
+.separator_left{margin-left:5px;}
+
 /*div灰色底框专用*/
 .div_bg_fa{padding:5px;background: #fafafa;}
 .div_btn{
