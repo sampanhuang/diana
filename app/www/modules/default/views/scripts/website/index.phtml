@@ -22,14 +22,16 @@ if(!empty($this->indexContent)){
             <?php
             //print_r($continentContent['website']['new']);
             for($i = 0 ; $i<15;$i++){
+                $tmpWebsite = $continentContent['website']['new'][$i];
+                //print_r($tmpWebsite);
                 if($i%5 == 0 && $i>0){
                     echo '</tr><tr>';
                 }
                 echo '<td width="20%">';
-                if(!empty($continentContent['website']['new'][$i])){
-                    echo '<a href="'.$this->url(array("action" => "detail","website_id" => $continentContent['website']['new'][$i]['website_id'])).'"  title="'.$continentContent['website']['new'][$i]['website_name_'.DIANA_TRANSLATE_CURRENT].'" target="_blank"><h5>'.$this->utf8Substr($continentContent['website']['new'][$i]['website_name_'.DIANA_TRANSLATE_CURRENT],10).'</h5></a>';
-                    echo '<span class="muted">'.$this->utf8Substr($this->allWebsiteArea[$continentContent['website']['new'][$i]['website_areaId']]['area_name_'.DIANA_TRANSLATE_CURRENT],10).'&nbsp;&nbsp;'.$this->utf8Substr($this->allWebsiteCategory[$continentContent['website']['new'][$i]['website_categoryId']]['category_name_'.DIANA_TRANSLATE_CURRENT],10).'</span><br>';
-                    echo '<span class="muted">'.$this->utf8Substr($continentContent['website']['new'][$i]['website_domain'],32).'</span>';
+                if(!empty($tmpWebsite)){
+                    echo '<a href="'.$this->url(array("action" => "detail","website_id" => $tmpWebsite['website_id'])).'"  title="'.$tmpWebsite['website_name'].'" target="_blank"><h5>'.$this->utf8Substr($tmpWebsite['website_name'],10).'</h5></a>';
+                    echo '<span class="muted">'.$this->utf8Substr($this->allWebsiteArea[$tmpWebsite['website_areaId']]['area_name_'.DIANA_TRANSLATE_CURRENT],10).'&nbsp;&nbsp;'.$this->utf8Substr($this->allWebsiteCategory[$tmpWebsite['website_categoryId']]['category_name_'.DIANA_TRANSLATE_CURRENT],10).'</span><br>';
+                    echo '<span class="muted">'.$this->utf8Substr($tmpWebsite['website_domain'],32).'</span>';
                 }
                 echo '</td>';
             }

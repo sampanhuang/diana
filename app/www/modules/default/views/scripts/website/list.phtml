@@ -67,7 +67,7 @@
                         }
                         echo '<td width="20%">';
                         if(!empty($this->paginator['rows'][$i])){
-                            echo '<a href="'.$this->url(array("action" => "detail","website_id" => $this->paginator['rows'][$i]['website_id'])).'"  title="'.$this->paginator['rows'][$i]['website_name_'.DIANA_TRANSLATE_CURRENT].'" target="_blank"><h5>'.$this->utf8Substr($this->paginator['rows'][$i]['website_name_'.DIANA_TRANSLATE_CURRENT],10).'</h5></a>';
+                            echo '<a href="'.$this->url(array("action" => "detail","website_id" => $this->paginator['rows'][$i]['website_id'])).'"  title="'.$this->paginator['rows'][$i]['website_name'].'" target="_blank"><h5>'.$this->utf8Substr($this->paginator['rows'][$i]['website_name'],10).'</h5></a>';
                             echo '<span class="muted">'.$this->utf8Substr($this->allWebsiteArea[$this->paginator['rows'][$i]['website_areaId']]['area_name_'.DIANA_TRANSLATE_CURRENT],10).'&nbsp;&nbsp;'.$this->utf8Substr($this->allWebsiteCategory[$this->paginator['rows'][$i]['website_categoryId']]['category_name_'.DIANA_TRANSLATE_CURRENT],10).'</span><br>';
                             echo '<span class="muted">'.$this->utf8Substr($this->paginator['rows'][$i]['website_domain'],32).'</span>';
                         }

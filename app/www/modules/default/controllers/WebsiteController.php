@@ -33,9 +33,11 @@ class WebsiteController extends Www_Controller_Action
         //获取全部分类信息
         $serviceWebsiteCategory = new Diana_Service_WebsiteCategory();
         $this->view->allWebsiteCategory = $allWebsiteCategory = $serviceWebsiteCategory->getAll(null,'website');
+        //print_r($allWebsiteCategory);
         //获取全部地区信息
         $serviceWebsiteArea = new Diana_Service_WebsiteArea();
         $this->view->allWebsiteArea = $allWebsiteArea = $serviceWebsiteArea->getAll(null,'website');
+        //print_r($allWebsiteArea);
         //分类或是地区数据需要事先定义
         if(empty($allWebsiteArea) || empty($allWebsiteCategory)){
         	$this->setMsgs('分类或是地区数据需要事先定义');
@@ -268,7 +270,7 @@ class WebsiteController extends Www_Controller_Action
         }
         //获取网站分类代码
         $serviceWebsiteCategory = new Diana_Service_WebsiteCategory();
-        $this->view->websiteCategoryIds = $serviceWebsiteCategory->getIds();
+        $this->view->allWebsiteCategory = $serviceWebsiteCategory->getAll();
         //获取洲与国家代码
         $serviceWebsiteArea = new Diana_Service_WebsiteArea();
         $this->view->optionsFather = $optionsFather =  $serviceWebsiteArea->getOptionsWithFather();
@@ -300,11 +302,6 @@ class WebsiteController extends Www_Controller_Action
             }else{
                 $this->setMsgs($serviceWebsiteApplyRegister->getMsgs());
                 $this->view->post = $post;
-                if(!empty($post['website_continent'])){
-                    if($countriesKey = $serviceCountry->getCountriesKey()){
-                        $this->view->countriesByContinent = array_keys($countriesKey[$post['website_continent']]);
-                    }
-                }
             }
         }
     }

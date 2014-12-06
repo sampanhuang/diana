@@ -14,7 +14,7 @@ define('DIANA_WEBSITE_TITLE',"海华门");//网站名称
 define('DIANA_WEBSITE_SUBTITLE',"海外华人同出一门");//网站名称
 
 //定义域名常量
-define('DIANA_DOMAIN_ROOT',"diana.local");//根域名
+define('DIANA_DOMAIN_ROOT',"diana.vm");//根域名
 define('DIANA_DOMAIN_STATIC',"static.".DIANA_DOMAIN_ROOT);//静态
 
 define('DIANA_DOMAIN_WWW',"www.".DIANA_DOMAIN_ROOT);//www,www-cn,www-tw,www-us域名下的
@@ -43,10 +43,10 @@ define('DIANA_DIR_LIBS', realpath(DIANA_DIR_ROOT."/../libs"));//库目录
 define('DIANA_DIR_WWW_PUBLIC', realpath(DIANA_DIR_ROOT."/www/public"));//库目录
 define('DIANA_DIR_ADMIN_PUBLIC', realpath(DIANA_DIR_ROOT."/admin/public"));//库目录
 
-define('DIANA_DIR_LIBS_ZEND', realpath("D:/PhpSourceCode/FrameWrok/ZendFramework-1.12.0-minimal/library"));//zend框架目录
+define('DIANA_DIR_LIBS_ZEND', realpath("/home/wwwroot/_lib"));//zend框架目录
 
 define('DIANA_DIR_DATA', DIANA_DIR_ROOT."/../data");//数据目录
-define('DIANA_DIR_DATA_CONFIG', DIANA_DIR_DATA."/configs");//配置文件目录
+define('DIANA_DIR_DATA_CONFIG', DIANA_DIR_DATA."/configs");//配置文件目录ffffff
 define('DIANA_DIR_DATA_MEMBER_CONFIG', DIANA_DIR_DATA."/member_configs");//配置文件目录
 define('DIANA_DIR_DATA_STATE', DIANA_DIR_DATA."/state");//配置文件目录
 define('DIANA_DIR_DATA_TEMPLATE', DIANA_DIR_DATA."/template");//模板目录

@@ -66,7 +66,7 @@ class Diana_Service_WebsiteArea extends Diana_Service_Abstract
             $tmpFatherId = $row['area_fatherId'];
             $tmpRowSonId = $row['area_id'];
             if($tmpFatherId == 0){
-                $options[$tmpRowSonId] = $row['area_name_'.DIANA_TRANSLATE_DEFAULT];
+                $options[$tmpRowSonId] = $row['area_name_'.DIANA_TRANSLATE_CURRENT];
             }
         }
         return $options;
@@ -87,7 +87,7 @@ class Diana_Service_WebsiteArea extends Diana_Service_Abstract
             $tmpFatherId = $row['area_fatherId'];
             $tmpRowSonId = $row['area_id'];
             if($tmpFatherId > 0){
-                $options[$tmpFatherId][$tmpRowSonId] = $row['area_name_'.DIANA_TRANSLATE_DEFAULT];
+                $options[$tmpFatherId][$tmpRowSonId] = $row['area_name_'.DIANA_TRANSLATE_CURRENT];
             }
         }
         return $options;

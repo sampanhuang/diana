@@ -17,12 +17,30 @@ class AboutUsController extends Www_Controller_Action
 
     /**
      * 默认首页
-     * 关于我们＼业务合作＼联系方式
+     * 关于我们
      */
     function indexAction()
     {
 
     }
+
+
+    /**
+     * 业务合作
+     */
+    function businessAction()
+    {
+
+    }
+
+    /**
+     * 联系我们
+     */
+    function contactAction()
+    {
+
+    }
+
 
 
     /**

@@ -135,29 +135,29 @@ abstract class Diana_Model_DbTable_Abstract extends Zend_Db_Table_Abstract
 		
 		if ($type == 1) {//数字
 			$columnVal = array_map("intval",$columnVal);			
-			$wheres["{$columnKey} in (?)"] = $columnVal;
+			$wheres["`{$columnKey}` in (?)"] = $columnVal;
 		}elseif ($type == 11){
 			$columnVal = array_map("intval",$columnVal);			
-			$wheres["{$columnKey} not in (?)"] = $columnVal;
+			$wheres["`{$columnKey}` not in (?)"] = $columnVal;
 		}elseif ($type == 2){//字符
 			$arrWheres = array();
 			$strWheres = "";
 			foreach ($columnVal as $tmpV){
-				$arrWheres[] = "( {$columnKey} = '{$tmpV}' )";
+				$arrWheres[] = "( `{$columnKey}` = '{$tmpV}' )";
 			}
 			$strWheres = implode("or",$arrWheres);
 			$wheres[$strWheres] = "1";
 		}elseif ($type == 3){//小于
-			$wheres["{$columnKey} <= ?"] = $columnVal;
+			$wheres["`{$columnKey}` <= ?"] = $columnVal;
 		}elseif ($type == 4){//大于
-			$wheres["{$columnKey} >= ?"] = $columnVal;
+			$wheres["`{$columnKey}` >= ?"] = $columnVal;
 		}elseif ($type == 5){//类似
 			$arrWheres = array();
 			$strWheres = "";
             $columnVal = array_filter(array_unique($columnVal));
             if(!empty($columnVal)){
                 foreach ($columnVal as $tmpV){
-                    $arrWheres[] = "( {$columnKey} like '%{$tmpV}%' )";
+                    $arrWheres[] = "( `{$columnKey}` like '%{$tmpV}%' )";
                 }
                 $strWheres = implode("or",$arrWheres);
                 $wheres[$strWheres] = "1";

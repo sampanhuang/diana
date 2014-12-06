@@ -74,23 +74,12 @@ class Diana_Model_Website extends Diana_Model_Abstract
      * @param int|string|array $id
      * @return array
      */
-    function getRowsByNameWithZhCn($refresh = null,$name)
+    function getRowsByName($refresh = null,$name)
     {
-        $condition = array("website_name_zh-cn" => $name);
+        $condition = array("website_name" => $name);
         return $this->getRowsByCondition($refresh,$condition);
     }
 
-    /**
-     * 通过繁体网站名获取多条纪录
-     * @param null $refresh 是否刷新
-     * @param $name 网站名
-     * @return array 数组
-     */
-    function getRowsByNameWithZhTw($refresh = null,$name)
-    {
-        $condition = array("website_name_zh-tw" => $name);
-        return $this->getRowsByCondition($refresh,$condition);
-    }
 
     /**
      * 通过域名获取多条纪录

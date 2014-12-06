@@ -52,12 +52,12 @@ function onchangecallback(data){
                     <select id="input_website_categoryId" name="website_categoryId" class="span3">
                         <option>请选择</option>
                         <?php
-                            foreach($this->websiteCategoryIds as $websiteCategoryId){
+                            foreach($this->allWebsiteCategory as $rowsWebsiteCategory){
                                 $optionsSelected = '';
-                                if($websiteCategoryId == $this->post['website_categoryId']){
+                                if($rowsWebsiteCategory['category_id'] == $this->post['website_categoryId']){
                                     $optionsSelected = ' selected ';
                                 }
-                                echo '<option value="'.$websiteCategoryId.'" '.$optionsSelected.'>'. $this->translate("category_id_".$websiteCategoryId).'</option>';
+                                echo '<option value="'.$rowsWebsiteCategory['category_id'].'" '.$optionsSelected.'>'. $rowsWebsiteCategory['category_name_'.DIANA_TRANSLATE_CURRENT].'</option>';
                             }
                         ?>
                     </select>
