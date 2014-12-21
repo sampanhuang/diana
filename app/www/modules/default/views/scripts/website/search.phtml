@@ -27,10 +27,13 @@
                     ?>
                     <tr>
                         <td>
-                            <h4><?php echo $this->utf8Substr($row['website_name'],32);?><small>&nbsp;&nbsp;<?php echo $this->allWebsiteArea[$row['website_areaFatherId']]['area_name_'.DIANA_TRANSLATE_CURRENT].'/'.$this->allWebsiteArea[$row['website_areaId']]['area_name_'.DIANA_TRANSLATE_CURRENT].'&nbsp;&nbsp;&nbsp;'.$this->allWebsiteCategory[$row['website_categoryId']]['category_name_'.DIANA_TRANSLATE_CURRENT];?></small></h4>
-                            <a href="<?php echo $this->url(array("action" => "detail","website_id" => $row['website_id']));?>" title="<?php echo $row['website_name'];?>" target="_blank"><?php echo $this->utf8Substr($row['website_domain'],32);?></a><br>
-                            <?php echo $this->utf8Substr($row['website_intro'],160);?><br>
-                            <small>
+                            <h5>
+                                <a href="<?php echo $this->url(array("action" => "detail","website_id" => $row['website_id']));?>"  title="<?php echo $row['website_name'];?>" target="_blank"><?php echo $this->utf8Substr($row['website_name'],32);?></a>
+                                <span class="muted "><?php echo $this->utf8Substr($this->allWebsiteArea[$row['website_areaId']]['area_name_'.DIANA_TRANSLATE_CURRENT],10).'&nbsp;&nbsp;'.$this->utf8Substr($this->allWebsiteCategory[$row['website_categoryId']]['category_name_'.DIANA_TRANSLATE_CURRENT],10);?></span>
+                            </h5>
+                            <span class="text-success"><?php echo $this->utf8Substr($row['website_domain'],32);?></span><br>
+                            <span class="text-muted"><?php echo str_ireplace($this->keyword,'<span class="text-warning">'.$this->keyword.'</span>',$this->utf8Substr($row['website_intro'],160));?></span><br>
+                            <span class="text-muted">
                                 <?php
                                 if(!empty($row['website_tag'])){
                                     $tmpHtml = array();
@@ -38,12 +41,12 @@
                                     $tmpWebsiteTag = array_filter($tmpWebsiteTag);
                                     $tmpWebsiteTag = array_unique($tmpWebsiteTag);
                                     foreach($tmpWebsiteTag as $valTmpWebsiteTag){
-                                        $tmpHtml[] = '<a href="'.$this->url(array("action"=>"search","keyword" => $valTmpWebsiteTag)).'" title="'.$valTmpWebsiteTag.'"  class="muted">'.$valTmpWebsiteTag.'</a>';
+                                        $tmpHtml[] = '<a href="'.$this->url(array("action"=>"search","keyword" => $valTmpWebsiteTag)).'"  class="muted">'.$valTmpWebsiteTag.'</a>';
                                     }
-                                    echo implode("&nbsp;",$tmpHtml);
+                                    echo str_ireplace($this->keyword,'<span class="text-warning">'.$this->keyword.'</span>',implode("&nbsp;",$tmpHtml));
                                 }
                                 ?>
-                            </small>
+                            </span>
                         </td>
                     </tr>
                     <?php }?>

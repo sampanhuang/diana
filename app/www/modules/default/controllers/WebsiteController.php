@@ -85,7 +85,7 @@ class WebsiteController extends Www_Controller_Action
         $this->view->keyword = $keyword = $this->getRequest()->getParam('keyword','');
         $this->view->page = $page = $this->getRequest()->getParam('page',1);//页
         $this->view->order = $order = $this->getRequest()->getParam('order',1);//排序
-        $this->view->pagesize = $pagesize = $this->getRequest()->getParam('pagesize',10);//每页多少条
+        $this->view->pagesize = $pagesize = $this->getRequest()->getParam('pagesize',30);//每页多少条
         if(empty($keyword)){
             $this->setMsgs('请输入搜索关键字');
         }else{

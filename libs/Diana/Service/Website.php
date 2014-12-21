@@ -96,7 +96,7 @@ class Diana_Service_Website extends Diana_Service_Abstract
      * @param $page 当前页
      * @param $pagesize 每页的纪录数
      */
-    function pageByCondition($page = 1,$pagesize = 1,$condition = array(),$order = null)
+    function pageByCondition($page = 1,$pagesize = 1,$condition = array(),$order = null,$isDetail = null)
     {
 
         $offset = ($page - 1)*$pagesize;
@@ -171,15 +171,16 @@ class Diana_Service_Website extends Diana_Service_Abstract
                         }
                     }
                 }
-                /*
-                 * 取消了列表模式，所以不再需要获取简介
-                //获取简介
-                $modelWebsiteIntro = new Diana_Model_WebsiteIntro();
-                if($optionsWebsiteIntro = $modelWebsiteIntro->getIntroById(null,$websiteIds)){
-                    foreach($rowsWebsite as &$rowWebsite){
-                        $rowWebsite['website_intro'] = $optionsWebsiteIntro[$rowWebsite['website_id']];
+
+                if($isDetail){
+                    //获取简介
+                    $modelWebsiteIntro = new Diana_Model_WebsiteIntro();
+                    if($optionsWebsiteIntro = $modelWebsiteIntro->getIntroById(null,$websiteIds)){
+                        foreach($rowsWebsite as &$rowWebsite){
+                            $rowWebsite['website_intro'] = $optionsWebsiteIntro[$rowWebsite['website_id']]['website_intro'];
+                        }
                     }
-                }*/
+                }
             }
         }
         return array('total' => $countWebsite,'rows' => $rowsWebsite);

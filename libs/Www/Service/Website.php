@@ -47,7 +47,7 @@ class Www_Service_Website extends Www_Service_Abstract
         //通过网站ID获取网站详细信息
         $condition = array("website_id" => $websiteId);
         $serviceWebsite = new Diana_Service_Website();
-        if(!$paginator = $serviceWebsite->pageByCondition($page,$pagesize,$condition,$order)){
+        if(!$paginator = $serviceWebsite->pageByCondition($page,$pagesize,$condition,$order,true)){
             $this->setMsgs('无效的网站ID');
             return false;
         }

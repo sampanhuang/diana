@@ -14,7 +14,8 @@ define('DIANA_WEBSITE_TITLE',"海华门");//网站名称
 define('DIANA_WEBSITE_SUBTITLE',"海外华人同出一门");//网站名称
 
 //定义域名常量
-define('DIANA_DOMAIN_ROOT',"diana.vm");//根域名
+
+define('DIANA_DOMAIN_ROOT',implode('.',array_slice(explode('.',$_SERVER['SERVER_NAME']),-2,2)));//根域名
 define('DIANA_DOMAIN_STATIC',"static.".DIANA_DOMAIN_ROOT);//静态
 
 define('DIANA_DOMAIN_WWW',"www.".DIANA_DOMAIN_ROOT);//www,www-cn,www-tw,www-us域名下的
