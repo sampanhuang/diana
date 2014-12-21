@@ -54,7 +54,7 @@ class Diana_Service_WebsiteApplyRegister extends Diana_Service_Abstract
         $memberName = $rowMember['member_name'];
         //写入纪录
         $modelWebsiteApplyRegister = new Diana_Model_WebsiteApplyRegister();
-        if(!$rowsWebsiteApply = $modelWebsiteApplyRegister->postApply($memberId,$data['website_name'],$data['website_domain'],$data['website_tag'],$data['website_categoryId'],$data['website_areaId'],$data['register_language'])){
+        if(!$rowsWebsiteApply = $modelWebsiteApplyRegister->postApply($memberId,$data['website_name'],$data['website_domain'],$data['website_tag'],$data['website_categoryId'],$data['website_areaId'])){
             //删除会员数据
             if($rollbackMember == 1){
                 $modelMember->deleteById($memberId);
@@ -215,7 +215,6 @@ class Diana_Service_WebsiteApplyRegister extends Diana_Service_Abstract
                     'website_apply_ip' => $rowWebsiteApply['register_insert_ip'],
                     'website_applyId' => $rowWebsiteApply['register_id'],
                     'website_insert_time' => time(),
-                    'register_language' => $rowWebsiteApply['register_language'],
                 );
             }
         }
@@ -234,7 +233,7 @@ class Diana_Service_WebsiteApplyRegister extends Diana_Service_Abstract
         //剔除已经存在的纪录，避免重复提交
         foreach($tmpInsertData as $keyApplyId => $valApply){
             $tmpRegisterLanguage = $valApply['register_language'];
-            if(in_array($valApply['website_name_'.$tmpRegisterLanguage],$existWebsiteName)){
+            if(in_array($valApply['website_name'],$existWebsiteName)){
                 break;
             }
             if(in_array($valApply['website_domain'],$existWebsiteDomain)){

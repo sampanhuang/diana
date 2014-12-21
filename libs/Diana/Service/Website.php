@@ -14,6 +14,50 @@ class Diana_Service_Website extends Diana_Service_Abstract
     }
 
     /**
+     * 刷新首页
+     */
+    function flushHtmlIndex()
+    {
+        try{
+            $arrLang = array( 'zh-cn' => DIANA_DOMAIN_WWW_CN, 'zh-tw' => DIANA_DOMAIN_WWW_TW);
+            foreach($arrLang as $valLang => $valDomain){
+                $tmpPath = DIANA_DIR_TEMP.'/html/index_'.$valLang.'.htm';
+                if(!file_exists(dirname($tmpPath))){
+                    mkdir(dirname($tmpPath),0755,true);
+                }
+                $tmpContent = file_get_contents('http://'.$valDomain.'/default/website/index').chr(10).'<!--time '.date('Y-m-d H:i:s').' form '.$valDomain.'-->';
+                file_put_contents($tmpPath,$tmpContent);
+            }
+            return true;
+        }catch (Exception $e){
+            $this->setMsgs($e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * 获取首页内容
+     * @return string
+     */
+    function getHtmlIndex()
+    {
+        $tmpPath = DIANA_DIR_TEMP.'/html/index_'.DIANA_TRANSLATE_CURRENT.'.htm';
+        //echo $tmpPath;
+        //不存在就会刷新
+        if(!file_exists($tmpPath)){
+            $this->flushHtmlIndex();
+        }
+        //超过一小时也会刷新
+        $tmpFIleTime = filemtime($tmpPath);
+        if( (time() - $tmpFIleTime) > 3600){
+            $this->flushHtmlIndex();
+        }
+        $content = file_get_contents($tmpPath);
+        return $content;
+    }
+
+
+    /**
      * 获取网站列表
      * @param $counter
      * @param array $condition
@@ -29,6 +73,13 @@ class Diana_Service_Website extends Diana_Service_Abstract
         return $rowsWebsite;
     }
 
+
+
+    /**
+     * 生成easyui需要的ＪＳＯＮ
+     * @param $request
+     * @return array
+     */
     function makeDataGird($request)
     {
         $page = $request['page'];

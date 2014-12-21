@@ -61,19 +61,12 @@ if(!empty($this->detail)){
 ?>
 <fieldset border="false"  class="fieldset_border separator_bot" >
     <legend>网站明细</legend>
-    <div title="Sub Tabs" style="padding:10px;">
-        <div class="easyui-tabs" data-options="fit:true,plain:true">
-            <div title="Title1" style="padding:10px;">Content 1</div>
-            <div title="Title2" style="padding:10px;">Content 2</div>
-            <div title="Title3" style="padding:10px;">Content 3</div>
-        </div>
-    </div>
     <table width="100%" border="0" cellspacing="1" cellpadding="5"  class="table_border separator_top separator_bot">
         <tr>
             <th width="10%">ID</th>
             <td width="23%"><?php echo $this->detail['website_id'];?></td>
             <th width="10%">名称</th>
-            <td width="23%"><?php echo $this->detail['website_name_'.DIANA_TRANSLATE_CURRENT];?></td>
+            <td width="23%"><?php echo $this->detail['website_name'];?></td>
             <th width="10%">域名</th>
             <td width="23%"><?php echo $this->detail['website_domain'];?></td>
         </tr>
@@ -122,11 +115,11 @@ if(!empty($this->detail)){
         </tr>
         <tr>
             <th width="10%">标签</th>
-            <td width="90%" colspan="5"><?php echo $this->detail['website_tag_'.DIANA_TRANSLATE_CURRENT];?></td>
+            <td width="90%" colspan="5"><?php echo $this->detail['website_tag'];?></td>
         </tr>
         <tr>
             <th width="10%">简介</th>
-            <td width="90%" colspan="5"><?php echo $this->detail['website_intro_'.DIANA_TRANSLATE_CURRENT];?></td>
+            <td width="90%" colspan="5"><?php echo $this->detail['website_intro'];?></td>
         </tr>
     </table>
     <table width="100%" border="0" cellspacing="1" cellpadding="5"  class="table_border separator_top separator_bot">

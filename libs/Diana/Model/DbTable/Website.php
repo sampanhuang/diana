@@ -55,7 +55,7 @@ class Diana_Model_DbTable_Website extends Diana_Model_DbTable_Abstract
         }
         if (!empty($condition["website_name"])) {//网站名称
             $tmpWheres = array();
-            $tmpWheres = $this->getWhereByCondition("website_name",$condition["website_name-cn"],2);
+            $tmpWheres = $this->getWhereByCondition("website_name",$condition["website_name"],2);
             $wheres = array_merge($wheres,$tmpWheres);
         }
         if (!empty($condition["website_domain"])) {//网站域名

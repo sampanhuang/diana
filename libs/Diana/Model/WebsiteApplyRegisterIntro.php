@@ -24,7 +24,7 @@ class Diana_Model_WebsiteApplyRegisterIntro extends Diana_Model_Abstract
     function saveIntro($id,$intro)
     {
         $condition = array("register_id" => $id);
-        $data = array("website_intro" => $intro);
+        $data = array("website_intro" => nl2br($intro));
         if(!$rows = $this->saveData(2,$data,$condition)){
             $data['register_id'] = $id;
             if(!$rows = $this->saveData(1,$data)){

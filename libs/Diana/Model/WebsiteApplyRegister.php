@@ -24,9 +24,8 @@ class Diana_Model_WebsiteApplyRegister extends Diana_Model_Abstract
      * @param $category 分类
      * @param $continent 大陆
      * @param $country 国家
-     * @param $language 语言，不是zh-cn,就是zh-tw
      */
-    function postApply($memberId,$name,$domain,$tag,$category,$area,$language = 'zh-cn')
+    function postApply($memberId,$name,$domain,$tag,$category,$area)
     {
         $data = array(
             'website_memberId' => intval($memberId),
@@ -40,7 +39,6 @@ class Diana_Model_WebsiteApplyRegister extends Diana_Model_Abstract
             'register_update_time' => time(),
             'register_update_ip' => $_SERVER['REMOTE_ADDR'],
             'register_pass' => 3,
-            'register_language' => $language,
         );
         return $this->saveData(1,$data);
     }
